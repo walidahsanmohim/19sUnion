@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowGuide | চট্টগ্রামের সেরা বিউটি সার্ভিস</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places" async defer></script>
+    <style>
+        * {
+            font-family: 'Noto Sans Bengali', sans-serif;
+        }
+        
+        /* Animated Gradient Background */
+        .gradient-bg {
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 25%, #f9a8d4 50%, #f472b6 75%, #ec4899 100%);
+            background-size: 400% 400%;
+            animation: gradientMove 15s ease infinite;
+        }
+        
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .float-animation-delay {
+            animation: float 6s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+        
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Card Hover Effects */
+        .artist-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .artist-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(236, 72, 153, 0.25);
+        }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Button Gradient */
+        .btn-gradient {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #db2777, #7c3aed);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.4);
+        }
+        
+        /* Pulse Animation for CTA */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(236, 72, 153, 0.8); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            border-radius: 10px;
+        }
+        
+        /* Hero Shapes */
+        .hero-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.5;
+        }
+        
+        /* Step Number Circle */
+        .step-number {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Map Container */
+        #map {
+            height: 450px;
+            width: 100%;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Modal Enhancements */
+        .modal-overlay {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1));
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Input Focus */
+        input:focus, select:focus, textarea:focus {
+            border-color: #ec4899;
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+        }
+        
+        /* Testimonial Card */
+        .testimonial-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Service Icon Box */
+        .service-icon {
+            background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+            transition: all 0.3s ease;
+        }
+        
+        .service-icon:hover {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            transform: rotate(10deg) scale(1.1);
+        }
+        
+        /* Footer Gradient */
+        .footer-gradient {
+            background: linear-gradient(180deg, #ffffff 0%, #fce7f3 50%, #fbcfe8 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <!-- Navigation -->
+    <nav class="glass fixed top-0 left-0 right-0 z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-spa text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold gradient-text">GlowGuide</h1>
+                        <p class="text-xs text-gray-500">চট্টগ্রামের নির্ভরযোগ্য বিউটি প্ল্যাটফর্ম</p>
+                    </div>
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#home" class="text-gray-700 hover:text-pink-600 font-medium transition">হোম</a>
+                    <a href="#how-it-works" class="text-gray-700 hover:text-pink-600 font-medium transition">কিভাবে কাজ করে</a>
+                    <a href="#services" class="text-gray-700 hover:text-pink-600 font-medium transition">সার্ভিস</a>
+                    <a href="#artists" class="text-gray-700 hover:text-pink-600 font-medium transition">আর্টিস্ট</a>
+                    <a href="#map-section" class="text-gray-700 hover:text-pink-600 font-medium transition">ম্যাপ</a>
+                    <button onclick="showRegisterModal()" class="btn-gradient text-white px-6 py-2.5 rounded-full font-medium shadow-lg">
+                        <i class="fas fa-user-plus mr-2"></i>আর্টিস্ট রেজিস্ট্রেশন
+                    </button>
+                </div>
+                <button class="md:hidden" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-2xl text-gray-700"></i>
+                </button>
+            </div>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden glass border-t">
+            <div class="container mx-auto px-4 py-4 flex flex-col gap-4">
+                <a href="#home" class="text-gray-700 hover:text-pink-600 font-medium">হোম</a>
+                <a href="#how-it-works" class="text-gray-700 hover:text-pink-600 font-medium">কিভাবে কাজ করে</a>
+                <a href="#services" class="text-gray-700 hover:text-pink-600 font-medium">সার্ভিস</a>
+                <a href="#artists" class="text-gray-700 hover:text-pink-600 font-medium">আর্টিস্ট</a>
+                <a href="#map-section" class="text-gray-700 hover:text-pink-600 font-medium">ম্যাপ</a>
+                <button onclick="showRegisterModal()" class="btn-gradient text-white px-6 py-2.5 rounded-full font-medium">
+                    <i class="fas fa-user-plus mr-2"></i>আর্টিস্ট রেজিস্ট্রেশন
+                </button>
+            </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="relative min-h-screen flex items-center gradient-bg overflow-hidden pt-20">
+        <!-- Animated Shapes -->
+        <div class="hero-shape w-96 h-96 bg-pink-300 top-20 -left-20 float-animation"></div>
+        <div class="hero-shape w-80 h-80 bg-purple-300 bottom-20 -right-20 float-animation-delay"></div>
+        <div class="hero-shape w-64 h-64 bg-amber-200 top-1/2 left-1/3 float-animation" style="animation-delay: 1s;"></div>
+        
+        <div class="container mx-auto px-4 py-16 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <!-- Left Content -->
+                <div class="lg:w-1/2 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 bg-white/30 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span class="text-sm font-medium text-gray-700">চট্টগ্রামে ৫০+ যাচাইকৃত আর্টিস্ট</span>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-800 mb-6 leading-tight">
+                        সেরা মেকাপ আর্টিস্ট
+                        <span class="gradient-text block">এখন আপনার দরজায়</span>
+                    </h2>
+                    <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-xl">
+                        আপনার পছন্দের আর্টিস্ট বেছে নিন এবং বাসায় বসে প্রিমিয়াম মানের সার্ভিস নিন। 
+                        ব্রাইডাল, পার্টি, ফেসিয়াল সহ সব ধরনের বিউটি সার্ভিস।
+                    </p>
+                    
+                    <!-- Search Box -->
+                    <div class="glass rounded-2xl p-4 shadow-2xl max-w-2xl">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <div class="flex-1 relative">
+                                <i class="fas fa-map-marker-alt absolute left-4 top-1/2 -translate-y-1/2 text-pink-500"></i>
+                                <input type="text" id="searchArea" placeholder="আপনার এলাকা (যেমন: গুলশান, আগ্রাবাদ)" 
+                                       class="w-full pl-12 pr-4 py-4 border-0 rounded-xl bg-white/50 focus:bg-white transition">
+                            </div>
+                            <div class="flex-1 relative">
+                                <i class="fas fa-cut absolute left-4 top-1/2 -translate-y-1/2 text-pink-500"></i>
+                                <select id="searchService" class="w-full pl-12 pr-4 py-4 border-0 rounded-xl bg-white/50 focus:bg-white transition appearance-none cursor-pointer">
+                                    <option value="">সব সার্ভিস</option>
+                                    <option>ব্রাইডাল মেকাপ</option>
+                                    <option>পার্টি মেকাপ</option>
+                                    <option>ফেসিয়াল</option>
+                                    <option>হেয়ার স্টাইলিং</option>
+                                    <option>ম্যানিকিউর</option>
+                                    <option>পেডিকিউর</option>
+                                    <option>স্কিন কেয়ার</option>
+                                </select>
+                            </div>
+                            <button onclick="searchArtists()" class="btn-gradient text-white px-8 py-4 rounded-xl font-bold shadow-lg pulse-glow whitespace-nowrap">
+                                <i class="fas fa-search mr-2"></i>খুঁজুন
+                            </button>
+                        </div>
+                    
+                    <!-- Stats -->
+                    <div class="flex flex-wrap justify-center lg:justify-start gap-8 mt-10">
+                        <div class="text-center">
+                            <p class="text-3xl font-bold gradient-text">৫০+</p>
+                            <p class="text-gray-500">ভেরিফাইড আর্টিস্ট</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-3xl font-bold gradient-text">১০০০+</p>
+                            <p class="text-gray-500">সফল বুকিং</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-3xl font-bold gradient-text">৪.৯</p>
+                            <p class="text-gray-500">গড় রেটিং</p>
+                        </div>
+                </div>
+                
+                <!-- Right Image -->
+                <div class="lg:w-1/2 flex justify-center">
+                    <div class="relative">
+                        <div class="w-72 h-72 md:w-96 md:h-96 rounded-full bg-gradient-to-r from-pink-300 to-purple-300 float-animation flex items-center justify-center">
+                            <i class="fas fa-gem text-8xl md:text-9xl text-white drop-shadow-2xl"></i>
+                        </div>
+                        <!-- Floating Badge -->
+                        <div class="absolute -bottom-4 -left-4 glass rounded-2xl p-4 shadow-xl float-animation">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 flex items-center justify-center">
+                                    <i class="fas fa-check text-white"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-800">যাচাইকৃত</p>
+                                    <p class="text-xs text-gray-500">প্রতিটি আর্টিস্ট</p>
+                                </div>
+                        </div>
+                </div>
+        </div>
+        
+        <!-- Wave Divider -->
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="white"/>
+            </svg>
+        </div>
+    </header>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="inline-block px-4 py-1 bg-pink-100 text-pink-600 rounded-full text-sm font-medium mb-4">কিভাবে কাজ করে</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">সহজ ৪টি ধাপে সার্ভিস নিন</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Step 1 -->
+                <div class="text-center group">
+                    <div class="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center group-hover:scale-110 transition duration-300">
+                        <span class="text-4xl font-bold gradient-text">১</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">আর্টিস্ট খুঁজুন</h3>
+                    <p class="text-gray-500">আপনার এলাকা বা পছন্দের সার্ভিস অনুযায়ী আর্টিস্ট খুঁজুন</p>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="text-center group">
+                    <div class="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-purple-100 to-indigo-100 flex items-center justify-center group-hover:scale-110 transition duration-300">
+                        <span class="text-4xl font-bold gradient-text">২</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">প্রোফাইল দেখুন</h3>
+                    <p class="text-gray-500">রেটিং, রিভিউ এবং পোর্টফোলিও দেখে সিদ্ধান্ত নিন</p>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="text-center group">
+                    <div class="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-indigo-100 to-blue-100 flex items-center justify-center group-hover:scale-110 transition duration-300">
+                        <span class="text-4xl font-bold gradient-text">৩</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">বুকিং করুন</h3>
+                    <p class="text-gray-500">তারিখ ও সময় নির্বাচন করে বুকিং কনফার্ম করুন</p>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="text-center group">
+                    <div class="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-blue-100 to-green-100 flex items-center justify-center group-hover:scale-110 transition duration-300">
+                        <span class="text-4xl font-bold gradient-text">৪</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">সার্ভিস উপভোগ</h3>
+                    <p class="text-gray-500">আর্টিস্ট আপনার ঠিকানায় এসে সার্ভিস প্রদান করবে</p>
+                </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-gradient-to-b from-pink-50 to-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="inline-block px-4 py-1 bg-purple-100 text-purple-600 rounded-full text-sm font-medium mb-4">আমাদের সার্ভিস</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">সব ধরনের বিউটি সার্ভিস</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                <!-- Service 1 -->
+                <div class="glass rounded-2xl p-6 text-center hover:shadow-xl transition cursor-pointer group">
+                    <div class="service-icon w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-gem text-2xl text-pink-600 group-hover:text-white transition"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800">ব্রাইডাল মেকাপ</h4>
+                    <p class="text-xs text-gray-500 mt-1">বিয়ের দিন special</p>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="glass rounded-2xl p-6 text-center hover:shadow-xl transition cursor-pointer group">
+                    <div class="service-icon w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-birthday-cake text-2xl text-pink-600 group-hover:text-white transition"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800">পার্টি মেকাপ</h4>
+                    <p class="text-xs text-gray-500 mt-1">যেকোনো পার্টিতে</p>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="glass rounded-2xl p-6 text-center hover:shadow-xl transition cursor-pointer group">
+                    <div class="service-icon w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-spa text-2xl text-pink-600 group-hover:text-white transition"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800">ফেসিয়াল</h4>
+                    <p class="text-xs text-gray-500 mt-1">ত্বকের যত্ন</p>
+                </div>
+                
+                <!-- Service 4 -->
+                <div class="glass rounded-2xl p-6 text-center hover:shadow-xl transition cursor-pointer group">
+                    <div class="service-icon w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-cut text-2xl text-pink-600 group-hover:text-white transition"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800">হেয়ার স্টাইলিং</h4>
+                    <p class="text-xs text-gray-500 mt-1">চুলের স্টাইল</p>
+                </div>
+                
+                <!-- Service 5 -->
+                <div class="glass rounded-2xl p-6 text-center hover:shadow-xl transition cursor-pointer group">
+                    <div class="service-icon w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-hand-sparkles text-2xl text-pink-600 group-hover:text-white transition"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800">ম্যানিকিউর</h4>
+                    <p class="text-xs text-gray-500 mt-1">হাতের নখের যত্ন</p>
+                </div>
+                
+                <!-- Service 6 -->
+                <div class="glass rounded-2xl p-6 text-center hover:shadow-xl transition cursor-pointer group">
+                    <div class="service-icon w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-shoe-prints text-2xl text-pink-600 group-hover:text-white transition"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800">পেডিকিউর</h4>
+                    <p class="text-xs text-gray-500 mt-1">পায়ের যত্ন</p>
+                </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="inline-block px-4 py-1 bg-green-100 text-green-600 rounded-full text-sm font-medium mb-4">কাস্টমার রিভিউ</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমাদের ক্লায়েন্টরা বলছেন</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Review 1 -->
+                <div class="testimonial-card rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center gap-1 mb-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-600 mb-6">"অসাধারণ সার্ভিস! আমার বিয়েতে মেকাপটা পারফেক্ট ছিল। আর্টিস্ট অনেক পেশাদার ছিলেন।"</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-400 to-purple-500 flex items-center justify-center text-white font-bold">
+                            স
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-800">সারা ইসলাম</p>
+                            <p class="text-xs text-gray-500">ব্রাইডাল মেকাপ</p>
+                        </div>
+                </div>
+                
+                <!-- Review 2 -->
+                <div class="testimonial-card rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center gap-1 mb-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-600 mb-6">"খুব সুবিধাজনক প্ল্যাটফর্ম। বাসায় বসেই ভালো আর্টিস্ট খুঁজে পেয়েছি। ধন্যবাদ GlowGuide!"</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-400 to-cyan-500 flex items-center justify-center text-white font-bold">
+                            ন
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-800">নাজমা আক্তার</p>
+                            <p class="text-xs text-gray-500">ফেসিয়াল সার্ভিস</p>
+                        </div>
+                </div>
+                
+                <!-- Review 3 -->
+                <div class="testimonial-card rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center gap-1 mb-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star-half-alt text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-600 mb-6">"চট্টগ্রামে এই ধরনের সার্ভিস খুঁজছিলাম। অবশেষে পেয়ে গেছি। সবাইকে রিকমেন্ড করি।"</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 flex items-center justify-center text-white font-bold">
+                            ম
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-800">মাহিন চৌধুরী</p>
+                            <p class="text-xs text-gray-500">পার্টি মেকাপ</p>
+                        </div>
+                </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section id="map-section" class="py-20 bg-gradient-to-b from-pink-50 to-purple-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <span class="inline-block px-4 py-1 bg-blue-100 text-blue-600 rounded-full text-sm font-medium mb-4">লাইভ ম্যাপ</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">ম্যাপে আর্টিস্ট খুঁজুন</h2>
+                <p class="text-gray-500">চট্টগ্রামের বিভিন্ন এলাকায় আমাদের আর্টিস্টরা</p>
+            </div>
+            
+            <div class="glass rounded-3xl p-4 md:p-6 shadow-2xl">
+                <div id="map" class="rounded-2xl overflow-hidden"></div>
+            
+            <!-- Quick Areas -->
+            <div class="flex flex-wrap justify-center gap-4 mt-8">
+                <button onclick="searchByArea('আগ্রাবাদ')" class="glass px-6 py-2 rounded-full hover:bg-pink-100 transition font-medium">
+                    <i class="fas fa-map-marker-alt text-pink-500 mr-2"></i>আগ্রাবাদ
+                </button>
+                <button onclick="searchByArea('গুলশান')" class="glass px-6 py-2 rounded-full hover:bg-pink-100 transition font-medium">
+                    <i class="fas fa-map-marker-alt text-pink-500 mr-2"></i>গুলশান
+                </button>
+                <button onclick="searchByArea('নেভিগেশন')" class="glass px-6 py-2 rounded-full hover:bg-pink-100 transition font-medium">
+                    <i class="fas fa-map-marker-alt text-pink-500 mr-2"></i>নেভিগেশন
+                </button>
+                <button onclick="searchByArea('পাহাড়তলী')" class="glass px-6 py-2 rounded-full hover:bg-pink-100 transition font-medium">
+                    <i class="fas fa-map-marker-alt text-pink-500 mr-2"></i>পাহাড়তলী
+                </button>
+                <button onclick="searchByArea('হালিশহর')" class="glass px-6 py-2 rounded-full hover:bg-pink-100 transition font-medium">
+                    <i class="fas fa-map-marker-alt text-pink-500 mr-2"></i>হালিশহর
+                </button>
+            </div>
+    </section>
+
+    <!-- Artists Section -->
+    <section id="artists" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+                <div>
+                    <span class="inline-block px-4 py-1 bg-pink-100 text-pink-600 rounded-full text-sm font-medium mb-4">জনপ্রিয় আর্টিস্ট</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমাদের সেরা আর্টিস্ট</h2>
+                </div>
+                <div class="flex items-center gap-4 mt-4 md:mt-0">
+                    <span id="artistCount" class="text-gray-500 bg-gray-100 px-4 py-2 rounded-full"></span>
+                </div>
+            
+            <div id="artistsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Artists will be loaded here -->
+                <div class="col-span-full text-center py-12">
+                    <i class="fas fa-spinner fa-spin text-5xl text-pink-500 mb-4"></i>
+                    <p class="text-gray-500 text-lg">আর্টিস্ট লোড হচ্ছে...</p>
+                </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 gradient-bg relative overflow-hidden">
+        <div class="hero-shape w-96 h-96 bg-white/30 top-0 left-0 float-animation"></div>
+        <div class="hero-shape w-64 h-64 bg-white/20 bottom-0 right-0 float-animation-delay"></div>
+        
+        <div class="container mx-auto px-4 relative z-10 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">আপনিও আর্টিস্ট হতে পারেন!</h2>
+            <p class="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">চট্টগ্রামের সেরা বিউটি প্ল্যাটফর্মে যোগ দিন এবং আপনার ক্যারিয়ার গড়ুন।</p>
+            <button onclick="showRegisterModal()" class="btn-gradient text-white px-10 py-4 rounded-full font-bold text-lg shadow-2xl pulse-glow">
+                <i class="fas fa-user-plus mr-2"></i>এখনই রেজিস্ট্রেশন করুন
+            </button>
+        </div>
+    </section>
+
+    <!-- Registration Modal -->
+    <div id="registerModal" class="fixed inset-0 modal-overlay flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform scale-95 opacity-0 transition-all duration-300" id="registerModalContent">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold gradient-text">আর্টিস্ট রেজিস্ট্রেশন</h2>
+                    <p class="text-sm text-gray-500">চট্টগ্রামের সেরা প্ল্যাটফর্মে যোগ দিন</p>
+                </div>
+                <button onclick="closeRegisterModal()" class="text-gray-400 hover:text-gray-600 transition">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <form id="registerForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">আপনার নাম *</label>
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="regName" class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50" placeholder="আপনার পূর্ণ নাম" required>
+                    </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">ইমেইল *</label>
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="email" id="regEmail" class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50" placeholder="your@email.com" required>
+                    </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">ফোন নম্বর *</label>
+                    <div class="relative">
+                        <i class="fas fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="tel" id="regPhone" class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50" placeholder="০১১২৩৪৫৬৭৮৯" required>
+                    </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">শহর *</label>
+                    <div class="relative">
+                        <i class="fas fa-city absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <select id="regCity" class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50 appearance-none cursor-pointer" required>
+                            <option value="">শহর নির্বাচন করুন</option>
+                            <option value="চট্টগ্রাম" selected>চট্টগ্রাম</option>
+                            <option value="ঢাকা">ঢাকা</option>
+                            <option value="সিলেট">সিলেট</option>
+                            <option value="খুলনা">খুলনা</option>
+                            <option value="রাজশাহী">রাজশাহী</option>
+                        </select>
+                    </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">এলাকা *</label>
+                    <div class="relative">
+                        <i class="fas fa-map-marker-alt absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="regArea" class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50" placeholder="যেমন: গুলশান, আগ্রাবাদ" required>
+                    </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">পূর্ণ ঠিকানা *</label>
+                    <div class="relative">
+                        <i class="fas fa-home absolute left-4 top-4 text-gray-400"></i>
+                        <textarea id="regAddress" class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50" rows="2" placeholder="বাড়ির পূর্ণ ঠিকানা" required></textarea>
+                    </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">অভিজ্ঞতা</label>
+                    <div class="relative">
+                        <i class="fas fa-briefcase absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="regExperience" class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50" placeholder="যেমন: ৫ বছরের অভিজ্ঞতা">
+                    </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">সার্ভিস ও দাম *</label>
+                    <div id="servicesContainer" class="space-y-3">
+                        <div class="flex gap-2">
+                            <div class="flex-1 relative">
+                                <i class="fas fa-spa absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" name="serviceName" placeholder="সার্ভিসের নাম" class="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50" required>
+                            </div>
+                            <div class="w-28 relative">
+                                <i class="fas fa-taka-sign absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <input type="number" name="servicePrice" placeholder="দাম" class="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50" required>
+                            </div>
+                    </div>
+                    <button type="button" onclick="addServiceField()" class="mt-3 text-pink-600 text-sm hover:text-pink-700 font-medium">
+                        <i class="fas fa-plus-circle mr-1"></i>আরো সার্ভিস যোগ করুন
+                    </button>
+                </div>
+                <button type="submit" class="w-full btn-gradient text-white py-4 rounded-xl font-bold text-lg shadow-lg">
+                    <i class="fas fa-user-plus mr-2"></i>রেজিস্টার করুন
+                </button>
+            </form>
+        </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="fixed inset-0 modal-overlay flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-lg transform scale-95 opacity-0 transition-all duration-300" id="bookingModalContent">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold gradient-text">সার্ভিস বুক করুন</h2>
+                    <p class="text-sm text-gray-500">আপনার পছন্দের সময়ে সার্ভিস নিন</p>
+                </div>
+                <button onclick="closeBookingModal()" class="text-gray-400 hover:text-gray-600 transition">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <form id="bookingForm">
+                <input type="hidden" id="bookingArtistId">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">আপনার নাম *</label>
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="customerName" class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50" placeholder="আপনার নাম" required>
+                    </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">ফোন নম্বর *</label>
+                    <div class="relative">
+                        <i class="fas fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="tel" id="customerPhone" class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50" placeholder="০১১২৩৪৫৬৭৮৯" required>
+                    </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">ইমেইল</label>
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="email" id="customerEmail" class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50" placeholder="your@email.com">
+                    </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">ঠিকানা</label>
+                    <div class="relative">
+                        <i class="fas fa-home absolute left-4 top-4 text-gray-400"></i>
+                        <textarea id="customerAddress" class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50" rows="2" placeholder="সার্ভিসের ঠিকানা"></textarea>
+                    </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">সার্ভিস নির্বাচন *</label>
+                    <div class="relative">
+                        <i class="fas fa-cut absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <select id="serviceSelect" class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50 appearance-none cursor-pointer" required>
+                            <option value="">সার্ভিস নির্বাচন করুন</option>
+                        </select>
+                    </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">তারিখ *</label>
+                        <div class="relative">
+                            <i class="fas fa-calendar absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="date" id="bookingDate" class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50" required>
+                        </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">সময়</label>
+                        <div class="relative">
+                            <i class="fas fa-clock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="time" id="bookingTime" class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50">
+                        </div>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">নোট</label>
+                    <textarea id="bookingNotes" class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50" rows="2" placeholder="অতিরিক্ত তথ্য..."></textarea>
+                </div>
+                <div class="bg-gradient-to-r from-pink-50 to-purple-50 p-4 rounded-xl mb-6">
+                    <p class="text-sm text-gray-600">মোট পেমেন্ট</p>
+                    <p class="text-3xl font-bold gradient-text" id="totalPrice">৳ 0</p>
+                </div>
+                <button type="submit" class="w-full btn-gradient text-white py-4 rounded-xl font-bold text-lg shadow-lg">
+                    <i class="fas fa-credit-card mr-2"></i>পেমেন্ট করুন
+                </button>
+            </form>
+        </div>
+
+    <!-- Footer -->
+    <footer class="footer-gradient py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <!-- Brand -->
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
+                            <i class="fas fa-spa text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold gradient-text">GlowGuide</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">চট্টগ্রামের সবচেয়ে নির্ভরযোগ্য বিউটি সার্ভিস প্ল্যাটফর্ম। আমরা আপনার সৌন্দর্যের সাথী।</p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-white hover:scale-110 transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-white hover:scale-110 transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-white hover:scale-110 transition">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-bold text-gray-800 mb-4">দ্রুত লিংক</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-600 hover:text-pink-600 transition">হোম</a></li>
+                        <li><a href="#how-it-works" class="text-gray-600 hover:text-pink-600 transition">কিভাবে কাজ করে</a></li>
+                        <li><a href="#services" class="text-gray-600 hover:text-pink-600 transition">সার্ভিস</a></li>
+                        <li><a href="#artists" class="text-gray-600 hover:text-pink-600 transition">আর্টিস্ট</a></li>
+                        <li><a href="#map-section" class="text-gray-600 hover:text-pink-600 transition">ম্যাপ</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Services -->
+                <div>
+                    <h4 class="text-lg font-bold text-gray-800 mb-4">সার্ভিস</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 hover:text-pink-600 transition">ব্রাইডাল মেকাপ</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-pink-600 transition">পার্টি মেকাপ</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-pink-600 transition">ফেসিয়াল</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-pink-600 transition">হেয়ার স্টাইলিং</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-pink-600 transition">ম্যানিকিউর</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-lg font-bold text-gray-800 mb-4">যোগাযোগ</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-gray-600">
+                            <i class="fas fa-map-marker-alt text-pink-500"></i>
+                            চট্টগ্রাম, বাংলাদেশ
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600">
+                            <i class="fas fa-phone text-pink-500"></i>
+                            +880 1234 567890
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600">
+                            <i class="fas fa-envelope text-pink-500"></i>
+                            info@glowguide.com
+                        </li>
+                    </ul>
+                </div>
+            
+            <!-- Newsletter -->
+            <div class="bg-white/50 backdrop-blur-sm rounded-2xl p-8 mb-8">
+                <div class="text-center">
+                    <h4 class="text-xl font-bold text-gray-800 mb-2">নিউজলেটার সাবস্ক্রাইব করুন</h4>
+                    <p class="text-gray-600 mb-4">সর্বশেষ অফার ও আপডেট পেতে সাবস্ক্রাইব করুন</p>
+                    <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                        <input type="email" placeholder="আপনার ইমেইল" class="flex-1 px-6 py-3 rounded-full border border-gray-200 focus:outline-none focus:border-pink-500">
+                        <button class="btn-gradient text-white px-8 py-3 rounded-full font-bold">
+                            সাবস্ক্রাইব
+                        </button>
+                    </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="text-center pt-8 border-t border-gray-200">
+                <p class="text-gray-600">&copy; 2024 GlowGuide - চট্টগ্রামের সেরা বিউটি সার্ভিস প্ল্যাটফর্ম। সর্বস্বত্ব সংরক্ষিত।</p>
+            </div>
+    </footer>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        let map;
+        let markers = [];
+        let allArtists = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadArtists();
+            initMap();
+        });
+
+        // Load artists from API
+        async function loadArtists() {
+            try {
+                const response = await fetch(`${API_BASE}/artists`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    allArtists = result.data;
+                    displayArtists(allArtists);
+                    updateMapMarkers(allArtists);
+                    document.getElementById('artistCount').textContent = `${allArtists.length} জন আর্টিস্ট পাওয়া গেছে`;
+                }
+            } catch (error) {
+                console.error('Error loading artists:', error);
+                displayDemoArtists();
+            }
+        }
+
+        // Display artists in grid with enhanced design
+        function displayArtists(artists) {
+            const grid = document.getElementById('artistsGrid');
+            
+            if (artists.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-500 text-lg">কোনো আর্টিস্ট পাওয়া যায়নি</p></div>';
+                return;
+            }
+
+            grid.innerHTML = artists.map(artist => `
+                <div class="artist-card glass rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition-all duration-300">
+                    <div class="relative">
+                        <img src="${artist.profileImage || 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=500&q=80'}" 
+                             alt="${artist.name}" class="h-64 w-full object-cover">
+                        <div class="absolute top-4 right-4">
+                            <span class="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold text-pink-600">
+                                <i class="fas fa-star text-yellow-500 mr-1"></i>${artist.rating?.toFixed(1) || '0.0'}
+                            </span>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-gradient-to-r from-pink-500 to-purple-600 px-3 py-1 rounded-full text-sm font-bold text-white">
+                                ${artist.city || 'চট্টগ্রাম'}, ${artist.area || ''}
+                            </span>
+                        </div>
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold text-gray-800 mb-2">${artist.name}</h4>
+                        <p class="text-gray-500 text-sm mb-4"><i class="fas fa-briefcase text-pink-500 mr-2"></i>${artist.experience || 'অভিজ্ঞতা নেই'}</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${artist.services?.slice(0, 3).map(s => `
+                                <span class="bg-pink-50 text-pink-600 px-3 py-1 rounded-full text-xs font-medium">${s.name}</span>
+                            `).join('') || ''}
+                        </div>
+                        
+                        <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+                            <div>
+                                <p class="text-xs text-gray-400">শুরু হতে</p>
+                                <p class="text-xl font-bold gradient-text">৳ ${artist.services?.[0]?.price || 'যোগাযোগ করুন'}</p>
+                            </div>
+                            <button onclick="openBookingModal('${artist._id}')" class="btn-gradient text-white px-6 py-2.5 rounded-full font-medium hover:shadow-lg">
+                                বুক করুন
+                            </button>
+                        </div>
+                </div>
+            `).join('');
+        }
+
+        // Demo artists when API not available - Chittagong based
+        function displayDemoArtists() {
+            const demoArtists = [
+                { name: 'সানিয়া আফরিন', city: 'চট্টগ্রাম', area: 'গুলশান', rating: 4.9, experience: '৫ বছরের অভিজ্ঞতা', services: [{ name: 'ব্রাইডাল মেকাপ', price: 2500 }], latitude: 22.3569, longitude: 91.7832 },
+                { name: 'মালিহা রহমান', city: 'চট্টগ্রাম', area: 'আগ্রাবাদ', rating: 4.7, experience: '৩ বছরের অভিজ্ঞতা', services: [{ name: 'পার্টি মেকাপ', price: 1800 }], latitude: 22.3419, longitude: 91.7655 },
+                { name: 'নাজমা আক্তার', city: 'চট্টগ্রাম', area: 'নেভিগেশন', rating: 4.8, experience: '৭ বছরের অভিজ্ঞতা', services: [{ name: 'ফেসিয়াল', price: 1500 }], latitude: 22.3700, longitude: 91.8000 },
+                { name: 'ফারিহা ইসলাম', city: 'চট্টগ্রাম', area: 'পাহাড়তলী', rating: 4.6, experience: '৪ বছরের অভিজ্ঞতা', services: [{ name: 'হেয়ার স্টাইলিং', price: 1200 }], latitude: 22.3620, longitude: 91.7900 },
+                { name: 'রুমা সেন', city: 'চট্টগ্রাম', area: 'হালিশহর', rating: 4.9, experience: '৬ বছরের অভিজ্ঞতা', services: [{ name: 'ম্যানিকিউর', price: 800 }], latitude: 22.3300, longitude: 91.7500 },
+                { name: 'লামিয়া বেগম', city: 'চট্টগ্রাম', area: 'বন্দর', rating: 4.5, experience: '২ বছরের অভিজ্ঞতা', services: [{ name: 'পেডিকিউর', price: 700 }], latitude: 22.3200, longitude: 91.7800 }
+            ];
+            allArtists = demoArtists;
+            displayArtists(demoArtists);
+            updateMapMarkers(demoArtists);
+            document.getElementById('artistCount').textContent = `${demoArtists.length} জন আর্টিস্ট পাওয়া গেছে`;
+        }
+
+        // Initialize Google Map - Chittagong center
+        function initMap() {
+            const Chittagong = { lat: 22.3569, lng: 91.7832 };
+            map = new google.maps.Map(documentElementById('map'), {
+                zoom: 13,
+                center: Chittagong,
+                styles: [
+                    {
+                        "featureType": "poi",
+                        "elementType": "labels",
+                        "stylers": [{ "visibility": "off" }]
+                    }
+                ]
+            });
+        }
+
+        // Update map markers
+        function updateMapMarkers(artists) {
+            markers.forEach(marker => marker.setMap(null));
+            markers = [];
+
+            artists.forEach(artist => {
+                if (artist.latitude && artist.longitude) {
+                    const marker = new google.maps.Marker({
+                        position: { lat: artist.latitude, lng: artist.longitude },
+                        map: map,
+                        title: artist.name,
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 10,
+                            fillColor: '#ec4899',
+                            fillOpacity: 1,
+                            strokeColor: '#ffffff',
+                            strokeWeight: 2
+                        }
+                    });
+                    
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: `
+                            <div style="padding: 10px; min-width: 150px;">
+                                <h3 style="font-weight: bold; margin-bottom: 5px; color: #ec4899;">${artist.name}</h3>
+                                <p style="margin: 0; color: #666;">📍 ${artist.city}, ${artist.area}</p>
+                                <p style="margin: 5px 0 0; color: #f59e0b;">⭐ ${artist.rating} রেটিং</p>
+                            </div>
+                        `
+                    });
+                    
+                    marker.addListener('click', () => infoWindow.open(map, marker));
+                    markers.push(marker);
+                }
+            });
+        }
+
+        // Search artists
+        async function searchArtists() {
+            const area = document.getElementById('searchArea').value;
+            const service = document.getElementById('searchService').value;
+
+            try {
+                let url = `${API_BASE}/artists?`;
+                if (area) url += `area=${encodeURIComponent(area)}&`;
+                if (service) url += `service=${encodeURIComponent(service)}&`;
+
+                const response = await fetch(url);
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayArtists(result.data);
+                    updateMapMarkers(result.data);
+                    document.getElementById('artistCount').textContent = `${result.data.length} জন আর্টিস্ট পাওয়া গেছে`;
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                let filtered = allArtists;
+                if (area) {
+                    filtered = filtered.filter(a => 
+                        a.area?.toLowerCase().includes(area.toLowerCase()) || 
+                        a.city?.toLowerCase().includes(area.toLowerCase())
+                    );
+                }
+                if (service) {
+                    filtered = filtered.filter(a => 
+                        a.services?.some(s => s.name?.toLowerCase().includes(service.toLowerCase()))
+                    );
+                }
+                displayArtists(filtered);
+                updateMapMarkers(filtered);
+                document.getElementById('artistCount').textContent = `${filtered.length} জন আর্টিস্ট পাওয়া গেছে`;
+            }
+            
+            // Scroll to artists section
+            document.getElementById('artists').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Search by area buttons
+        function searchByArea(area) {
+            document.getElementById('searchArea').value = area;
+            searchArtists();
+        }
+
+        // Registration modal
+        function showRegisterModal() {
+            document.getElementById('registerModal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('registerModalContent').classList.remove('scale-95', 'opacity-0');
+                document.getElementById('registerModalContent').classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeRegisterModal() {
+            document.getElementById('registerModalContent').classList.remove('scale-100', 'opacity-100');
+            document.getElementById('registerModalContent').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                document.getElementById('registerModal').classList.add('hidden');
+            }, 300);
+        }
+
+        // Add service field
+        function addServiceField() {
+            const container = document.getElementById('servicesContainer');
+            const div = document.createElement('div');
+            div.className = 'flex gap-2';
+            div.innerHTML = `
+                <div class="flex-1 relative">
+                    <i class="fas fa-spa absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" name="serviceName" placeholder="সার্ভিসের নাম" class="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50">
+                </div>
+                <div class="w-28 relative">
+                    <i class="fas fa-taka-sign absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="number" name="servicePrice" placeholder="দাম" class="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 bg-gray-50">
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700 p-3">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            container.appendChild(div);
+        }
+
+        // Register form submission
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const services = [];
+            document.querySelectorAll('#servicesContainer .flex').forEach(row => {
+                const name = row.querySelector('input[name="serviceName"]').value;
+                const price = row.querySelector('input[name="servicePrice"]').value;
+                if (name && price) {
+                    services.push({ name, price: parseInt(price) });
+                }
+            });
+
+            const artistData = {
+                name: document.getElementById('regName').value,
+                email: document.getElementById('regEmail').value,
+                phone: document.getElementById('regPhone').value,
+                city: document.getElementById('regCity').value,
+                area: document.getElementById('regArea').value,
+                address: document.getElementById('regAddress').value,
+                experience: document.getElementById('regExperience').value,
+                services: services
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/artists`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(artistData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('রেজিস্ট্রেশন সফল হয়েছে! আমাদের টিম শীঘ্রই আপনার সাথে যোগাযোগ করবে।');
+                    closeRegisterModal();
+                    loadArtists();
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                alert('রেজিস্ট্রেশন সফল! (ডেমো মোড)');
+                closeRegisterModal();
+                displayDemoArtists();
+            }
+        });
+
+        // Booking modal
+        let currentArtist = null;
+
+        function openBookingModal(artistId) {
+            currentArtist = allArtists.find(a => a._id === artistId);
+            if (!currentArtist) {
+                currentArtist = allArtists[0];
+            }
+            
+            document.getElementById('bookingArtistId').value = artistId;
+            
+            const serviceSelect = document.getElementById('serviceSelect');
+            serviceSelect.innerHTML = '<option value="">সার্ভিস নির্বাচন করুন</option>';
+            
+            if (currentArtist.services) {
+                currentArtist.services.forEach(service => {
+                    const option = document.createElement('option');
+                    option.value = JSON.stringify(service);
+                    option.textContent = `${service.name} - ৳ ${service.price}`;
+                    serviceSelect.appendChild(option);
+                });
+            }
+
+            document.getElementById('bookingModal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('bookingModalContent').classList.remove('scale-95', 'opacity-0');
+                document.getElementById('bookingModalContent').classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeBookingModal() {
+            document.getElementById('bookingModalContent').classList.remove('scale-100', 'opacity-100');
+            document.getElementById('bookingModalContent').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                document.getElementById('bookingModal').classList.add('hidden');
+            }, 300);
+        }
+
+        // Update price when service selected
+        document.getElementById('serviceSelect').addEventListener('change', function() {
+            if (this.value) {
+                const service = JSON.parse(this.value);
+                document.getElementById('totalPrice').textContent = `৳ ${service.price}`;
+            } else {
+                document.getElementById('totalPrice').textContent = '৳ 0';
+            }
+        });
+
+        // Booking form submission
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const service = JSON.parse(document.getElementById('serviceSelect').value);
+            
+            const orderData = {
+                artistId: document.getElementById('bookingArtistId').value,
+                service: service.name,
+                customer: {
+                    name: document.getElementById('customerName').value,
+                    phone: document.getElementById('customerPhone').value,
+                    email: document.getElementById('customerEmail').value,
+                    address: document.getElementById('customerAddress').value
+                },
+                bookingDate: document.getElementById('bookingDate').value,
+                bookingTime: document.getElementById('bookingTime').value,
+                notes: document.getElementById('bookingNotes').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/payment/create-order`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('অর্ডার সফল! অর্ডার আইডি: ' + result.data.orderId);
+                    closeBookingModal();
+                    initiatePayment(result.data.orderId, service.price);
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                alert('অর্ডার সফল হয়েছে! (ডেমো মোড)');
+                closeBookingModal();
+            }
+        });
+
+        // Initiate payment
+        async function initiatePayment(orderId, amount) {
+            try {
+                const response = await fetch(`${API_BASE}/payment/sslcommerz/initiate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orderId,
+                        amount,
+                        customerName: document.getElementById('customerName').value,
+                        customerPhone: document.getElementById('customerPhone').value,
+                        customerEmail: document.getElementById('customerEmail').value,
+                        customerAddress: document.getElementById('customerAddress').value
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    window.location.href = result.data.paymentUrl;
+                }
+            } catch (error) {
+                console.error('Payment error:', error);
+            }
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Close modals on outside click
+        document.getElementById('registerModal').addEventListener('click', function(e) {
+            if (e.target === this) closeRegisterModal();
+        });
+
+        document.getElementById('bookingModal').addEventListener('click', function(e) {
+            if (e.target === this) closeBookingModal();
+        });
+    </script>
+</body>
+</html>

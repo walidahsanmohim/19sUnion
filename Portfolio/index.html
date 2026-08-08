@@ -1,0 +1,415 @@
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#070A12" />
+  <title>Walid | Premium Portfolio</title>
+  <meta name="description" content="Futuristic dark portfolio with cinematic motion, glassmorphism, smooth parallax, and animated sections." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500;600&family=Dancing+Script:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <!-- Custom Cursor -->
+  <div class="cursor" aria-hidden="true"></div>
+  <div class="cursor cursor--trail" aria-hidden="true"></div>
+
+  <!-- Background FX -->
+  <div class="bg" aria-hidden="true">
+    <div class="bg__grid"></div>
+    <div class="bg__glow bg__glow--a"></div>
+    <div class="bg__glow bg__glow--b"></div>
+    <div class="bg__orb bg__orb--1"></div>
+    <div class="bg__orb bg__orb--2"></div>
+    <div class="bg__scanlines"></div>
+  </div>
+
+  <!-- Sticky Navbar -->
+  <header class="nav">
+    <div class="nav__inner container">
+      <a href="#home" class="brand" data-cursor="false">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__text">Walid</span>
+        <span class="brand__badge">Premium</span>
+      </a>
+
+      <nav class="nav__links" aria-label="Primary">
+        <a class="nav__link is-active" href="#home" data-section="home">Home</a>
+        <a class="nav__link" href="#projects" data-section="projects">Projects</a>
+        <a class="nav__link" href="#services" data-section="services">Services</a>
+        <a class="nav__link" href="#contact" data-section="contact">Contact</a>
+      </nav>
+
+      <div class="nav__actions">
+        <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode" data-cursor="false">
+          <span class="icon-btn__icon" aria-hidden="true">◐</span>
+        </button>
+        <a class="btn btn--primary" href="#contact" data-cursor="false">
+          Start a Project
+          <span class="btn__icon" aria-hidden="true">↗</span>
+        </a>
+
+        <button class="burger" type="button" aria-label="Open menu" data-cursor="false" id="burgerBtn">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="nav__mobile" id="mobileMenu" hidden>
+      <div class="nav__mobile-inner container">
+        <a class="nav__link" href="#home" data-section="home">Home</a>
+        <a class="nav__link" href="#projects" data-section="projects">Projects</a>
+        <a class="nav__link" href="#services" data-section="services">Services</a>
+        <a class="nav__link" href="#contact" data-section="contact">Contact</a>
+        <a class="btn btn--primary" href="#contact">Start a Project <span class="btn__icon" aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main id="home" class="main">
+    <section class="hero container">
+      <div class="hero__content">
+        <div class="kicker reveal">
+          <span class="kicker__dot" aria-hidden="true"></span>
+          Cinematic motion • Glass UI • Smooth parallax
+        </div>
+
+        <h1 class="hero__title">
+          Build <span class="grad">premium</span><br />
+          experiences that feel <span class="grad grad--alt">alive</span>.
+        </h1>
+
+        <p class="hero__subtitle reveal">
+          Dark futuristic design with smooth scroll, animated project cards, floating UI, scroll reveals,
+          and a custom cursor—crafted for a Vercel/Apple-style transition quality.
+        </p>
+
+        <div class="hero__cta reveal">
+          <a class="btn btn--primary btn--lift" href="#projects">
+            View Projects
+            <span class="btn__icon" aria-hidden="true">→</span>
+          </a>
+          <a class="btn btn--ghost" href="#contact">
+            Contact
+            <span class="btn__icon" aria-hidden="true">✦</span>
+          </a>
+        </div>
+
+        <div class="hero__meta reveal">
+          <div class="meta-chip">
+            <span class="meta-chip__label">Design</span>
+            <span class="meta-chip__value">Glassmorphism</span>
+          </div>
+          <div class="meta-chip">
+            <span class="meta-chip__label">Motion</span>
+            <span class="meta-chip__value">Cinematic</span>
+          </div>
+          <div class="meta-chip">
+            <span class="meta-chip__label">UX</span>
+            <span class="meta-chip__value">Smooth + Responsive</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="hero__side">
+        <div class="hero__seal" aria-hidden="true">
+          <img class="hero__seal-img" src="./Walid.png" alt="" />
+        </div>
+
+        <div class="floating-card" data-float>
+          <div class="floating-card__top">
+            <div class="chip chip--success">✔ Animated Hero</div>
+            <div class="chip chip--info">✔ Sticky Navbar</div>
+          </div>
+
+          <div class="floating-card__middle">
+            <div class="spec">
+              <span class="spec__k">Scroll Animation</span>
+              <span class="spec__v">IntersectionObserver</span>
+            </div>
+            <div class="spec">
+              <span class="spec__k">Custom Cursor</span>
+              <span class="spec__v">Trail + Glow</span>
+            </div>
+            <div class="spec">
+              <span class="spec__k">Parallax</span>
+              <span class="spec__v">Mouse + Scroll</span>
+            </div>
+            <div class="spec">
+              <span class="spec__k">Transitions</span>
+              <span class="spec__v">Apple/Vercel</span>
+            </div>
+          </div>
+
+          <div class="floating-card__bottom">
+            <div class="mini-progress" aria-hidden="true">
+              <div class="mini-progress__bar" style="width:72%"></div>
+            </div>
+            <p class="floating-card__note">
+              Premium UI motion tuned for smooth performance.
+            </p>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Divider -->
+    <div class="section-divider"></div>
+
+    <!-- Projects -->
+    <section id="projects" class="section container">
+      <header class="section__header">
+        <div class="section__eyebrow reveal">Projects</div>
+        <h2 class="section__title reveal">
+          Project Cards with <span class="grad">cinematic hover</span>.
+        </h2>
+        <p class="section__subtitle reveal">
+          Glass panels, animated transforms, and scroll reveal timing—optimized for dark futuristic UI.
+        </p>
+      </header>
+
+      <div class="grid projects">
+        <article class="card reveal" data-project data-tilt>
+          <div class="card__media">
+            <div class="media__badge">UI / Motion</div>
+            <div class="media__art">
+              <span class="media__spark"></span>
+            </div>
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">Aurora Landing</h3>
+            <p class="card__desc">
+              Animated hero, floating UI components, and Apple-style entrance transitions.
+            </p>
+          </div>
+          <div class="card__footer">
+            <span class="tag">Glass</span>
+            <span class="tag">Parallax</span>
+            <span class="tag">Transitions</span>
+          </div>
+        </article>
+
+        <article class="card reveal" data-project data-tilt>
+          <div class="card__media">
+            <div class="media__badge">Web App</div>
+            <div class="media__art">
+              <span class="media__ring"></span>
+            </div>
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">Nebula Dashboard</h3>
+            <p class="card__desc">
+              Dark futuristic layout with scroll animations and sticky navigation highlights.
+            </p>
+          </div>
+          <div class="card__footer">
+            <span class="tag">Sticky</span>
+            <span class="tag">Cards</span>
+            <span class="tag">UX</span>
+          </div>
+        </article>
+
+        <article class="card reveal" data-project data-tilt>
+          <div class="card__media">
+            <div class="media__badge">Experience</div>
+            <div class="media__art">
+              <span class="media__gridline"></span>
+            </div>
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">Quantum Scroll</h3>
+            <p class="card__desc">
+              Scroll-reveal sections, smooth parallax, and responsive cinematic UI details.
+            </p>
+          </div>
+          <div class="card__footer">
+            <span class="tag">Smooth Scroll</span>
+            <span class="tag">Reveal</span>
+            <span class="tag">Mobile</span>
+          </div>
+        </article>
+
+        <article class="card reveal" data-project data-tilt>
+          <div class="card__media">
+            <div class="media__badge">Brand</div>
+            <div class="media__art">
+              <span class="media__halo"></span>
+            </div>
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">Vanta Typography</h3>
+            <p class="card__desc">
+              Premium typography with monospaced accents and futuristic spacing.
+            </p>
+          </div>
+          <div class="card__footer">
+            <span class="tag">Type</span>
+            <span class="tag">Dark UI</span>
+            <span class="tag">Motion</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="section container">
+      <header class="section__header">
+        <div class="section__eyebrow reveal">Services</div>
+        <h2 class="section__title reveal">
+          Futuristic UI built for <span class="grad">conversion</span>.
+        </h2>
+        <p class="section__subtitle reveal">
+          Floating interactions, cinematic motion, glass panels, custom cursor—plus clean semantics for accessibility.
+        </p>
+      </header>
+
+      <div class="grid services">
+        <div class="glass-panel reveal" data-float>
+          <div class="panel-icon" aria-hidden="true">✦</div>
+          <h3 class="panel-title">Cinematic Motion</h3>
+          <p class="panel-desc">Reveal timing, subtle micro-interactions, and stable GPU-friendly transforms.</p>
+          <div class="panel-line"></div>
+          <div class="panel-mini">✔ Animated Hero • Scroll Animation • Card Hover</div>
+        </div>
+
+        <div class="glass-panel reveal" data-float>
+          <div class="panel-icon" aria-hidden="true">⟡</div>
+          <h3 class="panel-title">Glassmorphism</h3>
+          <p class="panel-desc">Blurred translucent layers, crisp borders, and premium gradients.</p>
+          <div class="panel-line"></div>
+          <div class="panel-mini">✔ Floating UI • Sticky Navbar • Premium Typography</div>
+        </div>
+
+        <div class="glass-panel reveal" data-float>
+          <div class="panel-icon" aria-hidden="true">⌁</div>
+          <h3 class="panel-title">Smooth Parallax</h3>
+          <p class="panel-desc">Mouse + scroll driven effects using CSS variables for smooth performance.</p>
+          <div class="panel-line"></div>
+          <div class="panel-mini">✔ Smooth Parallax • Smooth Scroll • Mobile Responsive</div>
+        </div>
+
+        <div class="glass-panel reveal" data-float>
+          <div class="panel-icon" aria-hidden="true">⌬</div>
+          <h3 class="panel-title">Premium UX</h3>
+          <p class="panel-desc">Apple/Vercel-like transitions and interactive contact form UX.</p>
+          <div class="panel-line"></div>
+          <div class="panel-mini">✔ Contact Form • Custom Cursor • Dark Mode</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section container">
+      <header class="section__header">
+        <div class="section__eyebrow reveal">Contact</div>
+        <h2 class="section__title reveal">
+          Let’s ship something <span class="grad">premium</span>.
+        </h2>
+        <p class="section__subtitle reveal">
+          Smooth form UX with validation + cinematic transitions. (Demo: simulates sending.)
+        </p>
+      </header>
+
+      <div class="contact">
+        <div class="contact__card glass-panel reveal">
+          <form id="contactForm" class="form" novalidate>
+            <div class="form__row">
+              <label class="field">
+                <span class="field__label">Full Name</span>
+                <input class="field__input" name="name" autocomplete="name" placeholder="Your name" required minlength="2" />
+                <span class="field__error" data-error-for="name"></span>
+              </label>
+
+              <label class="field">
+                <span class="field__label">Email</span>
+                <input class="field__input" name="email" type="email" autocomplete="email" placeholder="you@domain.com" required />
+                <span class="field__error" data-error-for="email"></span>
+              </label>
+            </div>
+
+            <label class="field">
+              <span class="field__label">What do you need?</span>
+              <textarea class="field__input field__textarea" name="message" placeholder="Tell us about your project..." required minlength="10"></textarea>
+              <span class="field__error" data-error-for="message"></span>
+            </label>
+
+            <div class="form__row form__row--end">
+              <div class="privacy">
+                <span class="privacy__dot" aria-hidden="true"></span>
+                <span class="privacy__text">No spam. Just project details.</span>
+              </div>
+
+              <button class="btn btn--primary btn--lift" type="submit">
+                <span class="btn__text">Send Message</span>
+                <span class="btn__spinner" aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <p class="form__hint" id="formHint" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <aside class="contact__aside reveal">
+          <div class="aside-stat">
+            <div class="aside-stat__k">Response time</div>
+            <div class="aside-stat__v">~24 hours</div>
+            <div class="aside-stat__bar" aria-hidden="true"><span style="width:82%"></span></div>
+          </div>
+
+          <div class="aside-stat">
+            <div class="aside-stat__k">Focus</div>
+            <div class="aside-stat__v">Design + Motion</div>
+            <div class="aside-stat__chips">
+              <span class="chip chip--success">✔ Premium</span>
+              <span class="chip chip--info">✔ Responsive</span>
+              <span class="chip chip--warn">✔ Fast</span>
+            </div>
+          </div>
+
+          <div class="aside-links">
+            <a class="link-card" href="#projects">
+              <span class="link-card__title">Explore cards</span>
+              <span class="link-card__arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="link-card" href="#home">
+              <span class="link-card__title">Back to top</span>
+              <span class="link-card__arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__inner container">
+      <div class="footer__brand">
+        <div class="footer__logo" aria-hidden="true"></div>
+        <div>
+          <div class="footer__name">Walid</div>
+          <div class="footer__sub">Cinematic motion • Glass UI • Futuristic dark</div>
+        </div>
+      </div>
+
+      <div class="footer__links" aria-label="Footer">
+        <a href="#projects">Projects</a>
+        <a href="#services">Services</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+      <div class="footer__copy">
+        <div class="mono">© <span id="year"></span> Walid. All rights reserved.</div>
+        <div class="footer__tiny">Built with smooth scroll + scroll-reveal animations.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./script.js"></script>
+</body>
+</html>

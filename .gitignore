@@ -1,0 +1,15 @@
+# Node dependencies
+node_modules/
+
+# Environment files
+.env
+*.env
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Editor files
+.vscode/*
+!.vscode/extensions.json
+

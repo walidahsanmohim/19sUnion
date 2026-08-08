@@ -1,0 +1,77 @@
+<link href="https://fonts.googleapis.com/css2?family=Gilroy+Bold:wght@700&display=swap" rel="stylesheet">
+
+<div style="text-align:center; font-family: 'Poppins', sans-serif; max-width:400px; margin:auto;">
+
+  <style>
+    .rect-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 250px;
+      height: 60px;
+      margin: 14px auto;
+      border-radius: 12px;
+      background-color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      color: #000;
+      text-decoration: none;
+      overflow: hidden;
+      padding: 0 20px;
+      letter-spacing: 1px;
+      text-align: center;
+      transition: all 0.3s ease;
+      z-index: 1;
+    }
+
+
+    .rect-btn:hover {
+      transform: scale(1.2) translateY(-5px);
+      color: #fff;
+      z-index: 10;
+    }
+
+    /* Brand colored stronger shadows */
+    .sp { box-shadow: 0 4px 20px rgba(29, 128, 185, 0.9); }
+    .ig { box-shadow: 0 4px 20px rgba(124, 216, 39, 0.9); }
+    .gd { box-shadow: 0 4px 20px rgba(66, 244, 96, 0.9); }
+    
+
+    /* Hover background colors */
+    .sp:hover { background-color: #074adb; }
+    .ig:hover { background-color: #19ee23e8; }
+    .gd:hover { background-color: #0bda27d2; }
+    
+
+    /* Other buttons scale down when one is hovered */
+    .rect-btn-container:hover .rect-btn:not(:hover) {
+      transform: scale(0.95);
+      opacity: 0.7;
+    }
+  </style>
+
+  <div class="rect-btn-container">
+
+    <!-- faceBook -->
+    <a class="rect-btn sp" href="https://www.facebook.com/profile.php?id=61585576440646" target="_blank">
+      
+      FaceBook
+    </a>
+    <!-- WhatsApp -->
+    <a class="rect-btn ig" href="https://wa.me/8801940759675" target="_blank">
+      
+      WhatsApp
+    </a>
+
+    <!-- EhatsApp -->
+    <a class="rect-btn gd" href="https://wa.me/8801756116309" target="_blank">
+      
+      WhatsApp
+    </a>
+
+  </div>
+
+</div>
+
+ 
