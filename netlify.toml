@@ -1,0 +1,22 @@
+# Netlify configuration for 19's Union
+# Publish the 19'sUnion folder (contains Index.html)
+
+[build]
+  publish = "19'sUnion"
+  command = ""
+
+# Ensure the main page is served at the root
+[build.processing]
+  skip_processing = false
+
+# Serve Index.html (capital I) as the homepage at the root
+[[redirects]]
+  from = "/"
+  to = "/Index.html"
+  status = 200
+
+# Redirect all other requests to the index (for any 404s on SPA-style navigation)
+[[redirects]]
+  from = "/*"
+  to = "/Index.html"
+  status = 200
