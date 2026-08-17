@@ -1130,42 +1130,16 @@
 /* Investment doughnut — spinning orbit ring + replay glow */
 .inv-chart-wrap { position: relative; }
 .inv-glow { animation: invGlow 4s ease-in-out infinite; }
-.inv-ring {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  margin: auto;
-  width: 74%;
-  height: 74%;
-  border-radius: 50%;
-  border: 2px dashed rgba(67, 24, 255, 0.35);
-  animation: invSpin 20s linear infinite;
-  pointer-events: none;
-}
-.inv-ring::before {
-  content: '';
-  position: absolute;
-  top: -5px;
-  left: 50%;
-  width: 10px;
-  height: 10px;
-  margin-left: -5px;
-  border-radius: 50%;
-  background: #05cd99;
-  box-shadow: 0 0 14px #05cd99, 0 0 28px rgba(5, 205, 153, 0.6);
-}
-@keyframes invSpin { to { transform: rotate(360deg); } }
 .inv-center {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  margin: auto;
-  width: 40%;
-  height: 40%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 3px;
   text-align: center;
+  white-space: nowrap;
   pointer-events: none;
   z-index: 2;
 }
@@ -1773,7 +1747,7 @@
         <div class="charts-acc">
           <div class="acc-panel">
             <h2><i class="fa-solid fa-chart-pie"></i> Investment Allocation (Running)</h2>
-            <div class="chart-box inv-chart-wrap inv-glow"><canvas id="investmentPieChart"></canvas><div class="inv-ring"></div>
+            <div class="chart-box inv-chart-wrap inv-glow"><canvas id="investmentPieChart"></canvas>
               <div class="inv-center">
                 <span class="inv-center-label">Total Running</span>
                 <span class="inv-center-value" id="invCenterValue">৳0</span>
@@ -2697,6 +2671,20 @@ function toggleProfile(button) {
         animateValue(el, target, 1600);
       }
 
+      // Positions the inner text exactly on the doughnut's hole (centers on any screen)
+      function alignInvCenter() {
+        const centerEl = document.querySelector('.inv-center');
+        if (!centerEl || !investmentChartInstance) return;
+        const meta = investmentChartInstance.getDatasetMeta(0);
+        const arc = meta && meta.data && meta.data[0];
+        if (!arc || typeof arc.x !== 'number' || typeof arc.y !== 'number') return;
+        centerEl.style.left = arc.x + 'px';
+        centerEl.style.top = arc.y + 'px';
+        const diameter = Math.max((arc.innerRadius || 0) * 2, 70);
+        centerEl.style.width = diameter + 'px';
+        centerEl.style.height = diameter + 'px';
+      }
+
       // Investment Pie Chart — only Running investments
       function renderInvestmentChart(invData) {
         if (!invData) return;
@@ -2705,6 +2693,8 @@ function toggleProfile(button) {
         const labels = runningInvestments.map(i => i["Description"]);
         const amounts = runningInvestments.map(i => i["Amount"]);
         const total = amounts.reduce((sum, v) => sum + Number(v || 0), 0);
+
+        const PALETTE = ['#4318ff', '#05cd99', '#ffb547', '#2b3674', '#ee5d50'];
 
         const ctx = document.getElementById('investmentPieChart').getContext('2d');
 
@@ -2716,7 +2706,11 @@ function toggleProfile(button) {
             labels: labels,
             datasets: [{
               data: amounts,
-              backgroundColor: ['#4318ff', '#05cd99', '#ffb547', '#2b3674', '#ee5d50'],
+              backgroundColor: (ctx) => {
+                // Bkash gets its official brand red; other sectors keep the palette
+                const label = String(labels[ctx.dataIndex] || '').toLowerCase();
+                return label === 'bkash' ? '#d6093a' : PALETTE[ctx.dataIndex % PALETTE.length];
+              },
               borderColor: '#0f172a',
               borderWidth: 3,
               hoverOffset: 12
@@ -2741,6 +2735,9 @@ function toggleProfile(button) {
         // Center total + moving radar sweep
         animateCenterValue(total);
         startInvSweepLoop();
+
+        // Align the center text exactly on the doughnut hole (after layout settles)
+        setTimeout(alignInvCenter, 100);
 
         // Every 10 seconds — professional "live pulse": recount the total + gentle beat
         if (investmentReplayTimer) clearInterval(investmentReplayTimer);
@@ -2822,8 +2819,14 @@ function toggleProfile(button) {
       // (charts built while the page was hidden are created at 0 size and stay blank)
       window.refreshAccountsCharts = function () {
         const page = document.getElementById('page-accounts');
-        if (page && page.classList.contains('active') && cachedData) renderDashboard(cachedData);
+        if (page && page.classList.contains('active') && cachedData) {
+          renderDashboard(cachedData);
+          setTimeout(alignInvCenter, 120);
+        }
       };
+
+      // Keep the investment center text aligned with the doughnut on window resize
+      window.addEventListener('resize', () => setTimeout(alignInvCenter, 60));
 
       // Initial Load
       fetchDashboardData();
