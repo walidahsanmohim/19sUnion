@@ -1541,6 +1541,17 @@
           </p>
         </div>
 
+        <!-- Google Sheets data status / error banner (shown only when the API fails) -->
+        <div id="acc-status-banner"
+             style="display:none;max-width:768px;margin:0 auto 28px;padding:14px 18px;border-radius:14px;border:1px solid rgba(248,113,113,.35);background:rgba(127,29,29,.30);color:#fecaca;font-size:14px;font-weight:600;line-height:1.6;text-align:center;">
+          <i class="fa-solid fa-triangle-exclamation" style="margin-right:6px;"></i>
+          <span id="acc-status-msg">Accounts data could not load.</span>
+          <button id="acc-retry-btn" type="button"
+                  style="margin-left:10px;padding:7px 16px;border-radius:9px;border:none;cursor:pointer;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-weight:700;font-size:13px;">
+            ↻ Retry Now
+          </button>
+        </div>
+
 <!-- 6 Stat Cards (Live from Google Sheets) -->
         <div class="acc-grid" id="acc-cards">
           <div class="acc-card" style="animation-delay:.05s">
@@ -2146,7 +2157,7 @@ function toggleProfile(button) {
       // Only proceed if the accounts page element exists
       if (!document.getElementById('page-accounts')) return;
 
-      const API_URL = "https://script.google.com/macros/s/AKfycby6nwPMJLTxYwUlvD-AhN74vjo57RX3Wc5MmzVrBKp0oISakKqn4Df0LdQuAMpdFPdYJA/exec";
+      const API_URL = "https://script.google.com/macros/s/AKfycby0Lg7YD5o-_bpxzZeF-YuSVXYvcDqiB3zc7AVulx_XTWFD0jndXgsAmW_rcJijUu-LCQ/exec";
 
 let currentStatusChartInstance = null;
       let advanceChartInstance = null;
@@ -2156,28 +2167,43 @@ let currentStatusChartInstance = null;
       Chart.defaults.color = '#94a3b8';
       Chart.defaults.borderColor = 'rgba(148,163,184,0.12)';
 
+      let cachedData = null;
+
+      function renderDashboard(data) {
+        if (!data) return;
+        populateSummary(data.Summary);
+        renderCurrentStatusChart(data.CurrentStatus);
+        renderAdvanceChart(data.Advances);
+        renderInvestmentChart(data.Investment);
+        populateMemberStatusTable(data.MemberStatus);
+      }
+
       async function fetchDashboardData() {
+        const banner = document.getElementById('acc-status-banner');
+        const bannerMsg = document.getElementById('acc-status-msg');
         try {
-          const response = await fetch(API_URL);
+          if (banner) banner.style.display = 'none';
+
+          // Cache-buster: Apps Script may cache responses briefly — a unique
+          // query param guarantees your latest sheet edits appear immediately.
+          const response = await fetch(API_URL + '?_=' + Date.now());
+          if (!response.ok) throw new Error('Google Apps Script responded with HTTP ' + response.status);
+
           const data = await response.json();
+          cachedData = data;
+          renderDashboard(data);
 
-          // 1. Populate Summary Cards
-          populateSummary(data.Summary);
-
-          // 2. Render Current Status Horizontal Bar Chart (Paid / Partial)
-          renderCurrentStatusChart(data.CurrentStatus);
-
-          // 3. Render Advances Bar Chart (1st / 2nd advance)
-          renderAdvanceChart(data.Advances);
-
-          // 4. Render Investment Pie Chart (Running only)
-          renderInvestmentChart(data.Investment);
-
-          // 5. Populate Member Status List (exact same as MemberStatus tab)
-          populateMemberStatusTable(data.MemberStatus);
-
+          // Valid response but missing the keys the page expects → warn the user
+          if (banner && bannerMsg && !data.Summary && !data.MemberStatus && !data.Advances) {
+            bannerMsg.textContent = 'Apps Script responded, but the expected keys (Summary / CurrentStatus / Advances / Investment / MemberStatus) were missing. Check the sheet tab names in the script.';
+            banner.style.display = 'block';
+          }
         } catch (error) {
           console.error("Data Fetching Error:", error);
+          if (banner && bannerMsg) {
+            bannerMsg.textContent = 'Accounts data could not load — Google Apps Script unreachable or returning an error. Redeploy it as a public web app, then press Retry.';
+            banner.style.display = 'block';
+          }
         }
       }
 
@@ -2194,7 +2220,7 @@ let currentStatusChartInstance = null;
           if (desc === "Advances") document.getElementById("advance").innerText = val;
           if (desc === "Profits") document.getElementById("profit").innerText = val;
           if (desc === "Active Investment") document.getElementById("activeInvestment").innerText = val;
-          if (desc === "Remainning Cash") document.getElementById("remainingCash").innerText = val;
+          if (desc === "Remainning Cash" || desc === "Remaining Cash") document.getElementById("remainingCash").innerText = val;
         });
       }
 
@@ -2343,6 +2369,22 @@ statusData.forEach(row => {
           tbody.appendChild(tr);
         });
       }
+
+      // Retry button — manually re-fetch from Google Apps Script
+      const retryBtn = document.getElementById('acc-retry-btn');
+      if (retryBtn) {
+        retryBtn.addEventListener('click', () => {
+          retryBtn.disabled = true;
+          fetchDashboardData().finally(() => { retryBtn.disabled = false; });
+        });
+      }
+
+      // When the Accounts page becomes visible again, re-render everything
+      // (charts built while the page was hidden are created at 0 size and stay blank)
+      window.refreshAccountsCharts = function () {
+        const page = document.getElementById('page-accounts');
+        if (page && page.classList.contains('active') && cachedData) renderDashboard(cachedData);
+      };
 
       // Initial Load
       fetchDashboardData();
