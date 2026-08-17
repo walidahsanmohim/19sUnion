@@ -1299,6 +1299,70 @@
   animation: accProgress 1.2s ease-out both;
 }
 @keyframes accProgress { from { width: 0 !important; } }
+
+/* ============================================================
+   FULLY RESPONSIVE — All Devices
+   (Android / iOS / Tablet / iPad / Desktop) — Accounts page tuned
+   ============================================================ */
+/* Prevent accidental horizontal scrolling (glows, animations, wide tables) */
+html, body { overflow-x: hidden; }
+
+/* Tablet / small laptop: stack chart rows so charts stay wide & readable */
+@media (max-width: 1100px) {
+  .charts-acc { grid-template-columns: 1fr; }
+  .tables-acc { grid-template-columns: 1fr; }
+}
+
+/* Comfortable chart height across breakpoints */
+@media (min-width: 1101px) {
+  .chart-box { height: 340px; }
+}
+@media (min-width: 481px) and (max-width: 1100px) {
+  .chart-box { height: 360px; }
+}
+@media (min-width: 381px) and (max-width: 480px) {
+  .chart-box { height: 400px; }
+}
+@media (max-width: 380px) {
+  .chart-box { height: 360px; }
+}
+
+/* Landscape phones & small tablets — tighten panel spacing */
+@media (max-width: 640px) {
+  .acc-panel { padding: 14px; }
+  .acc-panel h2 { font-size: 14px; margin-bottom: 12px; flex-wrap: wrap; }
+  .charts-acc, .tables-acc { gap: 14px; margin-bottom: 20px; }
+  .acc-card { min-height: 150px; }
+  .acc-icon { width: 42px; height: 42px; font-size: 17px; }
+  .acc-value { font-size: 18px; }
+}
+
+/* Phones — tighter, fully-usable panels & charts */
+@media (max-width: 480px) {
+  .acc-panel { padding: 12px; border-radius: 16px; }
+  .acc-grid { gap: 12px; }
+  .acc-card { padding: 16px 12px; border-radius: 16px; min-height: 140px; }
+  .acc-value { font-size: 17px; }
+  .acc-trend { font-size: 10px; }
+  .inv-center-label { font-size: 7px; letter-spacing: 0.12em; }
+  .inv-center-value { font-size: 14px; }
+  .ms-bar { width: 70px; }
+  .acc-table th, .acc-table td { font-size: 12px; padding: 10px 8px; }
+}
+
+/* Very small phones (≤ 360px) */
+@media (max-width: 360px) {
+  .acc-panel { padding: 10px; }
+  .acc-value { font-size: 15px; }
+  .inv-center-value { font-size: 12px; }
+  .ms-bar { width: 56px; }
+}
+
+/* Smooth native scrolling for table overflow areas (iOS Safari / Android) */
+.acc-table-wrap {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
   </style>
 </head>
 <body class="text-slate-100 font-sans antialiased flex flex-col min-h-screen" style="background: linear-gradient(160deg, #020617 0%, #0b1e3d 35%, #0f2a54 60%, #0b1e3d 85%, #020617 100%); background-attachment: fixed;">
@@ -1766,7 +1830,7 @@
           </div>
 <div class="acc-panel">
             <h2><i class="fa-solid fa-list-check"></i> Member Status</h2>
-            <div style="overflow-x:auto">
+            <div class="acc-table-wrap" style="overflow-x:auto">
               <table class="acc-table">
 <thead><tr><th>Member Name</th><th>Expected</th><th>Paid %</th><th>Unpaid</th></tr></thead>
                 <tbody id="memberStatusTable"><tr><td colspan="4" style="text-align:center;color:#64748b">Loading…</td></tr></tbody>
