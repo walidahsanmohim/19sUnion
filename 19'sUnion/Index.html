@@ -2318,6 +2318,7 @@ function toggleProfile(button) {
       let investmentReplayTimer = null;
       let invSweepRaf = null;
       let currentStatusReplayTimer = null;
+      let advanceReplayTimer = null;
 
       // Chart defaults for dark theme
       Chart.defaults.color = '#94a3b8';
@@ -2440,18 +2441,40 @@ function toggleProfile(button) {
               {
                 label: 'Paid',
                 data: paidData,
-                backgroundColor: '#05cd99',
-                borderRadius: 8,
-                barPercentage: 0.55,
-                categoryPercentage: 0.8
+                backgroundColor: (c) => {
+                  const area = c.chart.chartArea;
+                  if (!area) return '#05cd99';
+                  const g = c.chart.ctx.createLinearGradient(0, area.bottom, 0, area.top);
+                  g.addColorStop(0, 'rgba(5,205,153,0.45)');
+                  g.addColorStop(1, '#05cd99');
+                  return g;
+                },
+                hoverBackgroundColor: '#34d399',
+                borderColor: '#a7f3d0',
+                borderWidth: 2,
+                borderRadius: 10,
+                barPercentage: 0.7,
+                categoryPercentage: 0.9,
+                maxBarThickness: 26
               },
               {
                 label: 'Partial',
                 data: partialData,
-                backgroundColor: '#ffb547',
-                borderRadius: 8,
-                barPercentage: 0.55,
-                categoryPercentage: 0.8
+                backgroundColor: (c) => {
+                  const area = c.chart.chartArea;
+                  if (!area) return '#f59e0b';
+                  const g = c.chart.ctx.createLinearGradient(0, area.bottom, 0, area.top);
+                  g.addColorStop(0, 'rgba(245,158,11,0.45)');
+                  g.addColorStop(1, '#f59e0b');
+                  return g;
+                },
+                hoverBackgroundColor: '#fbbf24',
+                borderColor: '#fde68a',
+                borderWidth: 2,
+                borderRadius: 10,
+                barPercentage: 0.7,
+                categoryPercentage: 0.9,
+                maxBarThickness: 26
               }
             ]
           },
@@ -2548,28 +2571,6 @@ function toggleProfile(button) {
         paidTickerTimer = setInterval(showNext, 1000);
       }
 
-      // ===== Advances chart value labels (৳ amounts drawn on top of the bars) =====
-      const advanceValueLabels = {
-        id: 'advanceValueLabels',
-        afterDatasetsDraw(chart) {
-          const ctx = chart.ctx;
-          chart.data.datasets.forEach((ds, di) => {
-            const meta = chart.getDatasetMeta(di);
-            if (!meta.data || !meta.data.length) return;
-            meta.data.forEach((bar, i) => {
-              const v = Number(ds.data[i]);
-              if (!v || v <= 0) return;
-              ctx.save();
-              ctx.fillStyle = di === 0 ? '#7dd3fc' : '#c4b5fd';
-              ctx.font = 'bold 10px Inter, sans-serif';
-              ctx.textAlign = 'center';
-              ctx.fillText('৳' + Math.round(v).toLocaleString('en-US'), bar.x, bar.y - 6);
-              ctx.restore();
-            });
-          });
-        }
-      };
-
       // Advances Chart — Members on X-axis, 1st & 2nd advance amounts (paid/remaining)
       function renderAdvanceChart(advData) {
         if (!advData) return;
@@ -2592,32 +2593,38 @@ function toggleProfile(button) {
                 data: firstAdv,
                 backgroundColor: (c) => {
                   const area = c.chart.chartArea;
-                  if (!area) return '#38bdf8';
+                  if (!area) return '#3b82f6';
                   const g = c.chart.ctx.createLinearGradient(0, area.bottom, 0, area.top);
-                  g.addColorStop(0, 'rgba(56,189,248,0.15)');
-                  g.addColorStop(1, '#38bdf8');
+                  g.addColorStop(0, 'rgba(59,130,246,0.35)');
+                  g.addColorStop(1, '#3b82f6');
                   return g;
                 },
-                hoverBackgroundColor: '#7dd3fc',
-                borderRadius: 8,
-                barPercentage: 0.5,
-                categoryPercentage: 0.75
+                hoverBackgroundColor: '#60a5fa',
+                borderColor: '#bfdbfe',
+                borderWidth: 2,
+                borderRadius: 10,
+                barPercentage: 0.65,
+                categoryPercentage: 0.85,
+                maxBarThickness: 34
               },
               {
                 label: '2nd Advance',
                 data: secondAdv,
                 backgroundColor: (c) => {
                   const area = c.chart.chartArea;
-                  if (!area) return '#a78bfa';
+                  if (!area) return '#f59e0b';
                   const g = c.chart.ctx.createLinearGradient(0, area.bottom, 0, area.top);
-                  g.addColorStop(0, 'rgba(167,139,250,0.15)');
-                  g.addColorStop(1, '#a78bfa');
+                  g.addColorStop(0, 'rgba(245,158,11,0.35)');
+                  g.addColorStop(1, '#f59e0b');
                   return g;
                 },
-                hoverBackgroundColor: '#c4b5fd',
-                borderRadius: 8,
-                barPercentage: 0.5,
-                categoryPercentage: 0.75
+                hoverBackgroundColor: '#fbbf24',
+                borderColor: '#fde68a',
+                borderWidth: 2,
+                borderRadius: 10,
+                barPercentage: 0.65,
+                categoryPercentage: 0.85,
+                maxBarThickness: 34
               }
             ]
           },
@@ -2639,9 +2646,45 @@ function toggleProfile(button) {
               y: { beginAtZero: true },
               x: { grid: { display: false } }
             }
-          },
-          plugins: [advanceValueLabels]
+          }
         });
+
+        // Replay the animated bars every 10 seconds
+        if (advanceReplayTimer) clearInterval(advanceReplayTimer);
+        advanceReplayTimer = setInterval(() => {
+          const page = document.getElementById('page-accounts');
+          if (page && page.classList.contains('active')) replayAdvanceChart();
+        }, 10000);
+      }
+
+      // Replays the advances bars: smooth glide down → staggered pop back up
+      function replayAdvanceChart() {
+        if (!advanceChartInstance || !advanceChartInstance.data) return;
+        const ds0 = advanceChartInstance.data.datasets[0];
+        const ds1 = advanceChartInstance.data.datasets[1];
+        if (!ds0 || !ds1 || !Array.isArray(ds0.data) || !Array.isArray(ds1.data)) return;
+
+        const first = ds0.data.slice();
+        const second = ds1.data.slice();
+
+        // 1. Bars glide down to 0 (fast, soft)
+        ds0.data = first.map(() => 0);
+        ds1.data = second.map(() => 0);
+        advanceChartInstance.update({ duration: 450, easing: 'easeInOutQuad' });
+
+        // 2. Bars pop back up one-by-one (staggered)
+        setTimeout(() => {
+          if (!advanceChartInstance) return;
+          ds0.data = first;
+          ds1.data = second;
+          advanceChartInstance.update({
+            duration: 1000,
+            easing: 'easeOutQuart',
+            delay(context) {
+              return context.type === 'data' ? context.dataIndex * 100 : 0;
+            }
+          });
+        }, 500);
       }
 
       // ===== Investment chart "radar sweep" — a glowing edge that circles the doughnut =====
