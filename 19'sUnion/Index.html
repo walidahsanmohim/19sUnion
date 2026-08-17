@@ -362,7 +362,12 @@
       box-shadow:
         0 20px 45px rgba(0, 0, 0, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.05);
-      animation: cardReveal 0.7s ease both;
+      animation: cardReveal 0.7s ease backwards;
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+    }
+    .member-card:hover {
+      transform: translateY(-6px);
     }
 
     /* Non-stop running outline ring — appears ONLY on hover, outside the whole box */
@@ -639,37 +644,42 @@
     .view-profile-btn:active {
       transform: translateY(0) scale(0.98);
     }
-    /* Smooth movement animation when the button slides to the bottom */
-    @keyframes btnMoveDown {
-      0% { opacity: 0; transform: translateY(-14px); }
-      100% { opacity: 1; transform: translateY(0); }
+    /* Chevron rotates smoothly when the profile details open */
+    .view-profile-btn .fa-chevron-down {
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    /* Smooth movement animation when the button returns to its place */
-    @keyframes btnMoveUp {
-      0% { opacity: 0; transform: translateY(14px); }
-      100% { opacity: 1; transform: translateY(0); }
+    .member-card.active .view-profile-btn .fa-chevron-down {
+      transform: rotate(180deg);
     }
-    .view-profile-btn.btn-moving-down { animation: btnMoveDown 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
-    .view-profile-btn.btn-moving-up { animation: btnMoveUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
     .full-details {
       position: relative;
       z-index: 1;
-      max-height: 0;
-      overflow: hidden;
+      display: grid;
+      grid-template-rows: 0fr;
       opacity: 0;
       transform: translateY(-8px);
-      transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-                  opacity 0.4s ease,
-                  margin-top 0.4s ease,
-                  transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
       margin-top: 0;
+      transition:
+        grid-template-rows 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.45s ease,
+        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        margin-top 0.45s ease;
+    }
+    .full-details > .fd-inner {
+      overflow: hidden;
+      min-height: 0;
+      opacity: 0;
+      transition: opacity 0.4s ease 0.05s;
     }
     .full-details.open {
-      max-height: 320px;
+      grid-template-rows: 1fr;
       opacity: 1;
-      margin-top: 0.95rem;
       transform: translateY(0);
+      margin-top: 0.95rem;
+    }
+    .full-details.open > .fd-inner {
+      opacity: 1;
     }
     .detail-row {
       display: grid;
@@ -2250,11 +2260,13 @@ card.innerHTML = `
         </div>
 
         <div class="full-details">
-          <div class="detail-row"><span class="detail-label">Mother:</span><span class="detail-value">${member.Mother}</span></div>
-          <div class="detail-row"><span class="detail-label">Father:</span><span class="detail-value">${member.Father}</span></div>
-          <div class="detail-row"><span class="detail-label">NID/Birth Certificate No:</span><span class="detail-value">${member.NidBirth_No}</span></div>
-          <div class="detail-row"><span class="detail-label">Nominee:</span><span class="detail-value">${member.nominee}</span></div>
-          <div class="detail-row"><span class="detail-label">Address:</span><span class="detail-value">${member.address}</span></div>
+          <div class="fd-inner">
+            <div class="detail-row"><span class="detail-label">Mother:</span><span class="detail-value">${member.Mother}</span></div>
+            <div class="detail-row"><span class="detail-label">Father:</span><span class="detail-value">${member.Father}</span></div>
+            <div class="detail-row"><span class="detail-label">NID/Birth Certificate No:</span><span class="detail-value">${member.NidBirth_No}</span></div>
+            <div class="detail-row"><span class="detail-label">Nominee:</span><span class="detail-value">${member.nominee}</span></div>
+            <div class="detail-row"><span class="detail-label">Address:</span><span class="detail-value">${member.address}</span></div>
+          </div>
         </div>
 
         <button class="view-profile-btn" onclick="toggleProfile(this)">
@@ -2267,28 +2279,12 @@ card.innerHTML = `
 function toggleProfile(button) {
       const card = button.closest('.member-card');
       const details = card.querySelector('.full-details');
-      const icon = button.querySelector('.fa-chevron-down, .fa-chevron-up');
+      const span = button.querySelector('span');
       const isOpening = !details.classList.contains('open');
 
-      // Reset any leftover movement animation so it can re-trigger cleanly
-      button.classList.remove('btn-moving-down', 'btn-moving-up');
-      void button.offsetWidth; // force reflow to restart the animation
-
       details.classList.toggle('open');
-
-      if (isOpening) {
-        // Move the button to the bottom of the card (after the details)
-        card.appendChild(button);
-        button.classList.add('btn-moving-down');
-        button.querySelector('span').innerText = "Hide Profile";
-        icon.className = "fa-solid fa-chevron-up";
-      } else {
-        // Move the button back to its original position (before the details)
-        card.insertBefore(button, details);
-        button.classList.add('btn-moving-up');
-        button.querySelector('span').innerText = "View Full Profile";
-        icon.className = "fa-solid fa-chevron-down";
-      }
+      card.classList.toggle('active', isOpening);
+      span.innerText = isOpening ? "Hide Profile" : "View Full Profile";
     }
 
 // Reveal on scroll for rule boxes (IntersectionObserver)
