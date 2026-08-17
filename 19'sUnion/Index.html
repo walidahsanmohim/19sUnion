@@ -1158,6 +1158,82 @@
   0%, 100% { filter: drop-shadow(0 0 8px rgba(5, 205, 153, 0.15)); }
   50%      { filter: drop-shadow(0 0 22px rgba(5, 205, 153, 0.5)); }
 }
+/* Member Status table — staggered rows, progress bars, badges */
+.ms-row { opacity: 0; animation: msRowIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+@keyframes msRowIn {
+  0%   { opacity: 0; transform: translateX(18px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+.ms-name { font-weight: 600; color: #e2e8f0; }
+.ms-num { color: #38bdf8; font-weight: 700; }
+.ms-bar {
+  display: inline-block;
+  vertical-align: middle;
+  width: 100px;
+  height: 7px;
+  border-radius: 6px;
+  background: rgba(148, 163, 184, 0.15);
+  overflow: hidden;
+}
+.ms-bar-fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #05cd99, #34d399);
+  box-shadow: 0 0 10px rgba(5, 205, 153, 0.6);
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ms-bar-fill.ms-bar-full {
+  background: linear-gradient(90deg, #10b981, #34d399);
+  box-shadow: 0 0 12px rgba(5, 205, 153, 0.8);
+}
+.ms-pct { font-size: 11px; color: #94a3b8; margin-left: 8px; font-weight: 700; }
+.ms-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.ms-badge-paid {
+  background: rgba(5, 205, 153, 0.12);
+  color: #34d399;
+  border: 1px solid rgba(5, 205, 153, 0.35);
+}
+.ms-badge-unpaid {
+  background: rgba(248, 113, 113, 0.12);
+  color: #fca5a5;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  animation: unpaidPulse 1.6s ease-in-out infinite;
+}
+@keyframes unpaidPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.35); }
+  50%      { box-shadow: 0 0 0 6px rgba(248, 113, 113, 0); }
+}
+.acc-table tbody tr:hover { background: rgba(148, 163, 184, 0.06); }
+
+/* Advances chart — money shine sweep + glow */
+.shine-box { position: relative; overflow: hidden; }
+.shine-box::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  transform: skewX(-20deg);
+  animation: shineSweep 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes shineSweep {
+  0%        { left: -60%; }
+  55%, 100% { left: 130%; }
+}
+.advance-glow { filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.12)); }
 .tables-acc {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1655,7 +1731,7 @@
           </div>
           <div class="acc-panel">
             <h2><i class="fa-solid fa-hand-holding-dollar"></i> Advances (1st / 2nd)</h2>
-            <div class="chart-box"><canvas id="advanceChart"></canvas></div>
+            <div class="chart-box shine-box advance-glow"><canvas id="advanceChart"></canvas></div>
           </div>
         </div>
 
@@ -1669,8 +1745,8 @@
             <h2><i class="fa-solid fa-list-check"></i> Member Status</h2>
             <div style="overflow-x:auto">
               <table class="acc-table">
-<thead><tr><th>Member Name</th><th>Expected</th><th>Unpaid</th></tr></thead>
-                <tbody id="memberStatusTable"><tr><td colspan="3" style="text-align:center;color:#64748b">Loading…</td></tr></tbody>
+<thead><tr><th>Member Name</th><th>Expected</th><th>Paid %</th><th>Unpaid</th></tr></thead>
+                <tbody id="memberStatusTable"><tr><td colspan="4" style="text-align:center;color:#64748b">Loading…</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -2424,6 +2500,28 @@ function toggleProfile(button) {
         paidTickerTimer = setInterval(showNext, 1000);
       }
 
+      // ===== Advances chart value labels (৳ amounts drawn on top of the bars) =====
+      const advanceValueLabels = {
+        id: 'advanceValueLabels',
+        afterDatasetsDraw(chart) {
+          const ctx = chart.ctx;
+          chart.data.datasets.forEach((ds, di) => {
+            const meta = chart.getDatasetMeta(di);
+            if (!meta.data || !meta.data.length) return;
+            meta.data.forEach((bar, i) => {
+              const v = Number(ds.data[i]);
+              if (!v || v <= 0) return;
+              ctx.save();
+              ctx.fillStyle = di === 0 ? '#7dd3fc' : '#c4b5fd';
+              ctx.font = 'bold 10px Inter, sans-serif';
+              ctx.textAlign = 'center';
+              ctx.fillText('৳' + Math.round(v).toLocaleString('en-US'), bar.x, bar.y - 6);
+              ctx.restore();
+            });
+          });
+        }
+      };
+
       // Advances Chart — Members on X-axis, 1st & 2nd advance amounts (paid/remaining)
       function renderAdvanceChart(advData) {
         if (!advData) return;
@@ -2444,29 +2542,57 @@ function toggleProfile(button) {
               {
                 label: '1st Advance',
                 data: firstAdv,
-                backgroundColor: '#38bdf8',
-                borderRadius: 6,
-                barPercentage: 0.6
+                backgroundColor: (c) => {
+                  const area = c.chart.chartArea;
+                  if (!area) return '#38bdf8';
+                  const g = c.chart.ctx.createLinearGradient(0, area.bottom, 0, area.top);
+                  g.addColorStop(0, 'rgba(56,189,248,0.15)');
+                  g.addColorStop(1, '#38bdf8');
+                  return g;
+                },
+                hoverBackgroundColor: '#7dd3fc',
+                borderRadius: 8,
+                barPercentage: 0.5,
+                categoryPercentage: 0.75
               },
               {
                 label: '2nd Advance',
                 data: secondAdv,
-                backgroundColor: '#a78bfa',
-                borderRadius: 6,
-                barPercentage: 0.6
+                backgroundColor: (c) => {
+                  const area = c.chart.chartArea;
+                  if (!area) return '#a78bfa';
+                  const g = c.chart.ctx.createLinearGradient(0, area.bottom, 0, area.top);
+                  g.addColorStop(0, 'rgba(167,139,250,0.15)');
+                  g.addColorStop(1, '#a78bfa');
+                  return g;
+                },
+                hoverBackgroundColor: '#c4b5fd',
+                borderRadius: 8,
+                barPercentage: 0.5,
+                categoryPercentage: 0.75
               }
             ]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: {
+              duration: 1200,
+              easing: 'easeOutQuart',
+              delay(context) {
+                // Bars rise up one-by-one (staggered)
+                return context.type === 'data' ? context.dataIndex * 100 : 0;
+              }
+            },
             plugins: {
               legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } }
             },
             scales: {
-              y: { beginAtZero: true }
+              y: { beginAtZero: true },
+              x: { grid: { display: false } }
             }
-          }
+          },
+          plugins: [advanceValueLabels]
         });
       }
 
@@ -2537,23 +2663,55 @@ function toggleProfile(button) {
         });
       }
 
-      // Member Status List — exact same columns as MemberStatus tab
+      // Count-up helper for table numbers
+      function animateTableCount(el, target, duration) {
+        const start = performance.now();
+        function step(now) {
+          const p = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased);
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+
+      // Member Status List — staggered rows, animated progress bars, pulsing badges
       function populateMemberStatusTable(statusData) {
         const tbody = document.getElementById("memberStatusTable");
         tbody.innerHTML = "";
 
         if (!statusData) return;
 
-statusData.forEach(row => {
+        statusData.forEach((row, i) => {
           const tr = document.createElement("tr");
-          const unpaid = row["Total Unpaid"];
+          tr.className = "ms-row";
+          tr.style.animationDelay = (i * 70) + "ms";
+
+          const unpaid = Number(row["Total Unpaid"] || 0);
+          const expected = Number(row["Expected payments"] || 0);
+          const paid = Number(row["Total Paid"] || 0);
+          const pct = expected > 0 ? Math.min(Math.round((paid / expected) * 100), 100) : 0;
 
           tr.innerHTML = `
-            <td>${row["Member Name"]}</td>
-            <td>${row["Expected payments"]}</td>
-            <td><span class="ac-badge ac-closed">${unpaid}</span></td>
+            <td><span class="ms-name">${row["Member Name"]}</span></td>
+            <td class="ms-num">0</td>
+            <td>
+              <span class="ms-bar"><span class="ms-bar-fill ${pct >= 100 ? 'ms-bar-full' : ''}"></span></span>
+              <span class="ms-pct">${pct}%</span>
+            </td>
+            <td><span class="ms-badge ${unpaid > 0 ? 'ms-badge-unpaid' : 'ms-badge-paid'}">${unpaid > 0 ? 'Due ' + unpaid : '✓ Paid Up'}</span></td>
           `;
           tbody.appendChild(tr);
+
+          // Count the Expected number up
+          const numEl = tr.querySelector('.ms-num');
+          if (numEl) animateTableCount(numEl, expected, 600);
+
+          // Fill the progress bar after the row slides in
+          setTimeout(() => {
+            const fill = tr.querySelector('.ms-bar-fill');
+            if (fill) fill.style.width = pct + '%';
+          }, 300 + i * 70);
         });
       }
 
