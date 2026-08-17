@@ -2207,21 +2207,61 @@ let currentStatusChartInstance = null;
         }
       }
 
-      // Summary Helper
+      // ===== Animated counting stat cards =====
+      const ACCOUNT_VALUE_IDS = ['totalAmount', 'monthlyDeposit', 'advance', 'profit', 'activeInvestment', 'remainingCash'];
+      const summaryTargets = {};
+
+      // Formats a number as BDT currency (whole taka, thousands separators)
+      function formatCurrency(n) {
+        return '৳' + Math.round(Number(n)).toLocaleString('en-US');
+      }
+
+      // Counts an element from 0 → target with an ease-out effect
+      function animateValue(el, target, duration) {
+        if (duration <= 0) { el.innerText = formatCurrency(target); return; }
+        const startTime = performance.now();
+        function step(now) {
+          const p = Math.min((now - startTime) / duration, 1);
+          const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic (fast start, slow finish)
+          el.innerText = formatCurrency(target * eased);
+          if (p < 1) requestAnimationFrame(step);
+          else el.innerText = formatCurrency(target);
+        }
+        requestAnimationFrame(step);
+      }
+
+      // Replays the counting animation on all 6 cards (runs every 5 seconds)
+      function runSummaryCountAnimation() {
+        ACCOUNT_VALUE_IDS.forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          animateValue(el, summaryTargets[id] || 0, 2000);
+        });
+      }
+
+      // Summary Helper — stores numeric targets, then fires the counting animation
       function populateSummary(summaryData) {
         if (!summaryData) return;
 
+        const map = {
+          'Total Amounts': 'totalAmount',
+          'Monthly Deposit': 'monthlyDeposit',
+          'Advances': 'advance',
+          'Profits': 'profit',
+          'Active Investment': 'activeInvestment',
+          'Remainning Cash': 'remainingCash',
+          'Remaining Cash': 'remainingCash'
+        };
+
         summaryData.forEach(row => {
           const desc = String(row["Description"]).trim();
-          const val = row["Context"];
-
-          if (desc === "Total Amounts") document.getElementById("totalAmount").innerText = val;
-          if (desc === "Monthly Deposit") document.getElementById("monthlyDeposit").innerText = val;
-          if (desc === "Advances") document.getElementById("advance").innerText = val;
-          if (desc === "Profits") document.getElementById("profit").innerText = val;
-          if (desc === "Active Investment") document.getElementById("activeInvestment").innerText = val;
-          if (desc === "Remainning Cash" || desc === "Remaining Cash") document.getElementById("remainingCash").innerText = val;
+          const targetId = map[desc];
+          if (!targetId) return;
+          const num = parseFloat(String(row["Context"]).replace(/[^\d.\-]/g, ''));
+          if (!isNaN(num)) summaryTargets[targetId] = num;
         });
+
+        runSummaryCountAnimation();
       }
 
 // Current Status Horizontal Bar Chart (Paid / Partial) — Members on Y-axis, Status bars
@@ -2391,6 +2431,9 @@ statusData.forEach(row => {
 
       // Auto Refresh every 30 seconds
       setInterval(fetchDashboardData, 30000);
+
+      // Replay the counting animation on the stat cards every 5 seconds
+      setInterval(runSummaryCountAnimation, 5000);
     })();
 
   </script>
