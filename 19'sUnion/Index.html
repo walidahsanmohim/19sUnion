@@ -2317,6 +2317,7 @@ function toggleProfile(button) {
       let paidTickerTimer = null;
       let investmentReplayTimer = null;
       let invSweepRaf = null;
+      let currentStatusReplayTimer = null;
 
       // Chart defaults for dark theme
       Chart.defaults.color = '#94a3b8';
@@ -2478,6 +2479,43 @@ function toggleProfile(button) {
 
         // Live "who just paid" ticker — pops up a paid member's name every second
         startPaidTicker(statusData);
+
+        // Replay the animated bars every 5 seconds
+        if (currentStatusReplayTimer) clearInterval(currentStatusReplayTimer);
+        currentStatusReplayTimer = setInterval(() => {
+          const page = document.getElementById('page-accounts');
+          if (page && page.classList.contains('active')) replayCurrentStatusChart();
+        }, 5000);
+      }
+
+      // Replays the bars: smooth glide down → staggered pop back up
+      function replayCurrentStatusChart() {
+        if (!currentStatusChartInstance || !currentStatusChartInstance.data) return;
+        const ds0 = currentStatusChartInstance.data.datasets[0];
+        const ds1 = currentStatusChartInstance.data.datasets[1];
+        if (!ds0 || !ds1 || !Array.isArray(ds0.data) || !Array.isArray(ds1.data)) return;
+
+        const paid = ds0.data.slice();
+        const partial = ds1.data.slice();
+
+        // 1. Bars glide down to 0 (fast, soft)
+        ds0.data = paid.map(() => 0);
+        ds1.data = partial.map(() => 0);
+        currentStatusChartInstance.update({ duration: 450, easing: 'easeInOutQuad' });
+
+        // 2. Bars pop back up one-by-one (staggered, matching the entrance)
+        setTimeout(() => {
+          if (!currentStatusChartInstance) return;
+          ds0.data = paid;
+          ds1.data = partial;
+          currentStatusChartInstance.update({
+            duration: 1000,
+            easing: 'easeOutQuart',
+            delay(context) {
+              return context.type === 'data' ? context.dataIndex * 90 : 0;
+            }
+          });
+        }, 500);
       }
 
       // Paid-members ticker — every second a "who paid" name pops up
