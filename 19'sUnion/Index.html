@@ -1095,6 +1095,69 @@
 @media (max-width: 480px) {
   .chart-box { height: 440px; }
 }
+/* Paid ticker (Current Status panel) — pops up who-paid names every second */
+.paid-ticker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 9px 14px;
+  border-radius: 12px;
+  background: rgba(5, 205, 153, 0.08);
+  border: 1px solid rgba(5, 205, 153, 0.25);
+  color: #a7f3d0;
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+}
+.paid-ticker-icon {
+  color: #34d399;
+  flex-shrink: 0;
+  animation: iconPulse 1.5s ease-in-out infinite;
+}
+.paid-ticker-text { display: inline-block; white-space: nowrap; }
+.paid-pop { animation: paidPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.4) both; }
+@keyframes paidPop {
+  0%   { opacity: 0; transform: scale(0.5) translateY(8px); }
+  60%  { opacity: 1; transform: scale(1.08) translateY(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes iconPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.2); }
+}
+
+/* Investment doughnut — spinning orbit ring + replay glow */
+.inv-chart-wrap { position: relative; }
+.inv-glow { animation: invGlow 4s ease-in-out infinite; }
+.inv-ring {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  margin: auto;
+  width: 74%;
+  height: 74%;
+  border-radius: 50%;
+  border: 2px dashed rgba(67, 24, 255, 0.35);
+  animation: invSpin 20s linear infinite;
+  pointer-events: none;
+}
+.inv-ring::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: #05cd99;
+  box-shadow: 0 0 14px #05cd99, 0 0 28px rgba(5, 205, 153, 0.6);
+}
+@keyframes invSpin { to { transform: rotate(360deg); } }
+@keyframes invGlow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(5, 205, 153, 0.15)); }
+  50%      { filter: drop-shadow(0 0 22px rgba(5, 205, 153, 0.5)); }
+}
 .tables-acc {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1584,6 +1647,10 @@
         <div class="charts-acc">
           <div class="acc-panel">
             <h2><i class="fa-solid fa-user-group"></i> Current Status (Paid / Partial)</h2>
+            <div class="paid-ticker">
+              <span class="paid-ticker-icon"><i class="fa-solid fa-circle-check"></i></span>
+              <span class="paid-ticker-text" id="paidTickerText">Loading payments…</span>
+            </div>
             <div class="chart-box"><canvas id="currentStatusChart"></canvas></div>
           </div>
           <div class="acc-panel">
@@ -1596,7 +1663,7 @@
         <div class="charts-acc">
           <div class="acc-panel">
             <h2><i class="fa-solid fa-chart-pie"></i> Investment Allocation (Running)</h2>
-            <div class="chart-box"><canvas id="investmentPieChart"></canvas></div>
+            <div class="chart-box inv-chart-wrap inv-glow"><canvas id="investmentPieChart"></canvas><div class="inv-ring"></div></div>
           </div>
 <div class="acc-panel">
             <h2><i class="fa-solid fa-list-check"></i> Member Status</h2>
@@ -2159,9 +2226,11 @@ function toggleProfile(button) {
 
       const API_URL = "https://script.google.com/macros/s/AKfycby0Lg7YD5o-_bpxzZeF-YuSVXYvcDqiB3zc7AVulx_XTWFD0jndXgsAmW_rcJijUu-LCQ/exec";
 
-let currentStatusChartInstance = null;
+      let currentStatusChartInstance = null;
       let advanceChartInstance = null;
       let investmentChartInstance = null;
+      let paidTickerTimer = null;
+      let investmentReplayTimer = null;
 
       // Chart defaults for dark theme
       Chart.defaults.color = '#94a3b8';
@@ -2285,15 +2354,17 @@ let currentStatusChartInstance = null;
                 label: 'Paid',
                 data: paidData,
                 backgroundColor: '#05cd99',
-                borderRadius: 6,
-                barPercentage: 0.6
+                borderRadius: 8,
+                barPercentage: 0.55,
+                categoryPercentage: 0.8
               },
               {
                 label: 'Partial',
                 data: partialData,
                 backgroundColor: '#ffb547',
-                borderRadius: 6,
-                barPercentage: 0.6
+                borderRadius: 8,
+                barPercentage: 0.55,
+                categoryPercentage: 0.8
               }
             ]
           },
@@ -2301,14 +2372,56 @@ let currentStatusChartInstance = null;
             indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
+            animation: {
+              duration: 1100,
+              easing: 'easeOutQuart',
+              delay(context) {
+                // Bars pop in one-by-one (staggered, professional feel)
+                return context.type === 'data' ? context.dataIndex * 90 : 0;
+              }
+            },
             plugins: {
               legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } }
             },
             scales: {
-              x: { beginAtZero: true }
+              x: { beginAtZero: true },
+              y: { grid: { display: false } }
             }
           }
         });
+
+        // Live "who just paid" ticker — pops up a paid member's name every second
+        startPaidTicker(statusData);
+      }
+
+      // Paid-members ticker — every second a "who paid" name pops up
+      function startPaidTicker(statusData) {
+        const el = document.getElementById('paidTickerText');
+        if (!el) return;
+        if (paidTickerTimer) clearInterval(paidTickerTimer);
+
+        const paidNames = (statusData || [])
+          .filter(m => String(m["Status"]).trim() === "Paid")
+          .map(m => String(m["Member Name"]).trim())
+          .filter(Boolean);
+
+        if (paidNames.length === 0) {
+          el.innerText = 'No payments recorded this month yet';
+          return;
+        }
+
+        let idx = 0;
+        const showNext = () => {
+          const name = paidNames[idx % paidNames.length];
+          idx++;
+          el.innerText = '✓ ' + name + '  just paid';
+          el.classList.remove('paid-pop');
+          void el.offsetWidth; // restart the CSS pop animation
+          el.classList.add('paid-pop');
+        };
+
+        showNext();
+        paidTickerTimer = setInterval(showNext, 1000);
       }
 
       // Advances Chart — Members on X-axis, 1st & 2nd advance amounts (paid/remaining)
@@ -2377,16 +2490,50 @@ let currentStatusChartInstance = null;
               data: amounts,
               backgroundColor: ['#4318ff', '#05cd99', '#ffb547', '#2b3674', '#ee5d50'],
               borderColor: '#0f172a',
-              borderWidth: 3
+              borderWidth: 3,
+              hoverOffset: 12
             }]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: {
+              animateRotate: true,
+              animateScale: true,
+              duration: 1600,
+              easing: 'easeOutQuart'
+            },
             plugins: {
               legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } }
             }
           }
+        });
+
+        // Replay the "animated circle" draw every 10 seconds
+        if (investmentReplayTimer) clearInterval(investmentReplayTimer);
+        investmentReplayTimer = setInterval(() => {
+          const page = document.getElementById('page-accounts');
+          if (page && page.classList.contains('active')) replayInvestmentChart();
+        }, 10000);
+      }
+
+      // Smoothly redraws the doughnut from 0 → full (the 10-second replay)
+      function replayInvestmentChart() {
+        if (!investmentChartInstance || !investmentChartInstance.data) return;
+        const ds = investmentChartInstance.data.datasets[0];
+        if (!ds || !Array.isArray(ds.data) || ds.data.length === 0) return;
+
+        const amounts = ds.data.slice();
+
+        // Collapse the circle instantly…
+        investmentChartInstance.data.datasets[0].data = amounts.map(() => 0);
+        investmentChartInstance.update({ duration: 0 });
+
+        // …then draw it back up smoothly next frame so the reset is visible
+        requestAnimationFrame(() => {
+          if (!investmentChartInstance) return;
+          investmentChartInstance.data.datasets[0].data = amounts;
+          investmentChartInstance.update({ duration: 1500, easing: 'easeOutQuart' });
         });
       }
 
