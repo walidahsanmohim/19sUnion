@@ -3,27 +3,7 @@
  *  19's UNION — ACCOUNTS DASHBOARD (Google Apps Script back-end)
  *  Powers the "Accounts" page of Index.html with LIVE Google Sheets data
  * ═══════════════════════════════════════════════════════════════════
- *
- *  SETUP STEPS (do this in Google, it fixes the current 403 error)
- *  ----------------------------------------------------------------
- *  1. Open  https://script.google.com  →  + New project
- *  2. Delete the default "myFunction" and paste this whole file in.
- *  3. Confirm SPREADSHEET_ID below matches YOUR spreadsheet id.
- *  4. Click  Run ▸ Run function ▸ doGet  once, and authorize
- *     (the script needs permission to READ your spreadsheet).
- *  5. Click  Deploy ▸ New deployment ▸
- *        Type:            Web app
- *        Execute as:      Me
- *        Who has access:  Anyone
- *     → Deploy, then copy the blue  /exec  URL.
- *  6. Paste that URL into  Index.html  (API_URL constant, ~line 2149).
- *  7. IMPORTANT — after ANY edit to this script:
- *        Deploy ▸ Manage deployments ▸ ✏️ Edit ▸ New version ▸ Deploy
- *     If you skip this, the OLD version keeps running (403 / stale data).
- *
- *  ⚠️  Sharing the spreadsheet alone does NOT update the dashboard.
- *      The page reads the WEB APP above, not the sheet directly.
- *
+
  *  SPREADSHEET STRUCTURE THE PAGE EXPECTS
  *  --------------------------------------
  *  Tab "Summary"        → columns:  Description | Context
