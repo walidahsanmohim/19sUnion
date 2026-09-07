@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,41 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- ===== THEME: restore saved theme before first paint (no flash) + theme helpers ===== -->
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var saved = null;
+      try { saved = localStorage.getItem('19sunion-theme'); } catch (e) {}
+      if (saved !== 'light' && saved !== 'dark') {
+        saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+      }
+      root.setAttribute('data-theme', saved);
+
+      // Theme-aware colors used by Chart.js
+      window.themeInk  = function () { return root.getAttribute('data-theme') === 'light' ? '#f8fafc' : '#0f172a'; };
+      window.themeGrid = function () { return root.getAttribute('data-theme') === 'light' ? 'rgba(15,23,42,0.08)' : 'rgba(148,163,184,0.12)'; };
+      window.themeTick = function () { return root.getAttribute('data-theme') === 'light' ? '#475569' : '#cbd5e1'; };
+      window.applyChartTheme = function () {
+        if (typeof Chart === 'undefined') return;
+        Chart.defaults.color = window.themeTick();
+        Chart.defaults.borderColor = window.themeGrid();
+      };
+      try { window.applyChartTheme(); } catch (e) {}
+
+      window.toggleTheme = function () {
+        var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('19sunion-theme', next); } catch (e) {}
+        try { window.applyChartTheme(); } catch (e) {}
+        // Re-draw the Accounts charts with the new theme's colors
+        var page = document.getElementById('page-accounts');
+        if (page && page.classList.contains('active') && typeof window.refreshAccountsCharts === 'function') {
+          setTimeout(window.refreshAccountsCharts, 80);
+        }
+      };
+    })();
+  </script>
   <!-- Google Fonts (Professional Typography) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,8 +53,9 @@
 
 <style>
 
-    /* ===== Theme Variables (used by clock & calendar sections) ===== */
-    :root {
+    /* ===== Theme Variables (dark default + light theme) ===== */
+    :root,
+    html[data-theme="dark"] {
       --card-bg: rgba(15, 23, 42, 0.55);
       --card-border: rgba(255, 255, 255, 0.08);
       --text-main: #f1f5f9;
@@ -27,7 +63,46 @@
       --primary-accent: #38bdf8;
       --arabic-accent: #2dd4bf;
       --bangla-accent: #fbbf24;
+      --bg-page: linear-gradient(160deg, #020617 0%, #0b1e3d 35%, #0f2a54 60%, #0b1e3d 85%, #020617 100%);
+      --surface: rgba(15, 23, 42, 0.6);
+      --surface-2: rgba(2, 6, 23, 0.45);
+      --card-grad: linear-gradient(145deg, rgba(30, 41, 82, 0.9), rgba(15, 23, 42, 0.95));
+      --border-c: rgba(148, 163, 184, 0.18);
+      --border-strong: rgba(51, 65, 85, 0.9);
+      --text-1: #f1f5f9;
+      --text-2: #cbd5e1;
+      --text-3: #94a3b8;
+      --ink: #0f172a;
+      --grid-c: rgba(148, 163, 184, 0.12);
+      --tick-c: #cbd5e1;
+      --shadow-c: rgba(0, 0, 0, 0.4);
+      --input-bg: rgba(2, 6, 23, 0.4);
     }
+    html[data-theme="light"] {
+      --card-bg: rgba(255, 255, 255, 0.82);
+      --card-border: rgba(15, 23, 42, 0.08);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary-accent: #0284c7;
+      --arabic-accent: #0d9488;
+      --bangla-accent: #b45309;
+      --bg-page: linear-gradient(160deg, #f2f6fc 0%, #e7eff9 35%, #dfe9f5 60%, #e7eff9 85%, #f2f6fc 100%);
+      --surface: rgba(255, 255, 255, 0.85);
+      --surface-2: rgba(241, 245, 249, 0.8);
+      --card-grad: linear-gradient(145deg, #ffffff, #edf2fa);
+      --border-c: rgba(100, 116, 139, 0.22);
+      --border-strong: rgba(100, 116, 139, 0.32);
+      --text-1: #0f172a;
+      --text-2: #334155;
+      --text-3: #64748b;
+      --ink: #f8fafc;
+      --grid-c: rgba(15, 23, 42, 0.08);
+      --tick-c: #475569;
+      --shadow-c: rgba(15, 23, 42, 0.1);
+      --input-bg: rgba(241, 245, 249, 0.7);
+    }
+    /* Page background follows the active theme */
+    .app-body { background: var(--bg-page); background-attachment: fixed; }
 
 /* Main Container with Glassmorphism Effect — compact size */
     .dashboard {
@@ -107,8 +182,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 0.75rem;
-      background: rgba(2, 6, 23, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.07);
+      background: var(--surface-2);
+      border: 1px solid var(--card-border);
       border-radius: 12px;
       padding: 0.45rem 0.8rem;
     }
@@ -563,8 +638,8 @@
       height: 4rem;
       border-radius: 1rem;
       overflow: hidden;
-      border: 1px solid rgba(51, 65, 85, 0.9);
-      background: rgba(2, 6, 23, 0.8);
+      border: 1px solid var(--border-strong);
+      background: var(--surface-2);
       padding: 0.25rem;
       flex-shrink: 0;
     }
@@ -574,7 +649,7 @@
       text-align: center;
       font-size: 1.05rem;
       font-weight: 800;
-      color: white;
+      color: var(--text-1);
       margin-bottom: 0.4rem;
       line-height: 1.3;
     }
@@ -608,9 +683,9 @@
       align-items: center;
       gap: 0.55rem;
       font-size: 0.82rem;
-      color: #cbd5e1;
-      background: rgba(15, 23, 42, 0.84);
-      border: 1px solid rgba(51, 65, 85, 0.9);
+      color: var(--text-2);
+      background: var(--surface-2);
+      border: 1px solid var(--border-strong);
       border-radius: 0.85rem;
       padding: 0.55rem 0.65rem;
     }
@@ -693,11 +768,11 @@
       border-bottom: none;
     }
     .detail-label {
-      color: #94a3b8;
+      color: var(--text-3);
       font-weight: 700;
     }
 .detail-value {
-      color: #e2e8f0;
+      color: var(--text-1);
     }
 
 /* ============================================================
@@ -972,8 +1047,8 @@
 }
 .acc-card {
   position: relative;
-  background: linear-gradient(145deg, rgba(30, 41, 82, 0.9), rgba(15, 23, 42, 0.95));
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: var(--card-grad);
+  border: 1px solid var(--border-c);
   border-radius: 20px;
   padding: 20px 16px;
   min-height: 168px;
@@ -983,7 +1058,7 @@
   align-items: center;
   text-align: center;
   overflow: hidden;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: 0 18px 40px var(--shadow-c), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease, box-shadow 0.35s ease;
   animation: accCardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -1039,7 +1114,7 @@
 }
 .acc-info h3 {
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--text-3);
   font-weight: 700;
   margin-bottom: 8px;
   letter-spacing: 0.04em;
@@ -1052,7 +1127,7 @@
 .acc-value {
   font-size: 20px;
   font-weight: 800;
-  color: #f1f5f9;
+  color: var(--text-1);
   line-height: 1.2;
   text-align: center;
   white-space: nowrap;
@@ -1081,15 +1156,15 @@
   .charts-acc { grid-template-columns: 1fr; }
 }
 .acc-panel {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface);
+  border: 1px solid var(--border-c);
   border-radius: 22px;
   padding: 20px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 18px 40px var(--shadow-c);
   animation: accCardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .acc-panel h2 {
-  color: #f1f5f9;
+  color: var(--text-1);
   font-size: 16px;
   font-weight: 700;
   margin-bottom: 16px;
@@ -1158,7 +1233,7 @@
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #94a3b8;
+  color: var(--text-3);
 }
 .inv-center-value {
   font-size: 19px;
@@ -1182,7 +1257,7 @@
   0%   { opacity: 0; transform: translateX(18px); }
   100% { opacity: 1; transform: translateX(0); }
 }
-.ms-name { font-weight: 600; color: #e2e8f0; }
+.ms-name { font-weight: 600; color: var(--text-2); }
 .ms-num { color: #38bdf8; font-weight: 700; }
 .ms-bar {
   display: inline-block;
@@ -1206,7 +1281,7 @@
   background: linear-gradient(90deg, #10b981, #34d399);
   box-shadow: 0 0 12px rgba(5, 205, 153, 0.8);
 }
-.ms-pct { font-size: 11px; color: #94a3b8; margin-left: 8px; font-weight: 700; }
+.ms-pct { font-size: 11px; color: var(--text-3); margin-left: 8px; font-weight: 700; }
 .ms-badge {
   display: inline-flex;
   align-items: center;
@@ -1264,14 +1339,14 @@
 .acc-table { width: 100%; border-collapse: collapse; text-align: left; }
 .acc-table th, .acc-table td {
   padding: 12px 10px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  border-bottom: 1px solid var(--border-c);
   font-size: 13px;
-  color: #cbd5e1;
+  color: var(--text-2);
 }
 .acc-table th {
-  color: #94a3b8;
+  color: var(--text-3);
   font-weight: 700;
-  background: rgba(2, 6, 23, 0.4);
+  background: var(--input-bg);
 }
 .ac-badge {
   padding: 4px 10px;
@@ -1363,9 +1438,115 @@ html, body { overflow-x: hidden; }
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
 }
+
+    /* ============================================================
+       THEME LAYER — light-mode remaps + theme toggle
+       (dark is the default design; light overrides everything else)
+       ============================================================ */
+
+    /* Smooth theme switching */
+    body, nav, #mobile-menu, footer, .acc-panel, .dashboard, .cal-row,
+    .info-item, .acc-table th, .member-card, .hero-card {
+      transition: background-color 0.45s ease, color 0.35s ease, border-color 0.45s ease;
+    }
+
+    /* Theme toggle button icon swap (sun in dark, moon in light) */
+    html[data-theme="dark"]  .theme-icon-light { display: none; }
+    html[data-theme="light"] .theme-icon-dark  { display: none; }
+    html[data-theme="light"] .theme-toggle-btn { background: rgba(241,245,249,0.8); border-color: var(--border-strong); color: #334155; }
+    html[data-theme="light"] .theme-toggle-btn:hover { background: #e2e8f0; }
+
+    /* --- Light theme: page surfaces (nav, mobile menu, footer) --- */
+    html[data-theme="light"] nav,
+    html[data-theme="light"] #mobile-menu { background-color: rgba(255,255,255,0.88); border-color: rgba(15,23,42,0.08); }
+    html[data-theme="light"] .bg-slate-950\/40 { background-color: rgba(255,255,255,0.55); }
+
+    /* --- Light theme: card & panel backgrounds --- */
+    html[data-theme="light"] .bg-slate-950\/80,
+    html[data-theme="light"] .bg-slate-950\/95 { background-color: rgba(255,255,255,0.88); }
+    html[data-theme="light"] .bg-slate-950\/70,
+    html[data-theme="light"] .bg-slate-950\/50 { background-color: rgba(255,255,255,0.72); }
+    html[data-theme="light"] .bg-slate-900\/80,
+    html[data-theme="light"] .bg-slate-900\/70,
+    html[data-theme="light"] .bg-slate-900\/60 { background-color: rgba(255,255,255,0.8); }
+    html[data-theme="light"] .bg-slate-900 { background-color: #f8fafc; }
+    html[data-theme="light"] .bg-slate-800\/60 { background-color: rgba(226,232,240,0.7); }
+    html[data-theme="light"] .bg-slate-800 { background-color: #e2e8f0; }
+    html[data-theme="light"] .bg-white\/5 { background-color: rgba(255,255,255,0.72); }
+    html[data-theme="light"] .hover\:bg-slate-700\/60:hover { background-color: #dbe3ec; }
+
+    /* --- Light theme: borders --- */
+    html[data-theme="light"] .border-slate-800\/70,
+    html[data-theme="light"] .border-slate-800\/80,
+    html[data-theme="light"] .border-slate-800 { border-color: rgba(100,116,139,0.28); }
+    html[data-theme="light"] .border-slate-700,
+    html[data-theme="light"] .border-slate-700\/60 { border-color: rgba(100,116,139,0.35); }
+    html[data-theme="light"] .border-white\/10 { border-color: rgba(15,23,42,0.1); }
+
+    /* --- Light theme: text colors (headings + body text only;
+           white text inside colored buttons is intentionally untouched) --- */
+    html[data-theme="light"] h1.text-white,
+    html[data-theme="light"] h2.text-white,
+    html[data-theme="light"] h3.text-white,
+    html[data-theme="light"] h4.text-white,
+    html[data-theme="light"] p.text-white { color: #0f172a; }
+    html[data-theme="light"] .text-slate-100,
+    html[data-theme="light"] .text-slate-200,
+    html[data-theme="light"] .text-slate-300 { color: #1e293b; }
+    html[data-theme="light"] .text-slate-400,
+    html[data-theme="light"] .text-slate-500 { color: #64748b; }
+    html[data-theme="light"] .hover\:text-white:hover { color: #0f172a; }
+    html[data-theme="light"] nav .text-white { color: #0f172a; }
+
+    /* Hero card sits on a green gradient — keep its white text */
+    html[data-theme="light"] .hero-card .text-white,
+    html[data-theme="light"] .hero-card h2.text-white { color: #ffffff; }
+
+    /* --- Light theme: accent text (darken pale accents for contrast) --- */
+    html[data-theme="light"] .text-blue-300   { color: #1d4ed8; }
+    html[data-theme="light"] .text-blue-400   { color: #2563eb; }
+    html[data-theme="light"] .text-cyan-300   { color: #0e7490; }
+    html[data-theme="light"] .text-emerald-300 { color: #047857; }
+    html[data-theme="light"] .text-emerald-400 { color: #047857; }
+    html[data-theme="light"] .text-rose-300   { color: #be123c; }
+    html[data-theme="light"] .text-amber-300  { color: #b45309; }
+    html[data-theme="light"] .text-indigo-300 { color: #4f46e5; }
+    html[data-theme="light"] .text-purple-300 { color: #7c3aed; }
+
+    /* Gradient headline text (from-blue-400 → to-cyan-400 etc.) */
+    html[data-theme="light"] .from-blue-400 { --tw-gradient-from: #1d4ed8 var(--tw-gradient-from-position); }
+    html[data-theme="light"] .to-cyan-400   { --tw-gradient-to: #0891b2 var(--tw-gradient-to-position); }
+
+    /* --- Light theme: accounts dashboard accents --- */
+    html[data-theme="light"] .acc-panel h2 i { color: #0284c7; }
+    html[data-theme="light"] .ms-num { color: #0284c7; }
+    html[data-theme="light"] .ms-badge-paid  { color: #047857; background: rgba(209,250,229,0.75); border-color: rgba(5,150,105,0.4); }
+    html[data-theme="light"] .ms-badge-unpaid { color: #b91c1c; background: rgba(254,226,226,0.8); border-color: rgba(185,28,28,0.4); }
+    html[data-theme="light"] .ac-paid    { color: #047857; background: rgba(209,250,229,0.75); }
+    html[data-theme="light"] .ac-due     { color: #dc2626; background: rgba(254,226,226,0.75); }
+    html[data-theme="light"] .ac-running { color: #0284c7; background: rgba(224,242,254,0.8); }
+    html[data-theme="light"] .ac-closed  { color: #64748b; background: rgba(226,232,240,0.8); }
+    html[data-theme="light"] .paid-ticker { background: rgba(16,185,129,0.08); border-color: rgba(5,150,105,0.3); color: #065f46; }
+    html[data-theme="light"] .paid-ticker-icon { color: #059669; }
+    html[data-theme="light"] .inv-center-value { color: #059669; text-shadow: none; }
+    html[data-theme="light"] .member_id { color: #0369a1; background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.3); }
+    html[data-theme="light"] .member-img-box { background: #e2e8f0; }
+    html[data-theme="light"] .member-img-box i { color: #64748b; }
+    html[data-theme="light"] .rule-note-glow { box-shadow: none; }
+
+    /* Logo uses screen blending for dark nav — normal blending on light nav */
+    html[data-theme="light"] .mix-blend-screen { mix-blend-mode: normal; }
+
+    /* Mobile menu hover/active colors */
+    html[data-theme="light"] .mnav-btn:hover { color: #0f172a; }
+    html[data-theme="light"] .mnav-btn.active-link { color: #2563eb; }
+
+    /* Member card surface (background comes from Tailwind classes) */
+    html[data-theme="light"] .member-card { box-shadow: 0 20px 45px var(--shadow-c), inset 0 1px 0 rgba(255,255,255,0.6); }
+
   </style>
 </head>
-<body class="text-slate-100 font-sans antialiased flex flex-col min-h-screen" style="background: linear-gradient(160deg, #020617 0%, #0b1e3d 35%, #0f2a54 60%, #0b1e3d 85%, #020617 100%); background-attachment: fixed;">
+<body class="text-slate-100 font-sans antialiased flex flex-col min-h-screen app-body">
 
 <!-- NAVIGATION BAR (SWITCHES BETWEEN 4 PAGES) -->
 <nav class="fixed top-0 left-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/70 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
@@ -1384,13 +1565,20 @@ html, body { overflow-x: hidden; }
       <button onclick="switchPage('accounts')" id="nav-accounts" class="nav-btn text-slate-400 hover:text-white px-3 py-1.5 rounded-lg transition">Accounts</button>
     </div>
 
-    <!-- Hamburger Button (visible on mobile only) -->
-    <button id="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation menu" aria-expanded="false"
-      class="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10 rounded-xl border border-slate-700 bg-slate-800/60 hover:bg-slate-700/60 transition-colors">
-      <span class="menu-bar block w-5 h-[2px] rounded-full bg-slate-200 transition-all duration-300"></span>
-      <span class="menu-bar block w-5 h-[2px] rounded-full bg-slate-200 transition-all duration-300"></span>
-      <span class="menu-bar block w-5 h-[2px] rounded-full bg-slate-200 transition-all duration-300"></span>
-    </button>
+    <!-- Theme toggle (visible on all screens) + Hamburger Button (mobile only) -->
+    <div class="flex items-center gap-2">
+      <button onclick="toggleTheme()" aria-label="Toggle dark / light theme" title="Toggle dark / light theme"
+        class="w-10 h-10 rounded-xl border border-slate-700 bg-slate-800/60 hover:bg-slate-700/60 transition-colors flex items-center justify-center text-slate-200">
+        <i class="fa-solid fa-sun theme-icon-dark"></i>
+        <i class="fa-solid fa-moon theme-icon-light"></i>
+      </button>
+      <button id="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation menu" aria-expanded="false"
+        class="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10 rounded-xl border border-slate-700 bg-slate-800/60 hover:bg-slate-700/60 transition-colors">
+        <span class="menu-bar block w-5 h-[2px] rounded-full bg-slate-200 transition-all duration-300"></span>
+        <span class="menu-bar block w-5 h-[2px] rounded-full bg-slate-200 transition-all duration-300"></span>
+        <span class="menu-bar block w-5 h-[2px] rounded-full bg-slate-200 transition-all duration-300"></span>
+      </button>
+    </div>
 </nav>
 
 <!-- MOBILE SLIDE-DOWN MENU (hidden by default, opens via hamburger) -->
@@ -2877,7 +3065,7 @@ function toggleProfile(button) {
                 const label = String(labels[ctx.dataIndex] || '').toLowerCase();
                 return label === 'bkash' ? '#d6093a' : PALETTE[ctx.dataIndex % PALETTE.length];
               },
-              borderColor: '#0f172a',
+              borderColor: themeInk(),
               borderWidth: 3,
               hoverOffset: 12
             }]
@@ -3009,7 +3197,7 @@ function toggleProfile(button) {
               tension: 0.4,
               borderWidth: 3,
               pointBackgroundColor: '#a78bfa',
-              pointBorderColor: '#0f172a',
+              pointBorderColor: themeInk(),
               pointBorderWidth: 2,
               pointRadius: 5,
               pointHoverRadius: 7
@@ -3035,10 +3223,11 @@ function toggleProfile(button) {
               }
             },
             scales: {
-              x: { grid: { display: false } },
+              x: { grid: { display: false }, ticks: { color: themeTick() } },
               y: {
                 beginAtZero: true,
-                ticks: { callback: (v) => '৳' + Math.round(Number(v)).toLocaleString('en-US') }
+                grid: { color: themeGrid() },
+                ticks: { color: themeTick(), callback: (v) => '৳' + Math.round(Number(v)).toLocaleString('en-US') }
               }
             }
           }
