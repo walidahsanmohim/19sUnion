@@ -3023,7 +3023,14 @@ function toggleProfile(button) {
               legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } },
               tooltip: {
                 callbacks: {
-                  label: (tc) => ' ' + tc.dataset.label + ': ৳' + Math.round(Number(tc.value)).toLocaleString('en-US')
+                  label: (tc) => {
+                    // Chart.js v4: tooltip items expose the y value at tc.parsed.y
+                    const v = (tc.parsed && typeof tc.parsed.y === 'number')
+                      ? tc.parsed.y
+                      : Number(tc.raw);
+                    return ' ' + tc.dataset.label + ': ৳' +
+                      (isNaN(v) ? '0' : Math.round(v).toLocaleString('en-US'));
+                  }
                 }
               }
             },
