@@ -2475,12 +2475,12 @@ function toggleProfile(button) {
         requestAnimationFrame(step);
       }
 
-      // Replays the counting animation on all 6 cards (runs every 5 seconds)
+      // Replays the counting animation on all 6 cards (10s count-up)
       function runSummaryCountAnimation() {
         ACCOUNT_VALUE_IDS.forEach(id => {
           const el = document.getElementById(id);
           if (!el) return;
-          animateValue(el, summaryTargets[id] || 0, 2000);
+          animateValue(el, summaryTargets[id] || 0, 10000);
         });
       }
 
@@ -2833,7 +2833,7 @@ function toggleProfile(button) {
       function animateCenterValue(target) {
         const el = document.getElementById('invCenterValue');
         if (!el) return;
-        animateValue(el, target, 1600);
+        animateValue(el, target, 10000);
       }
 
       // Positions the inner text exactly on the doughnut's hole (centers on any screen)
@@ -3125,8 +3125,8 @@ function toggleProfile(button) {
       // Auto Refresh every 30 seconds
       setInterval(fetchDashboardData, 30000);
 
-      // Replay the counting animation on the stat cards every 5 seconds
-      setInterval(runSummaryCountAnimation, 5000);
+      // Replay the 10s counting animation on the stat cards (10s count + 5s pause)
+      setInterval(runSummaryCountAnimation, 15000);
     })();
 
   </script>
