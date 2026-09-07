@@ -2475,12 +2475,13 @@ function toggleProfile(button) {
         requestAnimationFrame(step);
       }
 
-      // Replays the counting animation on all 6 cards (10s count-up)
+      // Counts up all 6 cards once (5s) — numbers freeze at their final
+      // value until a data refresh or re-entering the Accounts page
       function runSummaryCountAnimation() {
         ACCOUNT_VALUE_IDS.forEach(id => {
           const el = document.getElementById(id);
           if (!el) return;
-          animateValue(el, summaryTargets[id] || 0, 10000);
+          animateValue(el, summaryTargets[id] || 0, 5000);
         });
       }
 
@@ -2904,12 +2905,11 @@ function toggleProfile(button) {
         // Align the center text exactly on the doughnut hole (after layout settles)
         setTimeout(alignInvCenter, 100);
 
-        // Every 10 seconds — professional "live pulse": recount the total + gentle beat
+        // Every 10 seconds — gentle "live pulse" beat (total number stays frozen)
         if (investmentReplayTimer) clearInterval(investmentReplayTimer);
         investmentReplayTimer = setInterval(() => {
           const page = document.getElementById('page-accounts');
           if (!page || !page.classList.contains('active')) return;
-          animateCenterValue(total);
           const wrap = document.querySelector('.inv-chart-wrap');
           if (wrap) {
             wrap.classList.remove('inv-beat');
@@ -3125,8 +3125,7 @@ function toggleProfile(button) {
       // Auto Refresh every 30 seconds
       setInterval(fetchDashboardData, 30000);
 
-      // Replay the 10s counting animation on the stat cards (10s count + 5s pause)
-      setInterval(runSummaryCountAnimation, 15000);
+      // No replay loop — the count runs once on load / refresh / page entrance
     })();
 
   </script>
