@@ -1839,6 +1839,14 @@ html, body { overflow-x: hidden; }
           </div>
         </div>
 
+        <!-- Profit Graph (Investment profit over time) -->
+        <div class="charts-acc profit-growth-row" style="grid-template-columns:1fr">
+          <div class="acc-panel">
+            <h2><i class="fa-solid fa-arrow-trend-up"></i> Profit Growth</h2>
+            <div class="chart-box"><canvas id="profitChart"></canvas></div>
+          </div>
+        </div>
+
         <!-- View Full Google Sheet Button -->
         <div class="text-center mt-10">
 <a href="https://docs.google.com/spreadsheets/d/14sStv62NQfcCTBySZDD9Wx5g1LQLXZJhC4VGF8uRVcU/edit?usp=sharing"
@@ -2168,12 +2176,26 @@ const typeSpeed = 75;      // ms per character while typing
       return url; 
     }
 
+    // XSS guard — escapes anything that goes into innerHTML templates.
+    // Sheet data (member names, notes, etc.) must always pass through this.
+    function escapeHtml(v) {
+      return String(v === null || v === undefined ? '' : v)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    // Only https: URLs are allowed in <img src> — blocks javascript:/data: URIs
+    function safeImgSrc(url) {
+      const u = String(url || '').trim();
+      return /^https:\/\//i.test(u) ? escapeHtml(u) : '';
+    }
+
     const membersData = [
       {
         photo: "https://drive.google.com/file/d/1AzzoTf-mtGGbcdM5fx8-UVGhkKOpi9wf/view?usp=drive_link", 
         name: "Mohammed Shaker Hossen",
         member_id: "M001",
-        phone: "+880 1872-952412",
+        phone: "+880 1872-952812",
         email: "shakerhosen176@gmail.com",
         Mother: "Mina Begum",
         Father: "Mustafa Ahmed",
@@ -2310,26 +2332,26 @@ const typeSpeed = 75;      // ms per character while typing
       const card = document.createElement('div');
       card.className = 'member-card';
       card.style.animationDelay = `${index * 0.05}s`;
-      const directPhotoUrl = getDirectDriveLink(member.photo);
-      const imgContent = directPhotoUrl ? `<img src="${directPhotoUrl}" alt="${member.name}">` : `<i class="fa-solid fa-user"></i>`;
+      const photoUrl = safeImgSrc(getDirectDriveLink(member.photo));
+      const imgContent = photoUrl ? `<img src="${photoUrl}" alt="${escapeHtml(member.name)}">` : `<i class="fa-solid fa-user"></i>`;
 
 card.innerHTML = `
         <div class="member-img-box">${imgContent}</div>
-        <div class="member-name">${member.name}</div>
-        <div class="member-id-wrap"><span class="member_id">ID: ${member.member_id}</span></div>
+        <div class="member-name">${escapeHtml(member.name)}</div>
+        <div class="member-id-wrap"><span class="member_id">ID: ${escapeHtml(member.member_id)}</span></div>
         
         <div class="primary-info">
-          <div class="info-item"><i class="fa-solid fa-phone"></i> ${member.phone}</div>
-          <div class="info-item"><i class="fa-solid fa-envelope"></i> ${member.email}</div>
+          <div class="info-item"><i class="fa-solid fa-phone"></i> ${escapeHtml(member.phone)}</div>
+          <div class="info-item"><i class="fa-solid fa-envelope"></i> ${escapeHtml(member.email)}</div>
         </div>
 
         <div class="full-details">
           <div class="fd-inner">
-            <div class="detail-row"><span class="detail-label">Mother:</span><span class="detail-value">${member.Mother}</span></div>
-            <div class="detail-row"><span class="detail-label">Father:</span><span class="detail-value">${member.Father}</span></div>
-            <div class="detail-row"><span class="detail-label">NID/Birth Certificate No:</span><span class="detail-value">${member.NidBirth_No}</span></div>
-            <div class="detail-row"><span class="detail-label">Nominee:</span><span class="detail-value">${member.nominee}</span></div>
-            <div class="detail-row"><span class="detail-label">Address:</span><span class="detail-value">${member.address}</span></div>
+            <div class="detail-row"><span class="detail-label">Mother:</span><span class="detail-value">${escapeHtml(member.Mother)}</span></div>
+            <div class="detail-row"><span class="detail-label">Father:</span><span class="detail-value">${escapeHtml(member.Father)}</span></div>
+            <div class="detail-row"><span class="detail-label">NID/Birth Certificate No:</span><span class="detail-value">${escapeHtml(member.NidBirth_No)}</span></div>
+            <div class="detail-row"><span class="detail-label">Nominee:</span><span class="detail-value">${escapeHtml(member.nominee)}</span></div>
+            <div class="detail-row"><span class="detail-label">Address:</span><span class="detail-value">${escapeHtml(member.address)}</span></div>
           </div>
         </div>
 
@@ -2378,6 +2400,7 @@ function toggleProfile(button) {
       let currentStatusChartInstance = null;
       let advanceChartInstance = null;
       let investmentChartInstance = null;
+      let profitChartInstance = null;
       let paidTickerTimer = null;
       let investmentReplayTimer = null;
       let invSweepRaf = null;
@@ -2396,6 +2419,7 @@ function toggleProfile(button) {
         renderCurrentStatusChart(data.CurrentStatus);
         renderAdvanceChart(data.Advances);
         renderInvestmentChart(data.Investment);
+        renderProfitChart(data.NetProfit || data.Investment);
         populateMemberStatusTable(data.MemberStatus);
       }
 
@@ -2416,7 +2440,7 @@ function toggleProfile(button) {
 
           // Valid response but missing the keys the page expects → warn the user
           if (banner && bannerMsg && !data.Summary && !data.MemberStatus && !data.Advances) {
-            bannerMsg.textContent = 'Apps Script responded, but the expected keys (Summary / CurrentStatus / Advances / Investment / MemberStatus) were missing. Check the sheet tab names in the script.';
+            bannerMsg.textContent = 'Apps Script responded, but the expected keys (Summary / CurrentStatus / Advances / Investment / NetProfit / MemberStatus) were missing. Check the sheet tab names in the script.';
             banner.style.display = 'block';
           }
         } catch (error) {
@@ -2895,6 +2919,125 @@ function toggleProfile(button) {
         }, 10000);
       }
 
+      // Parses a profit-tab date (ISO, partial, or text month) into a Date
+      function parseProfitDate(d) {
+        const s = String(d || '').trim();
+        if (!s) return null;
+        // "2026-02-15", "2026-2", "2026-02-15T07:00:00.000Z"
+        const iso = s.match(/^(\d{4})[-/](\d{1,2})(?:[-/](\d{1,2}))?/);
+        if (iso) return new Date(Number(iso[1]), Number(iso[2]) - 1, iso[3] ? Number(iso[3]) : 1);
+        // "Feb 2026", "February 2026", "Feb-2026"
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const mon = s.match(/^([A-Za-z]{3,9})[-\s]+(\d{4})$/i);
+        if (mon) {
+          const idx = months.findIndex(l => l.toLowerCase() === mon[1].toLowerCase().slice(0, 3));
+          if (idx >= 0) return new Date(Number(mon[2]), idx, 1);
+        }
+        const t = Date.parse(s);
+        return isNaN(t) ? null : new Date(t);
+      }
+
+      // Formats a year-month key like "2026-9" into a short "Mon YY" label
+      function formatProfitDate(d) {
+        if (!d) return '';
+        const s = String(d).trim();
+        const m = s.match(/^(\d{4})-(\d{1,2})/);
+        if (m) {
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const monthIdx = parseInt(m[2], 10);
+          const mon = (monthIdx >= 1 && monthIdx <= 12) ? months[monthIdx - 1] : m[2];
+          return mon + "'" + m[1].slice(2);
+        }
+        return s.slice(0, 7);
+      }
+
+      // Reads the profit value whatever the header is spelled:
+      // "Net Profit", "NetProfit", "Netprofit", or the older "Total Profit"
+      function readProfitField(i) {
+        if (!i) return 0;
+        if (i["Net Profit"] !== undefined) return i["Net Profit"];
+        if (i["NetProfit"] !== undefined) return i["NetProfit"];
+        if (i["Netprofit"] !== undefined) return i["Netprofit"];
+        if (i["Total Profit"] !== undefined) return i["Total Profit"];
+        return 0;
+      }
+
+      // Profit Graph — live Net Profit from the "Netprofit" sheet tab (Date | Net Profit)
+      function renderProfitChart(profitData) {
+        const canvasEl = document.getElementById('profitChart');
+        if (!profitData || !canvasEl) return;
+
+        // Keep only rows carrying a Date, parse them, drop unparseable junk
+        const entries = profitData
+          .map(i => ({
+            date: parseProfitDate(i && i["Date"]),
+            profit: readProfitField(i)
+          }))
+          .filter(e => e.date && !isNaN(e.profit))
+          .sort((a, b) => a.date - b.date);
+
+        // Roll rows that fall on the same month into one monthly net-profit point
+        const monthly = new Map();
+        entries.forEach(e => {
+          const key = e.date.getFullYear() + '-' + (e.date.getMonth() + 1);
+          monthly.set(key, (monthly.get(key) || 0) + e.profit);
+        });
+
+        const labels = Array.from(monthly.keys()).map(formatProfitDate);
+        const profits = Array.from(monthly.values());
+
+        const ctx = canvasEl.getContext('2d');
+        if (profitChartInstance) profitChartInstance.destroy();
+
+        profitChartInstance = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Net Profit',
+              data: profits,
+              borderColor: '#a78bfa',
+              backgroundColor: (c) => {
+                const area = c.chart.chartArea;
+                if (!area) return 'rgba(167,139,250,0.25)';
+                const g = c.chart.ctx.createLinearGradient(0, area.top, 0, area.bottom);
+                g.addColorStop(0, 'rgba(167,139,250,0.55)');
+                g.addColorStop(1, 'rgba(167,139,250,0.03)');
+                return g;
+              },
+              fill: 'start',
+              tension: 0.4,
+              borderWidth: 3,
+              pointBackgroundColor: '#a78bfa',
+              pointBorderColor: '#0f172a',
+              pointBorderWidth: 2,
+              pointRadius: 5,
+              pointHoverRadius: 7
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 1200, easing: 'easeOutQuart' },
+            plugins: {
+              legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } },
+              tooltip: {
+                callbacks: {
+                  label: (tc) => ' ' + tc.dataset.label + ': ৳' + Math.round(Number(tc.value)).toLocaleString('en-US')
+                }
+              }
+            },
+            scales: {
+              x: { grid: { display: false } },
+              y: {
+                beginAtZero: true,
+                ticks: { callback: (v) => '৳' + Math.round(Number(v)).toLocaleString('en-US') }
+              }
+            }
+          }
+        });
+      }
+
       // Count-up helper for table numbers
       function animateTableCount(el, target, duration) {
         const start = performance.now();
@@ -2925,7 +3068,7 @@ function toggleProfile(button) {
           const pct = expected > 0 ? Math.min(Math.round((paid / expected) * 100), 100) : 0;
 
           tr.innerHTML = `
-            <td><span class="ms-name">${row["Member Name"]}</span></td>
+            <td><span class="ms-name">${escapeHtml(row["Member Name"])}</span></td>
             <td class="ms-num">0</td>
             <td>
               <span class="ms-bar"><span class="ms-bar-fill ${pct >= 100 ? 'ms-bar-full' : ''}"></span></span>
