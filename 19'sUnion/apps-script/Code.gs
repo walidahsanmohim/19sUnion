@@ -45,9 +45,14 @@
 
 var SPREADSHEET_ID = '14sStv62NQfcCTBySZDD9Wx5g1LQLXZJhC4VGF8uRVcU';
 
-// Change this to a long random secret before deploying.
-// It must be sent as "token" on every write request.
-var WRITE_TOKEN = 'CHANGE_ME_19sUnion_2026';
+// WRITE TOKEN — SECURITY
+// The secret is intentionally NOT stored in this file, so the code stays
+// safe to keep in a repository. Configure it once:
+//   Apps Script editor > Project Settings (gear icon) > Script Properties
+//   Property name : WRITE_TOKEN
+//   Property value: a long random secret (40+ random characters)
+// Until it is configured, ALL write requests are rejected.
+// Every write request must send it as "token".
 
 // tab name (as in the spreadsheet) -> JSON key returned to clients
 var TAB_MAP = [
@@ -90,11 +95,33 @@ function doGet(e) {
 
 /* =========================== WRITE =========================== */
 
+/* The write secret lives in Script Properties — never in the code. */
+function getWriteToken_() {
+  var t = PropertiesService.getScriptProperties().getProperty('WRITE_TOKEN');
+  if (!t || t.length < 24) {
+    throw new Error('WRITE_TOKEN is not configured (or too short) in Script Properties — writes are disabled.');
+  }
+  return t;
+}
+
+/* Constant-time style comparison (compares SHA-256 digests byte-by-byte)
+   so response timing cannot leak how many characters were correct. */
+function tokenMatches_(given) {
+  if (typeof given !== 'string' || !given.length) return false;
+  var expected = getWriteToken_();
+  var a = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, given, Utilities.Charset.UTF_8);
+  var b = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, expected, Utilities.Charset.UTF_8);
+  if (a.length !== b.length) return false;
+  var diff = 0;
+  for (var i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
+  return diff === 0;
+}
+
 function doPost(e) {
   try {
     var body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
 
-    if (body.token !== WRITE_TOKEN) {
+    if (!tokenMatches_(body.token)) {
       return json_({ ok: false, error: 'Invalid or missing token' });
     }
 

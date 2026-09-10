@@ -1,9 +1,15 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth" data-theme="dark">
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>19's Union </title>
+  <meta name="description" content="19's Union — a savings and investment based cooperative society in Badarkhali, Cox's Bazar. Transparent accounts, member directory, and a live financial dashboard.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src https: data:; connect-src https://script.google.com https://script.googleusercontent.com; base-uri 'none'; form-action 'none'">
+  <title>19's Union</title>
+  <!-- Address-bar favicon (logo from Google Drive, direct-served via lh3) -->
+  <link rel="icon" href="https://lh3.googleusercontent.com/d/1OqVeAKGM3nJfTYy0S7go8QE0QoDaXH44" sizes="any">
+  <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1OqVeAKGM3nJfTYy0S7go8QE0QoDaXH44">
   
 <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -11,41 +17,21 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- ===== THEME: restore saved theme before first paint (no flash) + theme helpers ===== -->
+    <!-- Chart.js theme helpers (fixed palette) -->
   <script>
     (function () {
-      var root = document.documentElement;
-      var saved = null;
-      try { saved = localStorage.getItem('19sunion-theme'); } catch (e) {}
-      if (saved !== 'light' && saved !== 'dark') {
-        saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
-      }
-      root.setAttribute('data-theme', saved);
-
-      // Theme-aware colors used by Chart.js
-      window.themeInk  = function () { return root.getAttribute('data-theme') === 'light' ? '#f8fafc' : '#0f172a'; };
-      window.themeGrid = function () { return root.getAttribute('data-theme') === 'light' ? 'rgba(15,23,42,0.08)' : 'rgba(148,163,184,0.12)'; };
-      window.themeTick = function () { return root.getAttribute('data-theme') === 'light' ? '#475569' : '#cbd5e1'; };
+      window.themeInk  = function () { return '#0f172a'; };
+      window.themeGrid = function () { return 'rgba(148,163,184,0.12)'; };
+      window.themeTick = function () { return '#cbd5e1'; };
       window.applyChartTheme = function () {
         if (typeof Chart === 'undefined') return;
         Chart.defaults.color = window.themeTick();
         Chart.defaults.borderColor = window.themeGrid();
       };
       try { window.applyChartTheme(); } catch (e) {}
-
-      window.toggleTheme = function () {
-        var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-        root.setAttribute('data-theme', next);
-        try { localStorage.setItem('19sunion-theme', next); } catch (e) {}
-        try { window.applyChartTheme(); } catch (e) {}
-        // Re-draw the Accounts charts with the new theme's colors
-        var page = document.getElementById('page-accounts');
-        if (page && page.classList.contains('active') && typeof window.refreshAccountsCharts === 'function') {
-          setTimeout(window.refreshAccountsCharts, 80);
-        }
-      };
     })();
   </script>
+
   <!-- Google Fonts (Professional Typography) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,9 +39,8 @@
 
 <style>
 
-    /* ===== Theme Variables (dark default + light theme) ===== */
-    :root,
-    html[data-theme="dark"] {
+        /* ===== Fixed color system - Midnight Navy + Aurora Cyan ===== */
+    :root {
       --card-bg: rgba(15, 23, 42, 0.55);
       --card-border: rgba(255, 255, 255, 0.08);
       --text-main: #f1f5f9;
@@ -63,7 +48,7 @@
       --primary-accent: #38bdf8;
       --arabic-accent: #2dd4bf;
       --bangla-accent: #fbbf24;
-      --bg-page: linear-gradient(160deg, #020617 0%, #0b1e3d 35%, #0f2a54 60%, #0b1e3d 85%, #020617 100%);
+      --bg-page: linear-gradient(160deg, #020617 0%, #071a38 35%, #0b2450 60%, #071a38 85%, #020617 100%);
       --surface: rgba(15, 23, 42, 0.6);
       --surface-2: rgba(2, 6, 23, 0.45);
       --card-grad: linear-gradient(145deg, rgba(30, 41, 82, 0.9), rgba(15, 23, 42, 0.95));
@@ -77,34 +62,15 @@
       --tick-c: #cbd5e1;
       --shadow-c: rgba(0, 0, 0, 0.4);
       --input-bg: rgba(2, 6, 23, 0.4);
+      --accent-soft: rgba(56, 189, 248, 0.15);
+      --accent-glow: rgba(56, 189, 248, 0.4);
+      --hero-bg: radial-gradient(1100px 520px at 12% 18%, rgba(56,189,248,.18), transparent 60%), radial-gradient(900px 480px at 88% 85%, rgba(45,212,191,.15), transparent 55%), linear-gradient(135deg, #031227 0%, #062448 45%, #083063 72%, #031227 100%);
     }
-    html[data-theme="light"] {
-      --card-bg: rgba(255, 255, 255, 0.82);
-      --card-border: rgba(15, 23, 42, 0.08);
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --primary-accent: #0284c7;
-      --arabic-accent: #0d9488;
-      --bangla-accent: #b45309;
-      --bg-page: linear-gradient(160deg, #f2f6fc 0%, #e7eff9 35%, #dfe9f5 60%, #e7eff9 85%, #f2f6fc 100%);
-      --surface: rgba(255, 255, 255, 0.85);
-      --surface-2: rgba(241, 245, 249, 0.8);
-      --card-grad: linear-gradient(145deg, #ffffff, #edf2fa);
-      --border-c: rgba(100, 116, 139, 0.22);
-      --border-strong: rgba(100, 116, 139, 0.32);
-      --text-1: #0f172a;
-      --text-2: #334155;
-      --text-3: #64748b;
-      --ink: #f8fafc;
-      --grid-c: rgba(15, 23, 42, 0.08);
-      --tick-c: #475569;
-      --shadow-c: rgba(15, 23, 42, 0.1);
-      --input-bg: rgba(241, 245, 249, 0.7);
-    }
-    /* Page background follows the active theme */
+
+/* Page background follows the active theme */
     .app-body { background: var(--bg-page); background-attachment: fixed; }
 
-/* Main Container with Glassmorphism Effect — compact size */
+    /* Main Container with Glassmorphism Effect — compact size */
     .dashboard {
       width: 100%;
       max-width: 460px;
@@ -235,7 +201,6 @@
       }
     }
 
-
     /* 1. Continuous Zoom In-Out Animation */
     @keyframes zoomInOut {
       0%, 100% { transform: scale(1); }
@@ -254,14 +219,7 @@
       animation: floatUpDown 3s ease-in-out infinite;
     }
 
-    /* 3. Glowing Outline Shadow Animation */
-    @keyframes glowPulse {
-      0%, 100% { box-shadow: 0 0 3px rgb(255, 187, 0); }
-      50% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.8); }
-    }
-    .animate-glow {
-      animation: glowPulse 2.5s infinite;
-    }
+        /* Glowing Outline Shadow Animation — removed for clean professional look */
 
     /* 4. Refined Typing Accent */
     @keyframes typeGlow {
@@ -336,77 +294,126 @@
       }
     }
 
-/* Navbar Underscore Animated Underline Effect */
-    .nav-btn {
+/* ============================================================
+   FLOATING DOCK NAVBAR - detached glass pill with a sliding
+   indicator that glides beneath the active item
+   ============================================================ */
+    .dock-wrap {
+      position: fixed;
+      top: 12px;
+      left: 0;
+      width: 100%;
+      z-index: 50;
+      display: flex;
+      justify-content: center;
+      padding: 0 12px;
+      pointer-events: none;
+    }
+    .dock {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px;
+      border-radius: 999px;
+      background: rgba(8, 15, 35, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow:
+        0 18px 45px -12px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .dock-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 6px 14px 6px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      cursor: pointer;
+      margin-right: 4px;
+      transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease;
+    }
+    .dock-logo:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px -6px var(--accent-glow);
+    }
+    .dock-logo img {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .dock-logo span {
+      font-weight: 700;
+      font-size: .92rem;
+      letter-spacing: .02em;
+      color: var(--text-1);
+      white-space: nowrap;
+    }
+    .dock-items {
       position: relative;
+      display: flex;
+      align-items: center;
+      gap: 2px;
     }
-    .nav-btn::after {
-      content: "";
+    /* Sliding pill - JS moves it under the active item */
+    #dock-indicator {
       position: absolute;
-      left: 50%;
-      bottom: 2px;
+      top: 0;
+      left: 0;
+      height: 100%;
       width: 0;
-      height: 2px;
-      border-radius: 9999px;
-      background: linear-gradient(90deg, #3b82f6, #22d3ee);
-      transform: translateX(-50%);
-      transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .nav-btn:hover::after {
-      width: 70%;
-    }
-    .nav-btn.active-link::after {
-      width: 70%;
-    }
-    .nav-btn.active-link {
-      text-shadow: 0 0 18px rgba(96, 165, 250, 0.45);
-    }
-
-    /* Mobile Menu: hidden by default, slides down when open */
-    .mobile-menu {
-      max-height: 0;
-      overflow: hidden;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: 0 0 18px -4px var(--accent-glow);
       opacity: 0;
-      visibility: hidden;
-      transform: translateY(-8px);
-      transition: max-height 0.4s ease, opacity 0.3s ease, transform 0.4s ease, visibility 0.4s;
+      transition:
+        transform .45s cubic-bezier(.22,1,.36,1),
+        width .45s cubic-bezier(.22,1,.36,1),
+        opacity .3s ease;
+      will-change: transform, width;
     }
-    .mobile-menu.open {
-      max-height: 420px;
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
+    .dock-items .nav-btn {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-3);
+      font-weight: 600;
+      font-size: .85rem;
+      padding: 10px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color .25s ease, transform .3s cubic-bezier(.22,1,.36,1);
     }
+    .dock-items .nav-btn i { font-size: .9rem; }
+    .dock-items .nav-btn:hover {
+      color: var(--text-1);
+      transform: translateY(-2px);
+    }
+    .dock-items .nav-btn.active-link { color: var(--primary-accent); }
 
-/* Hamburger to X animation */
-    #menu-toggle.open .menu-bar:nth-child(1) {
-      transform: translateY(8px) rotate(45deg);
-      background: #38bdf8;
+    /* Mobile: compact dock, icon-only items */
+    @media (max-width: 767px) {
+      .dock { gap: 2px; padding: 6px; }
+      .dock-logo { padding: 6px 8px; margin-right: 0; }
+      .dock-logo span { display: none; }
+      .dock-items .nav-btn { padding: 10px 12px; }
+      .dock-items .nav-btn span { display: none; }
+      .dock-items .nav-btn i { font-size: 1.02rem; }
     }
-    #menu-toggle.open .menu-bar:nth-child(2) {
-      opacity: 0;
+    @media (max-width: 400px) {
+      .dock-items .nav-btn { padding: 10px 10px; }
     }
-    #menu-toggle.open .menu-bar:nth-child(3) {
-      transform: translateY(-8px) rotate(-45deg);
-      background: #38bdf8;
-    }
-
-    /* Mobile nav link hover & active styling */
-    .mnav-btn {
-      transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
-    }
-    .mnav-btn:hover {
-      background: rgba(59, 130, 246, 0.12);
-      color: #fff;
-      transform: translateX(4px);
-    }
-    .mnav-btn.active-link {
-      background: rgba(59, 130, 246, 0.15);
-      color: #60a5fa;
-      border-left: 3px solid #38bdf8;
-    }
-
-    /* Prevent horizontal scroll overflow on small screens */
+/* Prevent horizontal scroll overflow on small screens */
     html, body {
       overflow-x: hidden;
     }
@@ -417,66 +424,58 @@
       .hero-logo { width: min(180px, 55vw); }
     }
 
-    @keyframes cardReveal {
-      from {
-        opacity: 0;
-        transform: translateY(18px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-/* ===== MEMBER CARDS — Professional Running-Outline Design ===== */
+        /* ===== MEMBER CARDS — Glassmorphism UI ===== */
     .member-card {
       position: relative;
-      border-radius: 1.4rem;
-      padding: 1.2rem;
+      border-radius: 1.35rem;
+      padding: 1.3rem 1.1rem;
       overflow: hidden;
+      background:
+        linear-gradient(160deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.03) 55%, rgba(255,255,255,.06) 100%);
+      border: 1px solid rgba(255,255,255,.14);
       box-shadow:
-        0 20px 45px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-      animation: cardReveal 0.7s ease backwards;
-      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        0 22px 48px -14px var(--shadow-c),
+        inset 0 1px 0 rgba(255,255,255,.16);
+      -webkit-backdrop-filter: blur(14px) saturate(1.3);
+      backdrop-filter: blur(14px) saturate(1.3);
+      animation: memberCardIn .65s cubic-bezier(.22,1,.36,1) both;
+      transition:
+        transform .55s cubic-bezier(.22,1,.36,1),
+        box-shadow .55s ease,
+        border-color .5s ease;
       will-change: transform;
     }
-    .member-card:hover {
-      transform: translateY(-6px);
+    @keyframes memberCardIn {
+      from { opacity: 0; transform: translateY(22px) scale(.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
-
-    /* Non-stop running outline ring — appears ONLY on hover, outside the whole box */
+    /* Smooth glass hover — soft lift, accent glow, brighter glass edge */
+    .member-card:hover {
+      transform: translateY(-8px) scale(1.015);
+      border-color: rgba(255,255,255,.3);
+      box-shadow:
+        0 30px 62px -16px var(--shadow-c),
+        0 0 0 1px rgba(255,255,255,.12),
+        0 0 36px -6px var(--accent-glow);
+    }
+    /* Gentle diagonal sheen that glides across the glass on hover */
     .member-card::before {
       content: "";
       position: absolute;
       inset: 0;
-      border-radius: 1.4rem;
-      padding: 2px;
-      background: conic-gradient(from var(--a, 0deg), #3b82f6, #22d3ee, #8b5cf6, #f43f5e, #001d4d);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask-composite: exclude;
+      border-radius: 1.35rem;
+      background: linear-gradient(115deg, transparent 18%, rgba(255,255,255,.13) 42%, transparent 62%);
       opacity: 0;
-      transition: opacity 0.4s ease;
-      z-index: 2;
+      transform: translateX(-24%);
+      transition: opacity .45s ease, transform .75s cubic-bezier(.22,1,.36,1);
       pointer-events: none;
+      z-index: 2;
     }
     .member-card:hover::before {
       opacity: 1;
-      animation: spinBorder 2.2s linear infinite;
+      transform: translateX(14%);
     }
-
-    @property --a {
-      syntax: '<angle>';
-      initial-value: 0deg;
-      inherits: false;
-    }
-    @keyframes spinBorder {
-      to { --a: 360deg; }
-    }
-
-    /* Subtle top accent line (static design element, not a hover effect) */
+    /* Refracted accent light along the glass top edge */
     .member-card::after {
       content: "";
       position: absolute;
@@ -484,25 +483,37 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, #028137, #22c55e, #0ea5e9, #028137);
-      background-size: 200% 100%;
-      opacity: 0.9;
+      background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+      opacity: .85;
       z-index: 1;
     }
 
-/* Circular member photo frame */
+/* Circular avatar — glass ring that glows with the accent on hover */
     .member-img-box {
       position: relative;
-      width: min(150px, 70%);
+      width: min(134px, 64%);
       aspect-ratio: 1 / 1;
-      margin: 0 auto 1.1rem;
+      margin: 0 auto 1.05rem;
       border-radius: 50%;
       overflow: hidden;
-      border: 3px solid rgba(59, 130, 246, 0.45);
-      background: linear-gradient(135deg, #0b1220, #111827);
+      border: 3px solid var(--accent-glow);
+      background: linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.02));
       box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.05),
-        0 12px 30px rgba(0, 0, 0, 0.45);
+        0 0 0 4px rgba(255,255,255,.08),
+        0 14px 34px -8px var(--shadow-c),
+        0 0 24px -4px var(--accent-glow);
+      transition:
+        transform .55s cubic-bezier(.22,1,.36,1),
+        box-shadow .55s ease,
+        border-color .5s ease;
+    }
+    .member-card:hover .member-img-box {
+      transform: scale(1.06);
+      border-color: var(--accent-glow);
+      box-shadow:
+        0 0 0 5px rgba(255,255,255,.14),
+        0 18px 44px -8px var(--shadow-c),
+        0 0 34px 2px var(--accent-glow);
     }
     .member-img-box img {
       width: 100%;
@@ -647,26 +658,26 @@
       position: relative;
       z-index: 1;
       text-align: center;
-      font-size: 1.05rem;
+      font-size: 1.08rem;
       font-weight: 800;
       color: var(--text-1);
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
       line-height: 1.3;
     }
     .member_id {
       position: relative;
       z-index: 1;
       display: inline-block;
-      color: #bae6fd;
+      color: var(--primary-accent);
       font-size: 0.78rem;
       font-weight: 700;
       letter-spacing: 0.05em;
-      margin-bottom: 0.9rem;
-      padding: 0.3rem 1rem;
+      margin-bottom: 0.85rem;
+      padding: 0.32rem 1rem;
       border-radius: 9999px;
-      background: rgba(59, 130, 246, 0.12);
-      border: 1px solid rgba(59, 130, 246, 0.25);
-      backdrop-filter: blur(4px);
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-soft);
+      backdrop-filter: blur(6px);
     }
     .member-id-wrap {
       text-align: center;
@@ -675,8 +686,8 @@
       position: relative;
       z-index: 1;
       display: grid;
-      gap: 0.65rem;
-      margin-bottom: 0.95rem;
+      gap: 0.6rem;
+      margin-bottom: 0.9rem;
     }
     .info-item {
       display: flex;
@@ -684,14 +695,19 @@
       gap: 0.55rem;
       font-size: 0.82rem;
       color: var(--text-2);
-      background: var(--surface-2);
-      border: 1px solid var(--border-strong);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
       border-radius: 0.85rem;
       padding: 0.55rem 0.65rem;
+      backdrop-filter: blur(6px);
+      transition: background-color .35s ease, color .35s ease;
     }
     .info-item i {
-      color: #60a5fa;
+      color: var(--primary-accent);
       min-width: 14px;
+    }
+    .member-card:hover .info-item {
+      background: rgba(255,255,255,.12);
     }
 .view-profile-btn {
       position: relative;
@@ -701,20 +717,23 @@
       justify-content: space-between;
       align-items: center;
       margin-top: 0.15rem;
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.98), rgba(29, 78, 216, 0.92));
-      color: white;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-soft);
+      color: var(--primary-accent);
       font-weight: 700;
-      border-radius: 0.85rem;
-      padding: 0.75rem 0.9rem;
-      border: none;
+      border-radius: 0.9rem;
+      padding: 0.72rem 0.9rem;
       cursor: pointer;
-      transition: filter 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.22);
+      backdrop-filter: blur(8px);
+      transition:
+        background-color .4s ease,
+        box-shadow .45s ease,
+        transform .45s cubic-bezier(.22,1,.36,1);
+      box-shadow: 0 0 14px -4px var(--accent-glow);
     }
     .view-profile-btn:hover {
-      filter: brightness(1.08);
       transform: translateY(-1px);
-      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.35);
+      box-shadow: 0 0 22px -2px var(--accent-glow);
     }
     .view-profile-btn:active {
       transform: translateY(0) scale(0.98);
@@ -761,11 +780,15 @@
       grid-template-columns: 110px 1fr;
       gap: 0.6rem;
       font-size: 0.8rem;
-      padding: 0.55rem 0;
-      border-bottom: 1px solid rgba(77, 94, 117, 0.452);
+      padding: 0.55rem 0.7rem;
+      border-radius: 0.65rem;
+      margin-bottom: 0.4rem;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      backdrop-filter: blur(4px);
     }
     .detail-row:last-child {
-      border-bottom: none;
+      margin-bottom: 0;
     }
     .detail-label {
       color: var(--text-3);
@@ -780,26 +803,6 @@
    ============================================================ */
 
 /* 1. Smooth staggered entrance reveal for every rule box */
-@keyframes ruleBoxReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(34px) scale(0.96);
-    filter: blur(6px);
-  }
-  60% {
-    opacity: 1;
-    transform: translateY(-4px) scale(1.01);
-    filter: blur(0);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
-  }
-}
-.rule-box {
-  animation: ruleBoxReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
 
 /* 2. Gentle continuous floating for a living feel */
 @keyframes ruleFloat {
@@ -807,231 +810,15 @@
   50% { transform: translateY(-6px); }
 }
 
-/* 3. Professional hover lift + glow */
-.rule-lift {
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.45s ease,
-              border-color 0.45s ease;
-  will-change: transform;
-}
+/* 3. Professional hover lift */
 .rule-lift:hover {
   transform: translateY(-8px);
 }
 
-/* 4. Animated flowing gradient border ring */
-@keyframes borderFlow {
-  to {
-    background-position: 200% 0;
-  }
-}
-.rule-border-flow {
-  position: relative;
-  overflow: hidden;
-}
-.rule-border-flow::after {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #3b82f6, #22d3ee, #8b5cf6, #f43f5e, #fbbf24, #3b82f6);
-  background-size: 200% 100%;
-  animation: borderFlow 5s linear infinite;
-  opacity: 0.9;
-  z-index: 2;
-}
-
-/* 5. Animated gradient shimmer text for headings */
-@keyframes textShimmer {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
-}
-.rule-shimmer-text {
-  background: linear-gradient(90deg, #93c5fd, #67e8f9, #a5b4fc, #fda4af, #93c5fd);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  animation: textShimmer 4.5s linear infinite;
-}
-
-/* 6. Soft pulsing glow for the intro / key text */
-@keyframes textSoftPulse {
-  0%, 100% {
-    text-shadow: 0 0 8px rgba(147, 197, 253, 0.15);
-    opacity: 1;
-  }
-  50% {
-    text-shadow: 0 0 22px rgba(103, 232, 249, 0.45);
-    opacity: 0.96;
-  }
-}
-.rule-soft-pulse {
-  animation: textSoftPulse 3.6s ease-in-out infinite;
-}
-
-/* 7. Staggered delay helper for row items */
-.rule-delay-1 { animation-delay: 0.15s; }
-.rule-delay-2 { animation-delay: 0.3s; }
-.rule-delay-3 { animation-delay: 0.45s; }
-.rule-delay-4 { animation-delay: 0.6s; }
-.rule-delay-5 { animation-delay: 0.75s; }
-
-/* Reveal on scroll — IntersectionObserver triggers this class */
-.rule-reveal {
-  opacity: 0;
-  transform: translateY(40px);
-}
-.rule-reveal.rule-visible {
-  animation: ruleBoxReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
+/* Reveal on scroll handled by IntersectionObserver (rule-visible class) */
 
 /* ============================================================
-   RULES PAGE — ENHANCED TEXT & BOX ANIMATIONS
-   ============================================================ */
-
-/* 8. Gentle continuous floating for rule boxes (uses translate so it
-      does not conflict with the reveal transform on the same element) */
-@keyframes ruleFloatY {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -7px; }
-}
-.rule-float {
-  animation: ruleFloatY 5.5s ease-in-out infinite;
-}
-
-/* 9. Soft pulsing glow behind each rule box */
-@keyframes ruleGlow {
-  0%, 100% {
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45), 0 0 18px rgba(56, 189, 248, 0.08);
-  }
-  50% {
-    box-shadow: 0 26px 70px rgba(0, 0, 0, 0.55), 0 0 34px rgba(56, 189, 248, 0.22);
-  }
-}
-.rule-glow {
-  animation: ruleGlow 4.5s ease-in-out infinite;
-}
-
-/* 10. Hover shine sweep — a diagonal light beam glides across the card */
-@keyframes ruleSweep {
-  0% { transform: translateX(-130%) skewX(-18deg); }
-  100% { transform: translateX(240%) skewX(-18deg); }
-}
-.rule-sweep {
-  position: relative;
-  overflow: hidden;
-}
-.rule-sweep::after {
-  content: "";
-  position: absolute;
-  top: -20%;
-  left: 0;
-  width: 45%;
-  height: 140%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
-  transform: translateX(-130%) skewX(-18deg);
-  pointer-events: none;
-  opacity: 0;
-  z-index: 3;
-}
-.rule-sweep:hover::after {
-  opacity: 1;
-  animation: ruleSweep 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-/* 11. Animated gradient shimmer for each POLICY title (color themes) */
-@keyframes ruleTitleShimmer {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
-}
-.rule-title-shimmer {
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  animation: ruleTitleShimmer 5s linear infinite;
-}
-.rule-title-blue   { background-image: linear-gradient(90deg, #60a5fa, #38bdf8, #818cf8, #60a5fa); }
-.rule-title-emerald{ background-image: linear-gradient(90deg, #34d399, #2dd4bf, #6ee7b7, #34d399); }
-.rule-title-purple { background-image: linear-gradient(90deg, #a78bfa, #d8b4fe, #c084fc, #a78bfa); }
-.rule-title-amber  { background-image: linear-gradient(90deg, #fbbf24, #fcd34d, #f59e0b, #fbbf24); }
-.rule-title-rose   { background-image: linear-gradient(90deg, #fb7185, #fda4af, #f43f5e, #fb7185); }
-
-/* 12. Pop-in animation for POLICY chips */
-@keyframes ruleChipPop {
-  0% { opacity: 0; transform: scale(0.6); }
-  60% { opacity: 1; transform: scale(1.08); }
-  100% { opacity: 1; transform: scale(1); }
-}
-.rule-chip-pop {
-  animation: ruleChipPop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* 13. Staggered fade-in for list items inside policy cards */
-@keyframes ruleItemFade {
-  from { opacity: 0; transform: translateX(16px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-.rule-item-fade {
-  opacity: 0;
-  animation: ruleItemFade 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-.rule-item-1 { animation-delay: 0.15s; }
-.rule-item-2 { animation-delay: 0.3s; }
-.rule-item-3 { animation-delay: 0.45s; }
-.rule-item-4 { animation-delay: 0.6s; }
-.rule-item-5 { animation-delay: 0.75s; }
-.rule-item-6 { animation-delay: 0.9s; }
-
-/* 14. Soft pulsing glow for stat badges */
-@keyframes ruleBadgePulse {
-  0%, 100% { box-shadow: 0 0 0 rgba(255, 255, 255, 0); }
-  50% { box-shadow: 0 0 14px rgba(255, 255, 255, 0.18); }
-}
-.rule-badge-pulse {
-  animation: ruleBadgePulse 3s ease-in-out infinite;
-}
-
-/* 15. Pop-in for address info boxes */
-@keyframes ruleAddressPop {
-  from { opacity: 0; transform: translateY(14px) scale(0.94); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-.rule-address-pop {
-  animation: ruleAddressPop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* Address info boxes inside governance container — staggered pop-in */
-.governance-addresses > div {
-  animation: ruleAddressPop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-.governance-addresses > div:nth-child(1) { animation-delay: 0.15s; }
-.governance-addresses > div:nth-child(2) { animation-delay: 0.3s; }
-.governance-addresses > div:nth-child(3) { animation-delay: 0.45s; }
-.governance-addresses > div:nth-child(4) { animation-delay: 0.6s; }
-
-/* 16. Soft pulsing glow on the intro paragraph */
-@keyframes ruleParaGlow {
-  0%, 100% { text-shadow: 0 0 6px rgba(147, 197, 253, 0.12); }
-  50% { text-shadow: 0 0 16px rgba(103, 232, 249, 0.35); }
-}
-.rule-paragraph-glow {
-  animation: ruleParaGlow 4s ease-in-out infinite;
-}
-
-/* 17. Animated flowing glow border on the bottom note box */
-@keyframes ruleNoteGlow {
-  0%, 100% { box-shadow: 0 0 0 rgba(251, 191, 36, 0); border-color: rgba(251, 191, 36, 0.3); }
-  50% { box-shadow: 0 0 22px rgba(251, 191, 36, 0.28); border-color: rgba(251, 191, 36, 0.7); }
-}
-.rule-note-glow {
-  animation: ruleNoteGlow 3.6s ease-in-out infinite;
-}
-
-/* ============================================================
-   ACCOUNTS DASHBOARD — DARK THEME, ANIMATED
+   ACCOUNTS DASHBOARD — DARK THEME
    ============================================================ */
 .acc-grid {
   display: grid;
@@ -1172,14 +959,7 @@
   align-items: center;
   gap: 8px;
 }
-.acc-panel h2 i { color: #38bdf8; }
 .chart-box { position: relative; height: 300px; width: 100%; }
-@media (max-width: 900px) {
-  .chart-box { height: 380px; }
-}
-@media (max-width: 480px) {
-  .chart-box { height: 440px; }
-}
 /* Paid ticker (Current Status panel) — pops up who-paid names every second */
 .paid-ticker {
   display: flex;
@@ -1198,7 +978,6 @@
 .paid-ticker-icon {
   color: #34d399;
   flex-shrink: 0;
-  animation: iconPulse 1.5s ease-in-out infinite;
 }
 .paid-ticker-text { display: inline-block; white-space: nowrap; }
 .paid-pop { animation: paidPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.4) both; }
@@ -1207,14 +986,11 @@
   60%  { opacity: 1; transform: scale(1.08) translateY(0); }
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
-@keyframes iconPulse {
-  0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.2); }
-}
+/* iconPulse — removed for clean professional look */
 
 /* Investment doughnut — spinning orbit ring + replay glow */
 .inv-chart-wrap { position: relative; }
-.inv-glow { animation: invGlow 4s ease-in-out infinite; }
+
 .inv-center {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -1225,39 +1001,32 @@
   gap: 3px;
   text-align: center;
   white-space: nowrap;
+  overflow: hidden;
+  border-radius: 999px;
   pointer-events: none;
   z-index: 2;
 }
 .inv-center-label {
-  font-size: 9px;
+  font-size: 0.55em;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-3);
 }
 .inv-center-value {
-  font-size: 19px;
+  font-size: 1em;
   font-weight: 800;
   color: #05cd99;
   text-shadow: 0 0 18px rgba(5, 205, 153, 0.55);
 }
-.inv-beat { animation: invBeat 1.1s cubic-bezier(0.22, 1, 0.36, 1); }
-@keyframes invBeat {
-  0%   { transform: scale(1); }
-  35%  { transform: scale(1.08); }
-  100% { transform: scale(1); }
-}
-@keyframes invGlow {
-  0%, 100% { filter: drop-shadow(0 0 8px rgba(5, 205, 153, 0.15)); }
-  50%      { filter: drop-shadow(0 0 22px rgba(5, 205, 153, 0.5)); }
-}
+
 /* Member Status table — staggered rows, progress bars, badges */
 .ms-row { opacity: 0; animation: msRowIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 @keyframes msRowIn {
   0%   { opacity: 0; transform: translateX(18px); }
   100% { opacity: 1; transform: translateX(0); }
 }
-.ms-name { font-weight: 600; color: var(--text-2); }
+.ms-name { font-weight: 600; color: var(--text-2); white-space: nowrap; }
 .ms-num { color: #38bdf8; font-weight: 700; }
 .ms-bar {
   display: inline-block;
@@ -1300,33 +1069,13 @@
   background: rgba(248, 113, 113, 0.12);
   color: #fca5a5;
   border: 1px solid rgba(248, 113, 113, 0.4);
-  animation: unpaidPulse 1.6s ease-in-out infinite;
+  
 }
-@keyframes unpaidPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.35); }
-  50%      { box-shadow: 0 0 0 6px rgba(248, 113, 113, 0); }
-}
+
 .acc-table tbody tr:hover { background: rgba(148, 163, 184, 0.06); }
 
 /* Advances chart — money shine sweep + glow */
-.shine-box { position: relative; overflow: hidden; }
-.shine-box::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -60%;
-  width: 40%;
-  height: 100%;
-  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.06), transparent);
-  transform: skewX(-20deg);
-  animation: shineSweep 4.5s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes shineSweep {
-  0%        { left: -60%; }
-  55%, 100% { left: 130%; }
-}
-.advance-glow { filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.12)); }
+
 .tables-acc {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1376,6 +1125,668 @@
 @keyframes accProgress { from { width: 0 !important; } }
 
 /* ============================================================
+   ACCOUNTS PAGE — NEUMORPHISM / SOFT-VECTOR REDESIGN
+   Raised tiles, pressed wells, grooves and vector accents.
+   Dual shadows follow the active theme + color accent.
+   ============================================================ */
+:root {
+  --neu-bg: #0b1120;
+  --neu-bg-2: #0d1426;
+  --neu-hi: rgba(255,255,255,.12);
+  --neu-hi-2: rgba(255,255,255,.22);
+  --neu-lo: rgba(0,0,0,.55);
+  --neu-lo-2: rgba(0,0,0,.72);
+}
+/* --- Stat cards: raised soft tiles --- */
+.acc-card {
+  background: var(--neu-bg);
+  border: none;
+  border-radius: 22px;
+  box-shadow:
+    -3px -3px 16px var(--neu-hi),
+    4px 4px 18px var(--neu-lo),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  animation: accCardIn .6s cubic-bezier(.22,1,.36,1) both;
+}
+.acc-card::before { content: none; }
+.acc-card::after  { content: none; }
+.acc-card:hover {
+  transform: translateY(-7px);
+  box-shadow:
+    -4px -4px 24px var(--neu-hi-2),
+    5px 5px 26px var(--neu-lo-2),
+    inset 0 1px 0 rgba(255,255,255,.1);
+}
+.acc-card:active {
+  transform: translateY(2px);
+  box-shadow:
+    inset 2px 3px 10px var(--neu-lo),
+    inset -2px -2px 8px var(--neu-hi);
+}
+/* Icon well — pressed-in circle (classic neumorphic "pushed" surface) */
+.acc-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--neu-bg-2);
+  border: 1px solid var(--accent-soft);
+  font-size: 22px;
+  box-shadow:
+    inset 3px 3px 10px var(--neu-lo),
+    inset -2px -2px 8px var(--neu-hi),
+    0 0 0 5px var(--neu-bg);
+}
+.acc-card:hover .acc-icon {
+  transform: scale(1.06);
+  box-shadow:
+    inset -1px -1px 6px var(--neu-lo),
+    inset 1px 1px 6px var(--neu-hi),
+    0 0 20px -4px var(--accent-glow);
+}
+.acc-info h3 {
+  font-size: 12px;
+  color: var(--text-3);
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.acc-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-1);
+  letter-spacing: -.01em;
+}
+.acc-trend { font-weight: 600; }
+
+/* --- Chart panels: raised soft boards --- */
+.acc-panel {
+  background: var(--neu-bg);
+  border: none;
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow:
+    -3px -3px 18px var(--neu-hi),
+    4px 4px 20px var(--neu-lo),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  animation: accCardIn .7s cubic-bezier(.22,1,.36,1) both;
+}
+.acc-panel:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    -4px -4px 24px var(--neu-hi-2),
+    5px 5px 26px var(--neu-lo-2);
+}
+.acc-panel h2 {
+  color: var(--text-1);
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.acc-panel h2 > i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--neu-bg-2);
+  color: var(--primary-accent);
+  font-size: 14px;
+  line-height: 1;
+  box-shadow:
+    inset 2px 2px 7px var(--neu-lo),
+    inset -2px -2px 7px var(--neu-hi);
+}
+.charts-acc, .tables-acc { gap: 24px; margin-bottom: 30px; }
+.acc-grid { gap: 26px; }
+
+/* --- Paid ticker: pressed-in groove --- */
+.paid-ticker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--neu-bg-2);
+  color: #34d399;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow:
+    inset 2px 3px 10px var(--neu-lo),
+    inset -2px -2px 8px var(--neu-hi);
+}
+
+/* --- Investment centre value --- */
+.inv-center-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--primary-accent);
+  text-shadow: 0 0 18px var(--accent-glow);
+}
+
+/* --- Member status: inset bars + raised badges --- */
+.ms-bar {
+  display: inline-block;
+  vertical-align: middle;
+  width: 110px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--neu-bg-2);
+  box-shadow:
+    inset 0 2px 6px var(--neu-lo),
+    inset 0 -1px 5px var(--neu-hi);
+  overflow: hidden;
+}
+.ms-bar-fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #05cd99, #34d399);
+  box-shadow:
+    0 1px 4px var(--neu-hi),
+    0 -1px 4px var(--neu-lo);
+  transition: width .9s cubic-bezier(.22,1,.36,1);
+}
+.ms-bar-fill.ms-bar-full { background: linear-gradient(90deg, #10b981, #34d399); }
+.ms-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow:
+    -1px -1px 6px var(--neu-hi),
+    2px 2px 8px var(--neu-lo);
+}
+.ms-badge-paid   { background: var(--neu-bg-2); color: #34d399; }
+.ms-badge-unpaid { background: var(--neu-bg-2); color: #f87171; }
+
+/* --- Tables: content sits in a pressed groove --- */
+.acc-table-wrap {
+  background: var(--neu-bg-2);
+  border-radius: 14px;
+  box-shadow:
+    inset 2px 3px 10px var(--neu-lo),
+    inset -2px -2px 8px var(--neu-hi);
+  padding: 2px;
+}
+.acc-table th, .acc-table td {
+  padding: 11px 12px;
+  font-size: 12.5px;
+  color: var(--text-2);
+  border-bottom: 1px solid rgba(127,150,180,.18);
+}
+.acc-table thead th {
+  color: var(--text-3);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.acc-table tbody tr:last-child td { border-bottom: none; }
+.acc-table tbody tr:hover td { background: rgba(255,255,255,.055); }
+
+/* --- Generic badges & progress (kept for compatibility) --- */
+.ac-badge {
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-block;
+  box-shadow:
+    -1px -1px 6px var(--neu-hi),
+    2px 2px 8px var(--neu-lo);
+}
+.progress-acc {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--neu-bg-2);
+  box-shadow: inset 0 2px 6px var(--neu-lo), inset 0 -1px 5px var(--neu-hi);
+  overflow: hidden;
+}
+.progress-acc-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #38bdf8, #22d3ee, #2dd4bf);
+  box-shadow: 0 1px 4px var(--neu-hi), 0 -1px 4px var(--neu-lo);
+  transition: width 1s cubic-bezier(.22,1,.36,1);
+}
+
+/* --- Accounts header (neu badge / title / subtitle) --- */
+.acc-head-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border-radius: 999px;
+  padding: 7px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--primary-accent);
+  background: var(--neu-bg);
+  box-shadow:
+    -1px -1px 8px var(--neu-hi),
+    2px 2px 10px var(--neu-lo);
+}
+.acc-head-badge .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary-accent);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.45);
+}
+.acc-title {
+  display: block;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: var(--text-1);
+}
+.acc-sub {
+  color: var(--text-3);
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 640px;
+  margin: 12px auto 0;
+}
+
+/* --- Vector flourish: soft orbs behind the accounts header --- */
+.acc-vector {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: inherit;
+}
+.acc-vector::before {
+  content: "";
+  position: absolute;
+  right: -140px;
+  top: -140px;
+  width: 460px;
+  height: 460px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-soft), transparent 70%);
+}
+.acc-vector::after {
+  content: "";
+  position: absolute;
+  left: -90px;
+  bottom: -90px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.05), transparent 72%);
+}
+
+/* --- Error banner + retry (neumorphic alert) --- */
+.acc-status-banner {
+  display: none;
+  max-width: 768px;
+  margin: 0 auto 28px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: none;
+  background: rgba(127,29,29,.24);
+  color: #fecaca;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+  text-align: center;
+  box-shadow:
+    inset 3px 3px 12px rgba(127,29,29,.28),
+    inset -2px -2px 10px rgba(0,0,0,.35);
+}
+.neu-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: 10px;
+  padding: 9px 18px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  background: var(--neu-bg);
+  color: #f59e0b;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow:
+    -1px -1px 8px var(--neu-hi),
+    2px 2px 10px var(--neu-lo);
+}
+.neu-retry-btn:hover { color: var(--primary-accent); }
+.neu-retry-btn:active {
+  box-shadow:
+    inset 1px 1px 6px var(--neu-lo),
+    inset -1px -1px 6px var(--neu-hi);
+}
+
+/* --- Neumorphic CTA button (View Full Record Portal) --- */
+.neu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 16px;
+  background: var(--neu-bg);
+  color: var(--text-1);
+  font-weight: 700;
+  padding: 12px 22px;
+  box-shadow:
+    -2px -2px 12px var(--neu-hi),
+    3px 3px 14px var(--neu-lo);
+}
+.neu-btn .neu-btn-ic {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--neu-bg-2);
+  color: var(--primary-accent);
+  font-size: 16px;
+  box-shadow:
+    inset 2px 2px 7px var(--neu-lo),
+    inset -2px -2px 7px var(--neu-hi);
+}
+.neu-btn .neu-btn-cap {
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.neu-btn .neu-btn-main { font-size: 15px; color: var(--text-1); }
+.neu-btn:hover {
+  transform: translateY(-2px);
+  color: var(--primary-accent);
+  box-shadow:
+    -3px -3px 18px var(--neu-hi-2),
+    4px 4px 20px var(--neu-lo-2);
+}
+.neu-btn:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 2px 2px 10px var(--neu-lo),
+    inset -2px -2px 10px var(--neu-hi);
+}
+
+/* --- Smooth theme switching for the neu surfaces --- */
+.acc-card, .acc-panel, .acc-icon, .paid-ticker, .acc-table-wrap,
+.ms-bar, .ms-badge, .ac-badge, .acc-head-badge, .neu-btn, .neu-retry-btn {
+  transition:
+    background-color .45s ease, color .35s ease, border-color .45s ease,
+    box-shadow .45s ease, transform .45s cubic-bezier(.22,1,.36,1);
+}
+
+        /* Smooth surface transitions */
+    body, footer, .dashboard, .cal-row,
+    .acc-table th, .hero-card {
+      transition: background-color 0.45s ease, color 0.35s ease, border-color 0.45s ease;
+    }
+    .member-card {
+      transition: background-color .5s ease, color .35s ease, border-color .5s ease, transform .55s cubic-bezier(.22,1,.36,1), box-shadow .55s ease;
+    }
+    .info-item { transition: background-color .35s ease, color .35s ease; }
+
+
+/* ============================================================
+   REDESIGN PART 2 — global polish: typography, scrollbar,
+   nav active links, professional footer, accessibility
+   ============================================================ */
+
+    /* Refined body typography baseline */
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Custom slim scrollbar (WebKit/Chromium) */
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(56,189,248,.45), rgba(148,163,184,.35));
+      border-radius: 9999px; border: 2px solid transparent; background-clip: content-box;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, rgba(56,189,248,.7), rgba(148,163,184,.55));
+    }
+    html { scrollbar-color: rgba(148,163,184,.45) transparent; scrollbar-width: thin; }
+
+    /* Visible keyboard focus (accessibility) */
+    :focus-visible { outline: 2px solid var(--primary-accent); outline-offset: 2px; border-radius: 6px; }
+
+    /* Text selection tint */
+    ::selection { background: rgba(56,189,248,.25); color: inherit; }
+    ::selection:window-inactive { background: rgba(56,189,248,.12); }
+
+    /* ===== UNIFIED BUTTON SYSTEM — neumorphic tiles ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: none;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 12px 22px;
+      background: var(--neu-bg);
+      color: var(--text-2);
+      box-shadow:
+        -3px -3px 12px var(--neu-hi),
+        4px 4px 14px var(--neu-lo),
+        inset 0 1px 0 rgba(255,255,255,.06);
+      transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease, color .25s ease;
+    }
+    .btn > i {
+      font-size: 13px;
+      transition: transform .3s cubic-bezier(.22,1,.36,1);
+    }
+    .btn:hover {
+      transform: translateY(-3px);
+      color: var(--primary-accent);
+      box-shadow:
+        -4px -4px 18px var(--neu-hi-2),
+        5px 5px 20px var(--neu-lo-2),
+        0 0 26px -8px var(--accent-glow),
+        inset 0 1px 0 rgba(255,255,255,.1);
+    }
+    .btn:hover > .fa-arrow-right { transform: translateX(3px); }
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow:
+        inset 2px 3px 9px var(--neu-lo),
+        inset -2px -2px 7px var(--neu-hi);
+    }
+    /* Accent icon well inside buttons */
+    .btn .btn-ic {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: var(--accent-soft);
+      color: var(--primary-accent);
+      font-size: 14px;
+    }
+    /* Primary variant — filled accent well + brighter label */
+    .btn-primary {
+      color: var(--text-1);
+      font-weight: 700;
+      padding: 14px 26px;
+      border-radius: 16px;
+    }
+    .btn-primary .btn-ic {
+      background: linear-gradient(135deg, #38bdf8, #0284c7);
+      color: #051220;
+      box-shadow: 0 6px 16px -6px var(--accent-glow);
+    }
+
+    
+
+    /* Payment cards - neumorphic raised tiles (matches Accounts page) */
+    .pay-card {
+      border-radius: 24px;
+      background: var(--neu-bg);
+      border: none;
+      padding: 1.6rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: .9rem;
+      box-shadow:
+        -3px -3px 18px var(--neu-hi),
+        4px 4px 20px var(--neu-lo),
+        inset 0 1px 0 rgba(255,255,255,.06);
+      transition: transform .45s cubic-bezier(.22,1,.36,1), box-shadow .45s ease;
+    }
+    .pay-card:hover {
+      transform: translateY(-6px);
+      box-shadow:
+        -4px -4px 26px var(--neu-hi-2),
+        6px 6px 28px var(--neu-lo-2),
+        inset 0 1px 0 rgba(255,255,255,.1);
+    }
+    .pay-card:active {
+      transform: translateY(2px);
+      box-shadow:
+        inset 2px 3px 10px var(--neu-lo),
+        inset -2px -2px 8px var(--neu-hi);
+    }
+    /* Brand tints */
+    .pay-bkash-text { color: #ec4899; }
+    .pay-bank-text  { color: var(--primary-accent); }
+    /* Header row: pressed icon well + title + raised chip */
+    .pay-head { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .pay-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: var(--neu-bg-2);
+      font-size: 18px;
+      box-shadow:
+        inset 3px 3px 9px var(--neu-lo),
+        inset -2px -2px 7px var(--neu-hi);
+      transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease;
+    }
+    .pay-icon-bkash { color: #ec4899; }
+    .pay-icon-bank  { color: var(--primary-accent); }
+    .pay-card:hover .pay-icon {
+      transform: scale(1.07);
+      box-shadow:
+        inset -1px -1px 5px var(--neu-lo),
+        inset 1px 1px 5px var(--neu-hi),
+        0 0 22px -8px currentColor;
+    }
+    .pay-titles { display: flex; flex-direction: column; gap: 4px; }
+    .pay-title { font-size: 1.12rem; font-weight: 700; line-height: 1.2; }
+    .pay-chip {
+      margin-left: auto;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-3);
+      background: var(--neu-bg-2);
+      white-space: nowrap;
+      box-shadow:
+        -1px -1px 6px var(--neu-hi),
+        2px 2px 8px var(--neu-lo);
+    }
+    .pay-desc { font-size: .85rem; color: var(--text-3); line-height: 1.6; }
+    /* Bank details - pressed mini-wells */
+    .pay-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .pay-field {
+      background: var(--neu-bg-2);
+      border-radius: 12px;
+      padding: 8px 12px;
+      box-shadow:
+        inset 2px 2px 6px var(--neu-lo),
+        inset -1px -1px 5px var(--neu-hi);
+    }
+    .pay-field span {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-3);
+    }
+    .pay-field strong { font-size: 13px; font-weight: 600; color: var(--text-1); }
+    /* Account number - pressed groove, click to copy */
+    .pay-number {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 12px 14px;
+      border: none;
+      border-radius: 14px;
+      background: var(--neu-bg-2);
+      font-family: 'Orbitron', monospace;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-align: left;
+      cursor: pointer;
+      color: inherit;
+      box-shadow:
+        inset 2px 3px 10px var(--neu-lo),
+        inset -2px -2px 8px var(--neu-hi);
+      transition: color .25s ease, transform .2s ease;
+    }
+    .pay-number i { font-size: 14px; color: var(--text-3); transition: color .25s ease; }
+    .pay-number:hover i { color: currentColor; }
+    .pay-number:active { transform: scale(.985); }
+    .pay-number.copied, .pay-number.copied i { color: #34d399; }
+    .pay-note { font-size: .72rem; color: var(--text-3); }
+    @media (max-width: 480px) {
+      .pay-card { padding: 1.25rem 1.1rem; }
+      .pay-fields { grid-template-columns: 1fr; }
+      .pay-number { font-size: 14px; }
+      .pay-chip { margin-left: 0; }
+    }
+/* Page section headers — consistent accent underline */
+    .sec-head { display: inline-flex; align-items: center; gap: .55rem; font-weight: 700; letter-spacing: -.01em; }
+    .sec-head::after {
+      content: ""; width: 34px; height: 3px; border-radius: 9999px;
+      background: linear-gradient(90deg, var(--primary-accent), #22d3ee);
+      margin-left: .4rem;
+    }
+
+    /* Professional footer */
+    .site-footer { background: var(--surface); border-top: 1px solid var(--border-c); padding: 2.4rem 1rem; }
+    .site-footer .f-brand { font-family: 'Orbitron', sans-serif; color: var(--primary-accent); font-weight: 700; }
+    .footer-link { background: none; border: none; cursor: pointer; color: var(--text-3); font-weight: 500; transition: color .25s ease; }
+    .footer-link:hover { color: var(--primary-accent); }
+    /* Reduced-motion accessibility — kept brand animations STAY ACTIVE */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .2s !important;
+      }
+      .animate-zoom, .animate-float, .typewriter, .paid-pop { animation-iteration-count: infinite !important; }
+      .animate-zoom { animation-duration: 4s !important; }
+      .animate-float { animation-duration: 3s !important; }
+      .typewriter { animation-duration: 3.4s !important; }
+      .paid-pop { animation-duration: .5s !important; }
+    }
+/* ============================================================
    FULLY RESPONSIVE — All Devices
    (Android / iOS / Tablet / iPad / Desktop) — Accounts page tuned
    ============================================================ */
@@ -1419,8 +1830,8 @@ html, body { overflow-x: hidden; }
   .acc-card { padding: 16px 12px; border-radius: 16px; min-height: 140px; }
   .acc-value { font-size: 17px; }
   .acc-trend { font-size: 10px; }
-  .inv-center-label { font-size: 7px; letter-spacing: 0.12em; }
-  .inv-center-value { font-size: 14px; }
+  /* Doughnut hole is small on phones - drop the label, keep the value */
+  .inv-center-label { display: none; }
   .ms-bar { width: 70px; }
   .acc-table th, .acc-table td { font-size: 12px; padding: 10px 8px; }
 }
@@ -1429,7 +1840,6 @@ html, body { overflow-x: hidden; }
 @media (max-width: 360px) {
   .acc-panel { padding: 10px; }
   .acc-value { font-size: 15px; }
-  .inv-center-value { font-size: 12px; }
   .ms-bar { width: 56px; }
 }
 
@@ -1439,167 +1849,57 @@ html, body { overflow-x: hidden; }
   overscroll-behavior-x: contain;
 }
 
-    /* ============================================================
-       THEME LAYER — light-mode remaps + theme toggle
-       (dark is the default design; light overrides everything else)
-       ============================================================ */
-
-    /* Smooth theme switching */
-    body, nav, #mobile-menu, footer, .acc-panel, .dashboard, .cal-row,
-    .info-item, .acc-table th, .member-card, .hero-card {
-      transition: background-color 0.45s ease, color 0.35s ease, border-color 0.45s ease;
-    }
-
-    /* Theme toggle button icon swap (sun in dark, moon in light) */
-    html[data-theme="dark"]  .theme-icon-light { display: none; }
-    html[data-theme="light"] .theme-icon-dark  { display: none; }
-    html[data-theme="light"] .theme-toggle-btn { background: rgba(241,245,249,0.8); border-color: var(--border-strong); color: #334155; }
-    html[data-theme="light"] .theme-toggle-btn:hover { background: #e2e8f0; }
-
-    /* --- Light theme: page surfaces (nav, mobile menu, footer) --- */
-    html[data-theme="light"] nav,
-    html[data-theme="light"] #mobile-menu { background-color: rgba(255,255,255,0.88); border-color: rgba(15,23,42,0.08); }
-    html[data-theme="light"] .bg-slate-950\/40 { background-color: rgba(255,255,255,0.55); }
-
-    /* --- Light theme: card & panel backgrounds --- */
-    html[data-theme="light"] .bg-slate-950\/80,
-    html[data-theme="light"] .bg-slate-950\/95 { background-color: rgba(255,255,255,0.88); }
-    html[data-theme="light"] .bg-slate-950\/70,
-    html[data-theme="light"] .bg-slate-950\/50 { background-color: rgba(255,255,255,0.72); }
-    html[data-theme="light"] .bg-slate-900\/80,
-    html[data-theme="light"] .bg-slate-900\/70,
-    html[data-theme="light"] .bg-slate-900\/60 { background-color: rgba(255,255,255,0.8); }
-    html[data-theme="light"] .bg-slate-900 { background-color: #f8fafc; }
-    html[data-theme="light"] .bg-slate-800\/60 { background-color: rgba(226,232,240,0.7); }
-    html[data-theme="light"] .bg-slate-800 { background-color: #e2e8f0; }
-    html[data-theme="light"] .bg-white\/5 { background-color: rgba(255,255,255,0.72); }
-    html[data-theme="light"] .hover\:bg-slate-700\/60:hover { background-color: #dbe3ec; }
-
-    /* --- Light theme: borders --- */
-    html[data-theme="light"] .border-slate-800\/70,
-    html[data-theme="light"] .border-slate-800\/80,
-    html[data-theme="light"] .border-slate-800 { border-color: rgba(100,116,139,0.28); }
-    html[data-theme="light"] .border-slate-700,
-    html[data-theme="light"] .border-slate-700\/60 { border-color: rgba(100,116,139,0.35); }
-    html[data-theme="light"] .border-white\/10 { border-color: rgba(15,23,42,0.1); }
-
-    /* --- Light theme: text colors (headings + body text only;
-           white text inside colored buttons is intentionally untouched) --- */
-    html[data-theme="light"] h1.text-white,
-    html[data-theme="light"] h2.text-white,
-    html[data-theme="light"] h3.text-white,
-    html[data-theme="light"] h4.text-white,
-    html[data-theme="light"] p.text-white { color: #0f172a; }
-    html[data-theme="light"] .text-slate-100,
-    html[data-theme="light"] .text-slate-200,
-    html[data-theme="light"] .text-slate-300 { color: #1e293b; }
-    html[data-theme="light"] .text-slate-400,
-    html[data-theme="light"] .text-slate-500 { color: #64748b; }
-    html[data-theme="light"] .hover\:text-white:hover { color: #0f172a; }
-    html[data-theme="light"] nav .text-white { color: #0f172a; }
-
-    /* Hero card sits on a green gradient — keep its white text */
-    html[data-theme="light"] .hero-card .text-white,
-    html[data-theme="light"] .hero-card h2.text-white { color: #ffffff; }
-
-    /* --- Light theme: accent text (darken pale accents for contrast) --- */
-    html[data-theme="light"] .text-blue-300   { color: #1d4ed8; }
-    html[data-theme="light"] .text-blue-400   { color: #2563eb; }
-    html[data-theme="light"] .text-cyan-300   { color: #0e7490; }
-    html[data-theme="light"] .text-emerald-300 { color: #047857; }
-    html[data-theme="light"] .text-emerald-400 { color: #047857; }
-    html[data-theme="light"] .text-rose-300   { color: #be123c; }
-    html[data-theme="light"] .text-amber-300  { color: #b45309; }
-    html[data-theme="light"] .text-indigo-300 { color: #4f46e5; }
-    html[data-theme="light"] .text-purple-300 { color: #7c3aed; }
-
-    /* Gradient headline text (from-blue-400 → to-cyan-400 etc.) */
-    html[data-theme="light"] .from-blue-400 { --tw-gradient-from: #1d4ed8 var(--tw-gradient-from-position); }
-    html[data-theme="light"] .to-cyan-400   { --tw-gradient-to: #0891b2 var(--tw-gradient-to-position); }
-
-    /* --- Light theme: accounts dashboard accents --- */
-    html[data-theme="light"] .acc-panel h2 i { color: #0284c7; }
-    html[data-theme="light"] .ms-num { color: #0284c7; }
-    html[data-theme="light"] .ms-badge-paid  { color: #047857; background: rgba(209,250,229,0.75); border-color: rgba(5,150,105,0.4); }
-    html[data-theme="light"] .ms-badge-unpaid { color: #b91c1c; background: rgba(254,226,226,0.8); border-color: rgba(185,28,28,0.4); }
-    html[data-theme="light"] .ac-paid    { color: #047857; background: rgba(209,250,229,0.75); }
-    html[data-theme="light"] .ac-due     { color: #dc2626; background: rgba(254,226,226,0.75); }
-    html[data-theme="light"] .ac-running { color: #0284c7; background: rgba(224,242,254,0.8); }
-    html[data-theme="light"] .ac-closed  { color: #64748b; background: rgba(226,232,240,0.8); }
-    html[data-theme="light"] .paid-ticker { background: rgba(16,185,129,0.08); border-color: rgba(5,150,105,0.3); color: #065f46; }
-    html[data-theme="light"] .paid-ticker-icon { color: #059669; }
-    html[data-theme="light"] .inv-center-value { color: #059669; text-shadow: none; }
-    html[data-theme="light"] .member_id { color: #0369a1; background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.3); }
-    html[data-theme="light"] .member-img-box { background: #e2e8f0; }
-    html[data-theme="light"] .member-img-box i { color: #64748b; }
-    html[data-theme="light"] .rule-note-glow { box-shadow: none; }
-
-    /* Logo uses screen blending for dark nav — normal blending on light nav */
-    html[data-theme="light"] .mix-blend-screen { mix-blend-mode: normal; }
-
-    /* Mobile menu hover/active colors */
-    html[data-theme="light"] .mnav-btn:hover { color: #0f172a; }
-    html[data-theme="light"] .mnav-btn.active-link { color: #2563eb; }
-
-    /* Member card surface (background comes from Tailwind classes) */
-    html[data-theme="light"] .member-card { box-shadow: 0 20px 45px var(--shadow-c), inset 0 1px 0 rgba(255,255,255,0.6); }
+/* ============================================================
+   MEMBER STATUS TABLE - small-device layout
+   Instead of squishing 4 columns into a 360px screen, the table
+   scrolls as one clean board and the member name stays pinned.
+   ============================================================ */
+@media (max-width: 640px) {
+  .acc-table { min-width: 520px; }
+  .acc-table th, .acc-table td { white-space: nowrap; }
+  /* Name column stays pinned while the rest swipes sideways */
+  .acc-table th:first-child,
+  .acc-table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--neu-bg);
+    box-shadow: 4px 0 8px -6px rgba(0, 0, 0, 0.5);
+  }
+  .acc-table th:first-child { background: var(--input-bg); }
+  /* Tinted rows need an opaque pinned cell too */
+  .acc-table tbody tr:hover td:first-child { background: var(--neu-bg-2); }
+}
 
   </style>
 </head>
 <body class="text-slate-100 font-sans antialiased flex flex-col min-h-screen app-body">
 
-<!-- NAVIGATION BAR (SWITCHES BETWEEN 4 PAGES) -->
-<nav class="fixed top-0 left-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/70 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
-    <a href="#" onclick="switchPage('home')" class="text-lg sm:text-xl font-bold text-white tracking-wider flex items-center space-x-2">
-<span class="inline-flex items-center justify-center overflow-hidden">
-<img data-drive-link="https://lh3.googleusercontent.com/d/1KdoqupIzPBu9BSVn6ezkdzCwZrzKebU2" src="https://lh3.googleusercontent.com/d/1KdoqupIzPBu9BSVn6ezkdzCwZrzKebU2" alt="Union Logo" class="h-6 w-6 object-cover mix-blend-screen">
-      </span>
+<!-- FLOATING DOCK NAVIGATION (switches between 4 pages) -->
+<div class="dock-wrap">
+  <nav class="dock" aria-label="Main navigation">
+    <button onclick="switchPage('home')" class="dock-logo" aria-label="19's Union - go to home">
+      <img data-drive-link="https://lh3.googleusercontent.com/d/1KdoqupIzPBu9BSVn6ezkdzCwZrzKebU2" src="https://lh3.googleusercontent.com/d/1KdoqupIzPBu9BSVn6ezkdzCwZrzKebU2" alt="Union Logo" class="mix-blend-screen">
       <span>19's Union</span>
-    </a>
-    
-    <!-- Desktop Navigation Links (hidden on mobile) -->
-    <div class="hidden md:flex space-x-2 md:space-x-6 text-xs md:text-sm font-medium">
-      <button onclick="switchPage('home')" id="nav-home" class="nav-btn text-blue-400 font-bold px-3 py-1.5 rounded-lg transition">Home & Payment</button>
-      <button onclick="switchPage('rules')" id="nav-rules" class="nav-btn text-slate-400 hover:text-white px-3 py-1.5 rounded-lg transition">Rules</button>
-      <button onclick="switchPage('members')" id="nav-members" class="nav-btn text-slate-400 hover:text-white px-3 py-1.5 rounded-lg transition">Members</button>
-      <button onclick="switchPage('accounts')" id="nav-accounts" class="nav-btn text-slate-400 hover:text-white px-3 py-1.5 rounded-lg transition">Accounts</button>
+    </button>
+    <div class="dock-items" id="dock-items">
+      <span id="dock-indicator" aria-hidden="true"></span>
+      <button onclick="switchPage('home')" id="nav-home" class="nav-btn active-link"><i class="fa-solid fa-house"></i><span>Home</span></button>
+      <button onclick="switchPage('rules')" id="nav-rules" class="nav-btn"><i class="fa-solid fa-scale-balanced"></i><span>Rules</span></button>
+      <button onclick="switchPage('members')" id="nav-members" class="nav-btn"><i class="fa-solid fa-users"></i><span>Members</span></button>
+      <button onclick="switchPage('accounts')" id="nav-accounts" class="nav-btn"><i class="fa-solid fa-chart-pie"></i><span>Accounts</span></button>
     </div>
-
-    <!-- Theme toggle (visible on all screens) + Hamburger Button (mobile only) -->
-    <div class="flex items-center gap-2">
-      <button onclick="toggleTheme()" aria-label="Toggle dark / light theme" title="Toggle dark / light theme"
-        class="w-10 h-10 rounded-xl border border-slate-700 bg-slate-800/60 hover:bg-slate-700/60 transition-colors flex items-center justify-center text-slate-200">
-        <i class="fa-solid fa-sun theme-icon-dark"></i>
-        <i class="fa-solid fa-moon theme-icon-light"></i>
-      </button>
-      <button id="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation menu" aria-expanded="false"
-        class="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10 rounded-xl border border-slate-700 bg-slate-800/60 hover:bg-slate-700/60 transition-colors">
-        <span class="menu-bar block w-5 h-[2px] rounded-full bg-slate-200 transition-all duration-300"></span>
-        <span class="menu-bar block w-5 h-[2px] rounded-full bg-slate-200 transition-all duration-300"></span>
-        <span class="menu-bar block w-5 h-[2px] rounded-full bg-slate-200 transition-all duration-300"></span>
-      </button>
-    </div>
-</nav>
-
-<!-- MOBILE SLIDE-DOWN MENU (hidden by default, opens via hamburger) -->
-<div id="mobile-menu" class="mobile-menu md:hidden fixed top-16 left-0 w-full z-40 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800/70 px-5 py-4 shadow-2xl shadow-black/40">
-  <div class="flex flex-col items-center gap-1">
-    <button onclick="switchPage('home'); closeMenu()" id="mnav-home" class="mnav-btn text-blue-400 font-bold w-full max-w-xs text-center px-4 py-3 rounded-xl text-sm font-semibold transition-colors">Home & Payment</button>
-    <button onclick="switchPage('rules'); closeMenu()" id="mnav-rules" class="mnav-btn text-slate-400 w-full max-w-xs text-center px-4 py-3 rounded-xl text-sm font-medium transition-colors">Rules</button>
-    <button onclick="switchPage('members'); closeMenu()" id="mnav-members" class="mnav-btn text-slate-400 w-full max-w-xs text-center px-4 py-3 rounded-xl text-sm font-medium transition-colors">Members</button>
-    <button onclick="switchPage('accounts'); closeMenu()" id="mnav-accounts" class="mnav-btn text-slate-400 w-full max-w-xs text-center px-4 py-3 rounded-xl text-sm font-medium transition-colors">Accounts</button>
-  </div>
+  </nav>
 </div>
-
-  <!-- MAIN CONTENT CONTAINER -->
-  <main class="flex-grow pt-16">
+<!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-grow pt-24">
 
     <!-- ================= PAGE 1: HOME & PAYMENT METHODS ================= -->
     <div id="page-home" class="page-content active">
       
       <!-- HERO SECTION -->
-<section class="relative min-h-[85vh] flex flex-col md:flex-row items-center justify-center gap-8 md:gap-10 bg-cover bg-center px-4 overflow-hidden"
-               style="background-image: linear-gradient(135deg, rgba(0,139,86,0.92), rgba(2,128,107,0.95));">
+<section class="hero-surface relative min-h-[85vh] flex flex-col md:flex-row items-center justify-center gap-8 md:gap-10 bg-cover bg-center px-4 overflow-hidden"
+               style="background-image: var(--hero-bg);">
                <div class="hero-logo">
                 <img src="https://lh3.googleusercontent.com/d/11ThNflUwUugkq_slzoC__gaoZ-uct354" alt="19's Union Logo" class="w-full h-full object-contain" loading="lazy">
                </div>
@@ -1620,8 +1920,8 @@ html, body { overflow-x: hidden; }
 
 <div class="flex flex-wrap items-center gap-3">
                   <button onclick="switchPage('rules')"
-                    class="inline-flex items-center gap-2 rounded-lg border border-emerald-300/40 bg-emerald-500/15 px-4 py-2 text-sm font-semibold text-emerald-200 transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-500/25 hover:shadow-[0_8px_25px_rgba(16,185,129,0.35)] active:scale-95">
-                    <i class="fa-solid fa-scale-balanced text-xs"></i>
+                    class="btn">
+                    <i class="fa-solid fa-scale-balanced"></i>
                     View Union Rules
                   </button>
                   <span class="text-xs md:text-sm text-slate-400">Operations • Finance • Transparency</span>
@@ -1658,24 +1958,19 @@ html, body { overflow-x: hidden; }
 
 <!-- Button Linking directly to Accounts Page (Page 4) -->
           <div class="pt-2 flex flex-wrap items-center justify-center gap-4">
-            <button onclick="switchPage('accounts')"
-              class="group relative inline-flex items-center gap-3 overflow-hidden rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-blue-700 px-8 py-3.5 font-bold text-white shadow-[0_12px_35px_rgba(37,99,235,0.5)] transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.03] hover:shadow-[0_18px_45px_rgba(37,99,235,0.65)] active:scale-[0.98]">
-              <!-- shine sweep overlay -->
-              <span class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full"></span>
-              <span class="relative flex h-9 w-9 items-center justify-center rounded-lg bg-white/15 group-hover:bg-white/25 transition-colors">
-                <i class="fa-solid fa-chart-line text-base"></i>
-              </span>
-              <span class="relative flex flex-col items-start leading-tight">
-                <span class="text-[11px] uppercase tracking-[0.2em] text-blue-100/80">Financial Overview</span>
+            <button onclick="switchPage('accounts')" class="btn btn-primary">
+              <span class="btn-ic"><i class="fa-solid fa-chart-line"></i></span>
+              <span class="flex flex-col items-start leading-tight">
+                <span class="text-[10px] uppercase tracking-[0.2em]" style="color:var(--text-3)">Financial Overview</span>
                 <span class="text-base">View Accounts Dashboard</span>
               </span>
-              <i class="fa-solid fa-arrow-right relative text-sm transition-transform duration-300 group-hover:translate-x-1"></i>
+              <i class="fa-solid fa-arrow-right"></i>
             </button>
           </div>
 
         </div>
       
-<main class="dashboard">
+<section class="dashboard">
     <!-- Compact Clock -->
     <section class="clock-section">
       <div class="time-display" id="clock">
@@ -1707,64 +2002,99 @@ html, body { overflow-x: hidden; }
       </div>
 
     </section>
-  </main>
+
+    </section>
 
       <!-- PAYMENT METHODS SECTION -->
-      <section class="py-16 px-4 max-w-5xl mx-auto border-t border-slate-900">
+      <section class="py-16 px-4 max-w-5xl mx-auto">
         <div class="text-center mb-12">
-          <h2 class="text-3xl font-bold text-white mb-2">Payment Methods</h2>
-          <p class="text-slate-400 text-sm">Monthly Deposit Target: 1,500 BDT per Member</p>
+          <span class="acc-head-badge">
+            <span class="dot"></span>
+            Secure Contributions
+          </span>
+          <h2 class="acc-title">Payment Methods</h2>
+          <p class="acc-sub">Monthly Deposit Target: 1,500 BDT per Member - tap any number to copy it.</p>
         </div>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
-          <!-- bKash Card (Infinite Glowing Shadow) -->
-          <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl animate-glow flex flex-col justify-between">
-            <div>
-<div class="flex items-center justify-between mb-4">
-                <div class="flex items-center space-x-2">
-                  <span class="w-3 h-3 rounded-full bg-pink-500"></span>
-                  <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-pink-500/15 border border-pink-500/30 text-pink-400">
-                    <i class="fa-solid fa-mobile-screen-button text-lg"></i>
-                  </span>
-                  <h3 class="text-xl font-bold text-pink-500">bKash Personal</h3>
-                </div>
-                <span class="bg-pink-500/10 text-pink-400 text-xs font-semibold px-2.5 py-1 rounded">Cashier Hotline</span>
+
+          <!-- bKash Card -->
+          <div class="pay-card">
+            <div class="pay-head">
+              <span class="pay-icon pay-icon-bkash"><i class="fa-solid fa-mobile-screen-button"></i></span>
+              <div class="pay-titles">
+                <h3 class="pay-title pay-bkash-text">bKash Personal</h3>
               </div>
-              <p class="text-slate-400 text-sm mb-4">Send your monthly contribution of 1,500 BDT directly to the official cashier account.</p>
-              <div class="bg-slate-950 p-3 rounded-lg text-lg font-mono text-pink-400 border border-slate-800">
-                +880 1611-835976
-              </div>
+              <span class="pay-chip">Cashier Hotline</span>
             </div>
-            <p class="text-xs text-slate-500 mt-4">*Reference: Always include your Member ID (e.g. M001 )</p>
+            <p class="pay-desc">Send your monthly contribution of 1,500 BDT directly to the official cashier account.</p>
+            <button class="pay-number pay-bkash-text" data-copy="+8801611835976" type="button" title="Click to copy">
+              <i class="fa-regular fa-copy"></i>
+              <span>+880 1611-835976</span>
+            </button>
+            <p class="pay-note">*Reference: Always include your Member ID (e.g. M001)</p>
           </div>
 
-          <!-- Bank Card (Infinite Glowing Shadow) -->
-          <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl animate-glow flex flex-col justify-between">
-            <div>
-<div class="flex items-center justify-between mb-4">
-                <div class="flex items-center space-x-2">
-                  <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-                  <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400">
-                    <i class="fa-solid fa-building-columns text-lg"></i>
-                  </span>
-                  <h3 class="text-xl font-bold text-blue-400">Bank Transfer</h3>
-                </div>
-                <span class="bg-blue-500/10 text-blue-400 text-xs font-semibold px-2.5 py-1 rounded">Direct Deposit</span>
+          <!-- Bank Card -->
+          <div class="pay-card">
+            <div class="pay-head">
+              <span class="pay-icon pay-icon-bank"><i class="fa-solid fa-building-columns"></i></span>
+              <div class="pay-titles">
+                <h3 class="pay-title pay-bank-text">Bank Transfer</h3>
               </div>
-              <p class="text-slate-400 text-sm mb-2">Bank: <strong>Islami Bank Banglades PLC</strong></p>
-          <p class="text-slate-400 text-sm mb-2">Title: <strong>Mohammed Walid Ehasan</strong></p>
-          <div class="bg-slate-950 p-3 rounded-lg text-lg font-mono text-blue-400 border border-slate-800 mt-2">
-            A/C: 2050 141 020 9246501
-          </div>
-        </div>
-        <p class="text-xs text-slate-500 mt-4" >Branch: Chiringa Br, Cox's Bazar </p>
-        <p class="text-xs text-slate-500 mt-4" >Routing: 123456789</p> 
-      </div>
+              <span class="pay-chip">Direct Deposit</span>
+            </div>
+            <div class="pay-fields">
+              <div class="pay-field"><span>Bank</span><strong>Islami Bank Bangladesh PLC</strong></div>
+              <div class="pay-field"><span>Account Title</span><strong>Mohammed Walid Ehasan</strong></div>
+              <div class="pay-field"><span>Branch</span><strong>Chiringa, Cox's Bazar</strong></div>
+              <div class="pay-field"><span>Routing</span><strong>123456789</strong></div>
+            </div>
+            <button class="pay-number pay-bank-text" data-copy="20501410209246501" type="button" title="Click to copy">
+              <i class="fa-regular fa-copy"></i>
+              <span>A/C: 2050 141 020 9246501</span>
+            </button>
           </div>
 
         </div>
       </section>
+
+      <script>
+        // Copy-to-clipboard for payment numbers (with file:// fallback)
+        (function () {
+          function copyText(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+              return navigator.clipboard.writeText(text);
+            }
+            return new Promise(function (resolve, reject) {
+              var ta = document.createElement('textarea');
+              ta.value = text;
+              ta.style.position = 'fixed';
+              ta.style.opacity = '0';
+              document.body.appendChild(ta);
+              ta.select();
+              try { if (document.execCommand('copy')) { resolve(); } else { reject(); } }
+              catch (e) { reject(e); }
+              finally { document.body.removeChild(ta); }
+            });
+          }
+          document.querySelectorAll('.pay-number').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              if (btn.classList.contains('copied')) return;
+              var icon = btn.querySelector('i');
+              var oldClass = icon.className;
+              copyText(btn.getAttribute('data-copy')).then(function () {
+                btn.classList.add('copied');
+                icon.className = 'fa-solid fa-check';
+                setTimeout(function () {
+                  btn.classList.remove('copied');
+                  icon.className = oldClass;
+                }, 1600);
+              }).catch(function () {});
+            });
+          });
+        })();
+      </script>
 
     </div>
 
@@ -1772,15 +2102,15 @@ html, body { overflow-x: hidden; }
     <div id="page-rules" class="page-content">
       <section class="py-16 px-4 max-w-6xl mx-auto">
         <div class="mb-12">
-<div class="rule-box rule-lift rule-border-flow rule-float rule-glow rule-sweep relative overflow-hidden rounded-[28px] border border-slate-800 bg-slate-900/70 p-6 md:p-8 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-sm">
+<div class="rule-box relative overflow-hidden rounded-[28px] border border-slate-800 bg-slate-900/70 p-6 md:p-8 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-sm">
             <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-emerald-500/10"></div>
             <div class="relative">
               <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                 <div class="text-center md:text-left">
-                  <span class="rule-chip-pop inline-flex items-center rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-blue-300 mb-3">
+                  <span class="inline-flex items-center rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-blue-300 mb-3">
                     Governance Framework
                   </span>
-<h2 class="rule-shimmer-text text-3xl md:text-4xl font-bold mb-2">Rules & Governance</h2>
+<h2 class="text-3xl md:text-4xl font-bold mb-2">Rules & Governance</h2>
                 </div>
                   <div class="rules-icon mx-auto md:mx-0 flex items-center justify-center animate-float">
                     <i class="fa-solid fa-scale-balanced text-3xl text-blue-400"></i>
@@ -1795,7 +2125,7 @@ html, body { overflow-x: hidden; }
               </div>
 
 <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-5 text-slate-300 leading-7">
-                <p class="rule-paragraph-glow text-sm md:text-base">
+                <p class="text-sm md:text-base">
                   “সঞ্চয় ও বিনিয়োগ ভিত্তিক প্রাথমিক সমবায় সমিতির গঠনতন্ত্র ( বাংলাদেশ সমবায় আইন, ২০০১ অনুযায়ী ) "19's Union" সংগঠনের উদ্দেশ্য বদরখালি কলোনীজেশন উচ্চ বিদ্যালয়ের ২০১৯ শিক্ষাবর্ষের ব্যাচের মধ্যে ভাতৃত্ববোধ বজায় রাখা। ভবিষ্যৎ পরিকল্পনা কে বাস্তবায়নে, নিবন্ধিত সদস্যদের নিকট হতে নির্ধারিত তহবিল আদায় করা এবং হালাল ও বিশ্বাসযোগ্য খাতে বিনিয়োগ করা। সংগঠনে কোন প্রকারের রাজনৈতিক, ধর্মীয়বিরোধী, অনৈতিক বা অসামাজিক কার্যক্রম সম্পূর্ণ নিষিদ্ধ।”
                 </p>
                 <div class="mt-4 flex flex-wrap gap-2">
@@ -1877,7 +2207,7 @@ html, body { overflow-x: hidden; }
             </div>
           </div>
         </div>
-<div class="mt-6 rule-note-glow bg-slate-900/80 border border-amber-400/30 rounded-2xl p-4 shadow-[0_10px_30px_rgba(0,0,0,0.35)] text-center">
+<div class="mt-6 bg-slate-900/80 border border-amber-400/30 rounded-2xl p-4 shadow-[0_10px_30px_rgba(0,0,0,0.35)] text-center">
           <p class="text-slate-300 text-sm leading-relaxed text-center">
             বিঃদ্রঃ উপরোক্ত  বিষয়াবলি ব্যতিত, অন্যান্য নিয়ম  উল্লেখ না থাকলে ও বাংলাদেশ সমবায় আইনের বিধি নিষেধ সংগঠন মেনে চলতে বাধ্য থাকবে।
           </p>
@@ -1935,29 +2265,26 @@ html, body { overflow-x: hidden; }
 
     <!-- ================= PAGE 4: ACCOUNTS DASHBOARD ================= -->
     <div id="page-accounts" class="page-content">
-      <section class="py-16 px-4 max-w-7xl mx-auto">
+      <section class="py-16 px-4 max-w-7xl mx-auto relative">
+        <div class="acc-vector" aria-hidden="true"></div>
         <!-- Header -->
         <div class="text-center mb-10">
-          <span class="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.28em] text-cyan-300 mb-4">
-            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span class="acc-head-badge">
+            <span class="dot"></span>
             Financial Dashboard
           </span>
-          <h2 class="text-3xl md:text-5xl font-black text-white leading-tight">
-            Accounts Overview
-          </h2>
-          <p class="text-slate-400 mt-3 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
+          <h2 class="acc-title">Accounts Overview</h2>
+          <p class="acc-sub">
             Live Collection, Investment, Profit and Member status — powered by the 19's Union records.
           </p>
         </div>
 
         <!-- Google Sheets data status / error banner (shown only when the API fails) -->
-        <div id="acc-status-banner"
-             style="display:none;max-width:768px;margin:0 auto 28px;padding:14px 18px;border-radius:14px;border:1px solid rgba(248,113,113,.35);background:rgba(127,29,29,.30);color:#fecaca;font-size:14px;font-weight:600;line-height:1.6;text-align:center;">
+        <div id="acc-status-banner" class="acc-status-banner" role="alert" style="display:none">
           <i class="fa-solid fa-triangle-exclamation" style="margin-right:6px;"></i>
           <span id="acc-status-msg">Accounts data could not load.</span>
-          <button id="acc-retry-btn" type="button"
-                  style="margin-left:10px;padding:7px 16px;border-radius:9px;border:none;cursor:pointer;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-weight:700;font-size:13px;">
-            ↻ Retry Now
+          <button id="acc-retry-btn" class="neu-retry-btn" type="button">
+            <i class="fa-solid fa-rotate-right"></i> Retry Now
           </button>
         </div>
 
@@ -2001,7 +2328,7 @@ html, body { overflow-x: hidden; }
           </div>
           <div class="acc-panel">
             <h2><i class="fa-solid fa-hand-holding-dollar"></i> Advances (1st / 2nd)</h2>
-            <div class="chart-box shine-box advance-glow"><canvas id="advanceChart"></canvas></div>
+            <div class="chart-box"><canvas id="advanceChart"></canvas></div>
           </div>
         </div>
 
@@ -2009,7 +2336,7 @@ html, body { overflow-x: hidden; }
         <div class="charts-acc">
           <div class="acc-panel">
             <h2><i class="fa-solid fa-chart-pie"></i> Investment Allocation (Running)</h2>
-            <div class="chart-box inv-chart-wrap inv-glow"><canvas id="investmentPieChart"></canvas>
+            <div class="chart-box inv-chart-wrap"><canvas id="investmentPieChart"></canvas>
               <div class="inv-center">
                 <span class="inv-center-label">Total Running</span>
                 <span class="inv-center-value" id="invCenterValue">৳0</span>
@@ -2037,18 +2364,15 @@ html, body { overflow-x: hidden; }
 
         <!-- View Full Google Sheet Button -->
         <div class="text-center mt-10">
-<a href="https://docs.google.com/spreadsheets/d/14sStv62NQfcCTBySZDD9Wx5g1LQLXZJhC4VGF8uRVcU/edit?usp=sharing"
+          <a href="https://docs.google.com/spreadsheets/d/14sStv62NQfcCTBySZDD9Wx5g1LQLXZJhC4VGF8uRVcU/edit?usp=sharing"
              target="_blank" rel="noopener noreferrer"
-             class="group inline-flex items-center gap-3 overflow-hidden rounded-xl bg-gradient-to-r from-emerald-500 via-green-600 to-teal-700 px-8 py-3.5 font-bold text-white shadow-[0_12px_35px_rgba(16,185,129,0.45)] transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.03] hover:shadow-[0_18px_45px_rgba(16,185,129,0.6)] active:scale-[0.98]">
-            <span class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full"></span>
-            <span class="relative flex h-9 w-9 items-center justify-center rounded-lg bg-white/20 group-hover:bg-white/30 transition-colors">
-              <i class="fa-solid fa-table text-base"></i>
+             class="neu-btn">
+            <span class="neu-btn-ic"><i class="fa-solid fa-table"></i></span>
+            <span class="flex flex-col items-start leading-tight">
+              <span class="neu-btn-cap">19's Union Spreadsheet</span>
+              <span class="neu-btn-main">View Full Record Portal</span>
             </span>
-            <span class="relative flex flex-col items-start leading-tight">
-              <span class="text-[11px] uppercase tracking-[0.2em] text-emerald-100/80">19's Union Spreadsheet</span>
-              <span class="text-base">View Full Record Portal</span>
-            </span>
-            <i class="fa-solid fa-arrow-up-right-from-square relative text-sm transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"></i>
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </a>
         </div>
       </section>
@@ -2057,10 +2381,21 @@ html, body { overflow-x: hidden; }
 </main>
 
   <!-- FOOTER -->
-<footer class="border-t border-slate-800/70 bg-slate-950/40 py-6 text-center text-xs text-slate-400">
-    <p>All Rights Reserved © 19’s Union, 2026 Record Portal upto... </p>
-    <p> "United Today, Stronger Tomorrow" </p>
-    <p> By MD. WALID</p>
+  <footer class="site-footer">
+    <div class="max-w-4xl mx-auto text-center">
+      <p class="f-brand text-xl tracking-wider">19'S UNION</p>
+      <p class="mt-2 text-sm italic text-slate-400">“United Today, Stronger Tomorrow”</p>
+      <div class="mt-4 flex flex-wrap justify-center gap-4 text-xs">
+        <button onclick="switchPage('home')" class="footer-link">Home &amp; Payment</button>
+        <span class="text-slate-500">·</span>
+        <button onclick="switchPage('rules')" class="footer-link">Rules</button>
+        <span class="text-slate-500">·</span>
+        <button onclick="switchPage('members')" class="footer-link">Members</button>
+        <span class="text-slate-500">·</span>
+        <button onclick="switchPage('accounts')" class="footer-link">Accounts</button>
+      </div>
+      <p class="mt-4 text-[11px] uppercase tracking-[0.22em] text-slate-500">© 2026 19's Union · All Rights Reserved · Record Portal</p>
+    </div>
   </footer>
 
   <!-- SCRIPT FOR PAGE SWITCHING, MEMBER CARDS, AND CHARTS -->
@@ -2208,7 +2543,6 @@ return `${toBanglaNumerals(bDay)}${banglaMonths[bMonth]}, ${toBanglaNumerals(bYe
     updateClock();
     setInterval(updateClock, 1000);
 
-
 // 1. Page Switch Logic (4 Pages) — with smooth exit & enter transition
     function switchPage(pageId) {
       const current = document.querySelector('.page-content.active');
@@ -2220,23 +2554,12 @@ return `${toBanglaNumerals(bDay)}${banglaMonths[bMonth]}, ${toBanglaNumerals(bYe
         return;
       }
 
-      // Update Desktop Nav Buttons Style immediately
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('text-blue-400', 'font-bold', 'active-link');
-        btn.classList.add('text-slate-400');
-      });
-      const desktopNav = document.getElementById(`nav-${pageId}`);
-      if (desktopNav) desktopNav.classList.add('text-blue-400', 'font-bold', 'active-link');
-
-      // Update Mobile Nav Buttons Style immediately
-      document.querySelectorAll('.mnav-btn').forEach(btn => {
-        btn.classList.remove('active-link', 'text-blue-400', 'font-bold');
-        btn.classList.add('text-slate-400');
-      });
-      const mobileNav = document.getElementById(`mnav-${pageId}`);
-      if (mobileNav) mobileNav.classList.add('active-link', 'text-blue-400', 'font-bold');
-
-      const finishTransition = () => {
+      // Update nav highlight + slide the dock indicator
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-link'));
+      const navBtn = document.getElementById(`nav-${pageId}`);
+      if (navBtn) navBtn.classList.add('active-link');
+      if (typeof window.moveDockIndicator === 'function') window.moveDockIndicator();
+const finishTransition = () => {
         // Deactivate all pages
         document.querySelectorAll('.page-content').forEach(page => {
           page.classList.remove('active', 'leaving');
@@ -2267,38 +2590,25 @@ return `${toBanglaNumerals(bDay)}${banglaMonths[bMonth]}, ${toBanglaNumerals(bYe
     }
 
     // ============================================================
-    // MOBILE HAMBURGER MENU — toggle open/close
-    // ============================================================
-    function toggleMenu() {
-      const menu = document.getElementById('mobile-menu');
-      const toggle = document.getElementById('menu-toggle');
-      const isOpen = menu.classList.contains('open');
-
-      menu.classList.toggle('open');
-      toggle.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', String(!isOpen));
+// DOCK INDICATOR - slides the pill under the active nav item
+// ============================================================
+    window.moveDockIndicator = function () {
+      var wrap = document.getElementById('dock-items');
+      var ind = document.getElementById('dock-indicator');
+      if (!wrap || !ind) return;
+      var active = wrap.querySelector('.nav-btn.active-link');
+      if (!active) { ind.style.opacity = '0'; return; }
+      ind.style.opacity = '1';
+      ind.style.width = active.offsetWidth + 'px';
+      ind.style.transform = 'translateX(' + active.offsetLeft + 'px)';
+    };
+    window.addEventListener('resize', window.moveDockIndicator);
+    window.addEventListener('load', window.moveDockIndicator);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { window.moveDockIndicator(); });
     }
-
-    // Close the mobile menu (called when a nav link is clicked)
-    function closeMenu() {
-      const menu = document.getElementById('mobile-menu');
-      const toggle = document.getElementById('menu-toggle');
-      menu.classList.remove('open');
-      toggle.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-    }
-
-    // Close the mobile menu when the window is resized to desktop width
-    window.addEventListener('resize', () => {
-      if (window.innerWidth >= 768) closeMenu();
-    });
-
-    // Close the mobile menu with the Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeMenu();
-    });
-
-    // ============================================================
+    setTimeout(window.moveDockIndicator, 80);
+// ============================================================
     // 2. Unlimited Typing Animation for the Motto (Infinite Loop)
     // ============================================================
     (function initTypewriter() {
@@ -2590,10 +2900,7 @@ function toggleProfile(button) {
       let investmentChartInstance = null;
       let profitChartInstance = null;
       let paidTickerTimer = null;
-      let investmentReplayTimer = null;
-      let invSweepRaf = null;
       let currentStatusReplayTimer = null;
-      let advanceReplayTimer = null;
 
       // Chart defaults for dark theme
       Chart.defaults.color = '#94a3b8';
@@ -2780,42 +3087,7 @@ function toggleProfile(button) {
         // Live "who just paid" ticker — pops up a paid member's name every second
         startPaidTicker(statusData);
 
-        // Replay the animated bars every 5 seconds
-        if (currentStatusReplayTimer) clearInterval(currentStatusReplayTimer);
-        currentStatusReplayTimer = setInterval(() => {
-          const page = document.getElementById('page-accounts');
-          if (page && page.classList.contains('active')) replayCurrentStatusChart();
-        }, 5000);
-      }
-
-      // Replays the bars: smooth glide down → staggered pop back up
-      function replayCurrentStatusChart() {
-        if (!currentStatusChartInstance || !currentStatusChartInstance.data) return;
-        const ds0 = currentStatusChartInstance.data.datasets[0];
-        const ds1 = currentStatusChartInstance.data.datasets[1];
-        if (!ds0 || !ds1 || !Array.isArray(ds0.data) || !Array.isArray(ds1.data)) return;
-
-        const paid = ds0.data.slice();
-        const partial = ds1.data.slice();
-
-        // 1. Bars glide down to 0 (fast, soft)
-        ds0.data = paid.map(() => 0);
-        ds1.data = partial.map(() => 0);
-        currentStatusChartInstance.update({ duration: 450, easing: 'easeInOutQuad' });
-
-        // 2. Bars pop back up one-by-one (staggered, matching the entrance)
-        setTimeout(() => {
-          if (!currentStatusChartInstance) return;
-          ds0.data = paid;
-          ds1.data = partial;
-          currentStatusChartInstance.update({
-            duration: 1000,
-            easing: 'easeOutQuart',
-            delay(context) {
-              return context.type === 'data' ? context.dataIndex * 90 : 0;
-            }
-          });
-        }, 500);
+        // Bars animate once on load — no replay loop
       }
 
       // Paid-members ticker — every second a "who paid" name pops up
@@ -2926,96 +3198,7 @@ function toggleProfile(button) {
           }
         });
 
-        // Replay the animated bars every 10 seconds
-        if (advanceReplayTimer) clearInterval(advanceReplayTimer);
-        advanceReplayTimer = setInterval(() => {
-          const page = document.getElementById('page-accounts');
-          if (page && page.classList.contains('active')) replayAdvanceChart();
-        }, 10000);
-      }
-
-      // Replays the advances bars: smooth glide down → staggered pop back up
-      function replayAdvanceChart() {
-        if (!advanceChartInstance || !advanceChartInstance.data) return;
-        const ds0 = advanceChartInstance.data.datasets[0];
-        const ds1 = advanceChartInstance.data.datasets[1];
-        if (!ds0 || !ds1 || !Array.isArray(ds0.data) || !Array.isArray(ds1.data)) return;
-
-        const first = ds0.data.slice();
-        const second = ds1.data.slice();
-
-        // 1. Bars glide down to 0 (fast, soft)
-        ds0.data = first.map(() => 0);
-        ds1.data = second.map(() => 0);
-        advanceChartInstance.update({ duration: 450, easing: 'easeInOutQuad' });
-
-        // 2. Bars pop back up one-by-one (staggered)
-        setTimeout(() => {
-          if (!advanceChartInstance) return;
-          ds0.data = first;
-          ds1.data = second;
-          advanceChartInstance.update({
-            duration: 1000,
-            easing: 'easeOutQuart',
-            delay(context) {
-              return context.type === 'data' ? context.dataIndex * 100 : 0;
-            }
-          });
-        }, 500);
-      }
-
-      // ===== Investment chart "radar sweep" — a glowing edge that circles the doughnut =====
-      const invSweepPlugin = {
-        id: 'invSweep',
-        afterDraw(chart) {
-          const area = chart.chartArea;
-          const meta = chart.getDatasetMeta(0);
-          if (!area || !meta || !meta.data || !meta.data.length) return;
-          const arc = meta.data[0];
-          if (!arc || typeof arc.x !== 'number' || !arc.outerRadius) return;
-
-          const ctx = chart.ctx;
-          const cx = arc.x;
-          const cy = arc.y;
-          const outer = arc.outerRadius - 1;
-          const inner = arc.innerRadius || outer * 0.45;
-
-          // one full sweep every 4 seconds (professional "pulse" feel)
-          const t = ((performance.now() / 1000) % 4) / 4;
-          const angle = t * Math.PI * 2 - Math.PI / 2;
-
-          const grad = ctx.createLinearGradient(
-            cx, cy,
-            cx + Math.cos(angle) * outer,
-            cy + Math.sin(angle) * outer
-          );
-          grad.addColorStop(0, 'rgba(5,205,153,0)');
-          grad.addColorStop(1, 'rgba(5,205,153,0.75)');
-
-          ctx.save();
-          ctx.beginPath();
-          ctx.arc(cx, cy, outer, angle - 0.6, angle);
-          ctx.arc(cx, cy, inner, angle, angle - 0.6, true);
-          ctx.closePath();
-          ctx.fillStyle = grad;
-          ctx.fill();
-          ctx.restore();
-        }
-      };
-
-      // Keeps the sweep moving (canvas must re-render each frame while the page is visible)
-      function startInvSweepLoop() {
-        if (invSweepRaf) cancelAnimationFrame(invSweepRaf);
-        const loop = () => {
-          const page = document.getElementById('page-accounts');
-          if (page && page.classList.contains('active') && investmentChartInstance) {
-            investmentChartInstance.render();
-            invSweepRaf = requestAnimationFrame(loop);
-          } else {
-            invSweepRaf = null;
-          }
-        };
-        invSweepRaf = requestAnimationFrame(loop);
+        // Bars animate once on load — no replay loop
       }
 
       // Counts the center "Total Running" amount up (reuses the card counter)
@@ -3037,6 +3220,10 @@ function toggleProfile(button) {
         const diameter = Math.max((arc.innerRadius || 0) * 2, 70);
         centerEl.style.width = diameter + 'px';
         centerEl.style.height = diameter + 'px';
+        // Scale the center text to the hole size so it never overflows
+        // the doughnut on small screens (desktop keeps the 19px cap).
+        const fs = Math.max(10, Math.min(19, diameter * 0.16));
+        centerEl.style.fontSize = fs + 'px';
       }
 
       // Investment Pie Chart — only Running investments
@@ -3082,29 +3269,14 @@ function toggleProfile(button) {
             plugins: {
               legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } }
             }
-          },
-          plugins: [invSweepPlugin]
+          }
         });
 
-        // Center total + moving radar sweep
+        // Center total (animates up once per render)
         animateCenterValue(total);
-        startInvSweepLoop();
 
         // Align the center text exactly on the doughnut hole (after layout settles)
         setTimeout(alignInvCenter, 100);
-
-        // Every 10 seconds — gentle "live pulse" beat (total number stays frozen)
-        if (investmentReplayTimer) clearInterval(investmentReplayTimer);
-        investmentReplayTimer = setInterval(() => {
-          const page = document.getElementById('page-accounts');
-          if (!page || !page.classList.contains('active')) return;
-          const wrap = document.querySelector('.inv-chart-wrap');
-          if (wrap) {
-            wrap.classList.remove('inv-beat');
-            void wrap.offsetWidth;
-            wrap.classList.add('inv-beat');
-          }
-        }, 10000);
       }
 
       // Parses a profit-tab date (ISO, partial, or text month) into a Date
@@ -3313,8 +3485,6 @@ function toggleProfile(button) {
 
       // Auto Refresh every 30 seconds
       setInterval(fetchDashboardData, 30000);
-
-      // No replay loop — the count runs once on load / refresh / page entrance
     })();
 
   </script>
