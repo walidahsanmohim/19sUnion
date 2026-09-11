@@ -832,6 +832,1299 @@
 @media (max-width: 480px) {
   .acc-grid { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   ACCOUNTS DASHBOARD — CSS GRID LAYOUT (div1-div11)
+   Professional responsive design for all devices
+   ============================================================ */
+
+/* ===== BASE GRID LAYOUT (Desktop & Large Screens) ===== */
+.Account {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(80px, auto);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+/* div1: Total Amount - Hero Card */
+.Account .div1 {
+  grid-column: span 2;
+  grid-row: span 2;
+  min-height: 200px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: left;
+  padding: 28px 24px;
+  gap: 18px;
+  background: linear-gradient(145deg, rgba(56, 189, 248, 0.12) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.Account .div1::before {
+  content: "";
+  position: absolute;
+  top: -60%;
+  right: -40%;
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.15), transparent 65%);
+  pointer-events: none;
+}
+
+.Account .div1 .acc-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, rgba(56, 189, 248, 0.25), rgba(56, 189, 248, 0.1));
+  border: 2px solid rgba(56, 189, 248, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin: 0;
+  flex-shrink: 0;
+  box-shadow: 0 8px 24px rgba(56, 189, 248, 0.25);
+}
+
+.Account .div1 .acc-info {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  position: relative;
+}
+
+.Account .div1 .acc-info h3 {
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.Account .div1 .acc-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: #f1f5f9;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 10px;
+  text-shadow: 0 0 24px rgba(56, 189, 248, 0.4);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+  align-self: stretch;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.Account .div1 .acc-trend {
+  font-size: 12px;
+  font-weight: 600;
+  color: #38bdf8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  padding: 12px;
+  background: rgba(56, 189, 248, 0.08);
+  border-radius: 16px;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  margin: 0;
+  text-align: left;
+  align-self: flex-start;
+}
+
+/* div2-div6: Stat Cards - Grid Positioning */
+.Account .div2 { grid-column: 3; grid-row: 1; }
+.Account .div3 { grid-column: 3; grid-row: 2; }
+.Account .div4 { grid-column: 1; grid-row: 3; }
+.Account .div5 { grid-column: 2; grid-row: 3; }
+.Account .div6 { grid-column: 3; grid-row: 3; }
+
+/* div7-div11: Chart Panels - Full Width Stacking */
+.Account .div7 { grid-column: 1 / -1; grid-row: 4; }
+.Account .div8 { grid-column: 1 / -1; grid-row: 5; }
+.Account .div9 { grid-column: 1 / 3; grid-row: 6; }
+.Account .div10 { grid-column: 3 / 4; grid-row: 6; }
+.Account .div11 { grid-column: 1 / -1; grid-row: 7; }
+
+/* ============================================================
+   RESPONSIVE BREAKPOINTS — ALL DEVICES
+   ============================================================ */
+
+/* ===== Large Desktop (1440px+) ===== */
+@media (min-width: 1440px) {
+  .Account {
+    gap: 20px;
+  }
+  .Account .div1 {
+    min-height: 240px;
+    padding: 32px 28px;
+  }
+  .Account .div1 .acc-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 30px;
+  }
+  .Account .div1 .acc-value {
+    font-size: 38px;
+  }
+}
+
+/* ===== Small Laptop / iPad Landscape (1024px - 1280px) ===== */
+@media (max-width: 1280px) and (min-width: 1024px) {
+  .Account {
+    gap: 14px;
+  }
+  .Account .div1 {
+    min-height: 180px;
+    padding: 24px 20px;
+  }
+  .Account .div1 .acc-value {
+    font-size: 28px;
+  }
+}
+
+/* ===== iPad Portrait / Small Tablet (768px - 1024px) ===== */
+@media (max-width: 1024px) {
+  .Account {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .Account .div1 {
+    grid-column: span 2;
+    grid-row: span 2;
+    min-height: 180px;
+    padding: 22px 18px;
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
+    position: relative;
+  }
+  .Account .div1 .acc-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 22px;
+    margin: 10px;
+    flex-shrink: 0;
+  }
+  .Account .div1 .acc-info {
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+    position: relative;
+  }
+  .Account .div1 .acc-info h3 {
+    font-size: 11px;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: left;
+  }
+  .Account .div1 .acc-value {
+    font-size: 26px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    margin-bottom: 6px;
+    width: 100%;
+    text-align: left;
+  }
+  .Account .div1 .acc-trend {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: left;
+    padding: 4px 10px;
+  }
+  /* Keep div2-div6 in grid - centered */
+  .Account .div2,
+  .Account .div3,
+  .Account .div4,
+  .Account .div5,
+  .Account .div6 {
+    min-height: 100px;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .Account .div2 .acc-icon,
+  .Account .div3 .acc-icon,
+  .Account .div4 .acc-icon,
+  .Account .div5 .acc-icon,
+  .Account .div6 .acc-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+  }
+  .Account .div2 .acc-info,
+  .Account .div3 .acc-info,
+  .Account .div4 .acc-info,
+  .Account .div5 .acc-info,
+  .Account .div6 .acc-info {
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .Account .div2 .acc-info h3,
+  .Account .div3 .acc-info h3,
+  .Account .div4 .acc-info h3,
+  .Account .div5 .acc-info h3,
+  .Account .div6 .acc-info h3 {
+    font-size: 10px;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: center;
+  }
+  .Account .div2 .acc-value,
+  .Account .div3 .acc-value,
+  .Account .div4 .acc-value,
+  .Account .div5 .acc-value,
+  .Account .div6 .acc-value {
+    font-size: 16px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .Account .div2 .acc-trend,
+  .Account .div3 .acc-trend,
+  .Account .div4 .acc-trend,
+  .Account .div5 .acc-trend,
+  .Account .div6 .acc-trend {
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: center;
+  }
+  /* Charts stack */
+  .Account .div7 { grid-column: 1 / -1; grid-row: 4; }
+  .Account .div8 { grid-column: 1 / -1; grid-row: 5; }
+  .Account .div9 { grid-column: 1 / 3; grid-row: 6; }
+  .Account .div10 { grid-column: 3 / 4; grid-row: 6; }
+  .Account .div11 { grid-column: 1 / -1; grid-row: 7; }
+}
+
+/* ===== Small Tablet / Large Phone (640px - 768px) ===== */
+@media (max-width: 768px) {
+  .Account {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  /* Div 1: hero spans cols 1-2 / rows 1-2 so div2+div3 sit beside it (no overlap, no gaps) */
+  .Account .div1 {
+    grid-column: 1 / -2;
+    grid-row: 1 / span 2;
+    min-height: auto;
+    padding: 16px 18px;
+    gap: 16px;
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    text-align: left !important;
+    position: relative;
+  }
+  .Account .div1::before {
+    top: -40%;
+    right: -20%;
+  }
+  .Account .div1 .acc-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+  .Account .div1 .acc-info {
+    text-align: left;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+  }
+  .Account .div1 .acc-info h3 {
+    font-size: 11px;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+  .Account .div1 .acc-value {
+    font-size: 24px;
+    margin-bottom: 6px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    width: 100%;
+    text-align: left;
+  }
+  .Account .div1 .acc-trend {
+    font-size: 11px;
+    padding: 4px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: left;
+  }
+  /* Div 2-6: Perfectly Centered, No Icon */
+  .Account .div2,
+  .Account .div3,
+  .Account .div4,
+  .Account .div5,
+  .Account .div6 {
+    min-height: 100px !important;
+    padding: 12px 8px !important;
+    border-radius: 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+  }
+  .Account .div2 .acc-icon,
+  .Account .div3 .acc-icon,
+  .Account .div4 .acc-icon,
+  .Account .div5 .acc-icon,
+  .Account .div6 .acc-icon {
+    display: none;
+  }
+  .Account .div2 .acc-info,
+  .Account .div3 .acc-info,
+  .Account .div4 .acc-info,
+  .Account .div5 .acc-info,
+  .Account .div6 .acc-info {
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .Account .div2 .acc-info h3,
+  .Account .div3 .acc-info h3,
+  .Account .div4 .acc-info h3,
+  .Account .div5 .acc-info h3,
+  .Account .div6 .acc-info h3 {
+    font-size: 10px;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: center;
+  }
+  .Account .div2 .acc-value,
+  .Account .div3 .acc-value,
+  .Account .div4 .acc-value,
+  .Account .div5 .acc-value,
+  .Account .div6 .acc-value {
+    font-size: 16px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .Account .div2 .acc-trend,
+  .Account .div3 .acc-trend,
+  .Account .div4 .acc-trend,
+  .Account .div5 .acc-trend,
+  .Account .div6 .acc-trend {
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: center;
+  }
+  /* Charts stack full width */
+  .Account .div7 { grid-column: 1 / -1; grid-row: 4; min-width: 0; }
+  .Account .div8 { grid-column: 1 / -1; grid-row: 5; min-width: 0; }
+  .Account .div9 { grid-column: 1 / -1; grid-row: 6; min-width: 0; }
+  .Account .div10 { grid-column: 1 / -1; grid-row: 7; min-width: 0; }
+  .Account .div11 { grid-column: 1 / -1; grid-row: 8; min-width: 0; }
+  .Account .div7 .chart-box,
+  .Account .div9 .chart-box,
+  .Account .div10 .chart-box,
+  .Account .div11 .chart-box {
+    min-height: 200px;
+  }
+  .Account .div8 .acc-table-wrap {
+    overflow-x: visible;
+    width: 100%;
+  }
+  .Account .div8 .acc-table {
+    table-layout: fixed;
+    width: 100%;
+  }
+  .Account .div8 .acc-table th,
+  .Account .div8 .acc-table td {
+    padding: 8px 6px;
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* ===== Mobile Portrait (480px - 640px) ===== */
+@media (max-width: 640px) {
+  .Account {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  /* Div 1: Icon Left, Text & Data Centered - Perfect alignment with overflow fix */
+  .Account .div1 {
+    grid-column: 1 / -2;
+    grid-row: 1 / span 2 ;
+    padding: 14px 16px;
+    gap: 14px;
+    min-width: 0;
+    min-height: 110px;
+    overflow: hidden;
+    box-sizing: border-box;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    text-align: left !important;
+  }
+  .Account .div1 .acc-icon {
+    width: 46px;
+    height: 46px;
+    font-size: 19px;
+    flex-shrink: 0;
+    margin: 0;
+  }
+  .Account .div1 .acc-info {
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+    position: relative;
+  }
+  .Account .div1 .acc-info h3 {
+    font-size: 11px;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: left;
+  }
+  .Account .div1 .acc-value {
+    font-size: 22px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    margin-bottom: 5px;
+    width: 100%;
+    text-align: left;
+  }
+  .Account .div1 .acc-trend {
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: left;
+    padding: 4px 10px;
+  }
+  /* Div 2-6: Perfectly Centered, No Icon */
+  .Account .div2,
+  .Account .div3,
+  .Account .div4,
+  .Account .div5,
+  .Account .div6 {
+    min-height: 90px !important;
+    padding: 10px 6px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+  }
+  .Account .div2 .acc-icon,
+  .Account .div3 .acc-icon,
+  .Account .div4 .acc-icon,
+  .Account .div5 .acc-icon,
+  .Account .div6 .acc-icon {
+    display: none;
+  }
+  .Account .div2 .acc-info,
+  .Account .div3 .acc-info,
+  .Account .div4 .acc-info,
+  .Account .div5 .acc-info,
+  .Account .div6 .acc-info {
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .Account .div2 .acc-info h3,
+  .Account .div3 .acc-info h3,
+  .Account .div4 .acc-info h3,
+  .Account .div5 .acc-info h3,
+  .Account .div6 .acc-info h3 {
+    font-size: 9px;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: center;
+  }
+  .Account .div2 .acc-value,
+  .Account .div3 .acc-value,
+  .Account .div4 .acc-value,
+  .Account .div5 .acc-value,
+  .Account .div6 .acc-value {
+    font-size: 14px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 3px;
+  }
+  .Account .div2 .acc-trend,
+  .Account .div3 .acc-trend,
+  .Account .div4 .acc-trend,
+  .Account .div5 .acc-trend,
+  .Account .div6 .acc-trend {
+    font-size: 9px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: center;
+  }
+  /* Charts */
+  .Account .div7 { grid-column: 1 / -1; grid-row: 4; min-width: 0; }
+  .Account .div8 { grid-column: 1 / -1; grid-row: 5; min-width: 0; }
+  .Account .div9 { grid-column: 1 / -1; grid-row: 6; min-width: 0; }
+  .Account .div10 { grid-column: 1 / -1; grid-row: 7; min-width: 0; }
+  .Account .div11 { grid-column: 1 / -1; grid-row: 8; min-width: 0; }
+  .Account .div7 .chart-box,
+  .Account .div9 .chart-box,
+  .Account .div10 .chart-box,
+  .Account .div11 .chart-box {
+    min-height: 200px;
+  }
+  .Account .div8 .acc-table-wrap {
+    overflow-x: visible;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+  .Account .div8 .acc-table {
+    min-width: 100%;
+    font-size: 11px;
+    table-layout: fixed;
+    width: 100%;
+  }
+  .Account .div8 .acc-table th,
+  .Account .div8 .acc-table td {
+    padding: 8px 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* ===== Small Mobile (380px - 480px) ===== */
+@media (max-width: 480px) {
+  .Account {
+    gap: 8px;
+  }
+  /* Div 1: Icon Left, Text & Data Middle - Perfect alignment with overflow fix */
+  .Account .div1 {
+    grid-column: 1 / -2;
+    grid-row: 1 / span 2;
+    padding: 12px 14px;
+    gap: 12px;
+    min-width: 0;
+    min-height: 105px;
+    overflow: hidden;
+    box-sizing: border-box;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    text-align: left !important;
+  }
+  .Account .div1 .acc-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 17px;
+    flex-shrink: 0;
+    margin: 0;
+  }
+  .Account .div1 .acc-info {
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .Account .div1 .acc-info h3 {
+    font-size: 10px;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+  .Account .div1 .acc-value {
+    font-size: 19px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    margin-bottom: 4px;
+    width: 100%;
+  }
+  .Account .div1 .acc-trend {
+    font-size: 9px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  /* Div 2-6: Perfectly Centered, No Icon */
+  .Account .div2,
+  .Account .div3,
+  .Account .div4,
+  .Account .div5,
+  .Account .div6 {
+    min-height: 80px !important;
+    padding: 8px 5px !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+  }
+  .Account .div2 .acc-icon,
+  .Account .div3 .acc-icon,
+  .Account .div4 .acc-icon,
+  .Account .div5 .acc-icon,
+  .Account .div6 .acc-icon {
+    display: none;
+  }
+  .Account .div2 .acc-info,
+  .Account .div3 .acc-info,
+  .Account .div4 .acc-info,
+  .Account .div5 .acc-info,
+  .Account .div6 .acc-info {
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .Account .div2 .acc-info h3,
+  .Account .div3 .acc-info h3,
+  .Account .div4 .acc-info h3,
+  .Account .div5 .acc-info h3,
+  .Account .div6 .acc-info h3 {
+    font-size: 8px;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: center;
+  }
+  .Account .div2 .acc-value,
+  .Account .div3 .acc-value,
+  .Account .div4 .acc-value,
+  .Account .div5 .acc-value,
+  .Account .div6 .acc-value {
+    font-size: 13px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 2px;
+  }
+  .Account .div2 .acc-trend,
+  .Account .div3 .acc-trend,
+  .Account .div4 .acc-trend,
+  .Account .div5 .acc-trend,
+  .Account .div6 .acc-trend {
+    font-size: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: center;
+  }
+  .Account .div7,
+  .Account .div8,
+  .Account .div9,
+  .Account .div10,
+  .Account .div11 {
+    min-width: 0;
+  }
+  .Account .div7 .chart-box,
+  .Account .div9 .chart-box,
+  .Account .div10 .chart-box,
+  .Account .div11 .chart-box {
+    min-height: 180px;
+  }
+  .Account .div8 .acc-table-wrap {
+    width: 100%;
+  }
+  .Account .div8 .acc-table {
+    table-layout: fixed;
+    width: 100%;
+  }
+  .Account .div8 .acc-table th,
+  .Account .div8 .acc-table td {
+    padding: 6px 4px;
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .Account .div8 .ms-bar {
+    width: 40px;
+    height: 6px;
+  }
+  .Account .div8 .ms-badge {
+    font-size: 8px;
+    padding: 2px 4px;
+  }
+}
+
+/* ===== Very Small / Fold Devices (320px - 380px) ===== */
+@media (max-width: 380px) {
+  .Account {
+    gap: 6px;
+  }
+  /* Div 1: Icon Left, Text & Data Centered - Perfect alignment with overflow fix */
+  .Account .div1 {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    padding: 10px 12px;
+    gap: 10px;
+    border-radius: 14px;
+    min-width: 0;
+    min-height: 95px;
+    overflow: hidden;
+    box-sizing: border-box;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    text-align: left !important;
+  }
+  .Account .div1 .acc-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 15px;
+    flex-shrink: 0;
+    margin: 0;
+  }
+  .Account .div1 .acc-info {
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+    position: relative;
+  }
+  .Account .div1 .acc-info h3 {
+    font-size: 9px;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: left;
+  }
+  .Account .div1 .acc-value {
+    font-size: 16px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    margin-bottom: 3px;
+    width: 100%;
+    text-align: left;
+  }
+  .Account .div1 .acc-trend {
+    font-size: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: left;
+    padding: 3px 8px;
+  }
+  /* Div 2-6: Perfectly Centered, No Icon */
+  /* (div1 is full-width row 1 here, so div2/div3 share row 2 side-by-side — no overlap) */
+  .Account .div2 { grid-column: 1 / 3; grid-row: 2; }
+  .Account .div3 { grid-column: 3; grid-row: 2; }
+  .Account .div2,
+  .Account .div3,
+  .Account .div4,
+  .Account .div5,
+  .Account .div6 {
+    min-height: 70px !important;
+    padding: 8px 3px !important;
+    border-radius: 10px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .Account .div2 .acc-icon,
+  .Account .div3 .acc-icon,
+  .Account .div4 .acc-icon,
+  .Account .div5 .acc-icon,
+  .Account .div6 .acc-icon {
+    display: none;
+  }
+  .Account .div2 .acc-info,
+  .Account .div3 .acc-info,
+  .Account .div4 .acc-info,
+  .Account .div5 .acc-info,
+  .Account .div6 .acc-info {
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .Account .div2 .acc-info h3,
+  .Account .div3 .acc-info h3,
+  .Account .div4 .acc-info h3,
+  .Account .div5 .acc-info h3,
+  .Account .div6 .acc-info h3 {
+    font-size: 7px;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: center;
+  }
+  .Account .div2 .acc-value,
+  .Account .div3 .acc-value,
+  .Account .div4 .acc-value,
+  .Account .div5 .acc-value,
+  .Account .div6 .acc-value {
+    font-size: 11px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 2px;
+  }
+  .Account .div2 .acc-trend,
+  .Account .div3 .acc-trend,
+  .Account .div4 .acc-trend,
+  .Account .div5 .acc-trend,
+  .Account .div6 .acc-trend {
+    font-size: 7px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: center;
+  }
+  .Account .div7,
+  .Account .div8,
+  .Account .div9,
+  .Account .div10,
+  .Account .div11 {
+    min-width: 0;
+  }
+  .Account .div7 .chart-box,
+  .Account .div9 .chart-box,
+  .Account .div10 .chart-box,
+  .Account .div11 .chart-box {
+    min-height: 160px;
+  }
+  .Account .div8 .acc-table-wrap {
+    width: 100%;
+  }
+  .Account .div8 .acc-table {
+    table-layout: fixed;
+    width: 100%;
+  }
+  .Account .div8 .acc-table th,
+  .Account .div8 .acc-table td {
+    padding: 5px 3px;
+    font-size: 9px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .Account .div8 .ms-bar {
+    width: 32px;
+    height: 5px;
+  }
+  .Account .div8 .ms-badge {
+    font-size: 7px;
+    padding: 1px 3px;
+  }
+}
+
+/* ===== Galaxy Fold / Ultra Narrow (280px - 320px) ===== */
+@media (max-width: 320px) {
+  .Account {
+    gap: 5px;
+  }
+  /* Div 1: Icon Left, Text & Data Centered - Perfect alignment with overflow fix */
+  .Account .div1 {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    padding: 8px 10px;
+    gap: 8px;
+    border-radius: 12px;
+    min-width: 0;
+    min-height: 85px;
+    overflow: hidden;
+    box-sizing: border-box;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    text-align: left !important;
+  }
+  .Account .div1 .acc-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+    flex-shrink: 0;
+    margin: 0;
+  }
+  .Account .div1 .acc-info {
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+    position: relative;
+  }
+  .Account .div1 .acc-info h3 {
+    font-size: 8px;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: left;
+  }
+  .Account .div1 .acc-value {
+    font-size: 14px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    margin-bottom: 2px;
+    width: 100%;
+    text-align: left;
+  }
+  .Account .div1 .acc-trend {
+    font-size: 7px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: left;
+    padding: 3px 8px;
+  }
+  /* Div 2-6: Perfectly Centered, No Icon */
+  /* (div1 is full-width row 1 here, so div2/div3 share row 2 side-by-side — no overlap) */
+  .Account .div2 { grid-column: 1 / 3; grid-row: 2; }
+  .Account .div3 { grid-column: 3; grid-row: 2; }
+  .Account .div2,
+  .Account .div3,
+  .Account .div4,
+  .Account .div5,
+  .Account .div6 {
+    min-height: 65px !important;
+    padding: 6px 2px !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .Account .div2 .acc-icon,
+  .Account .div3 .acc-icon,
+  .Account .div4 .acc-icon,
+  .Account .div5 .acc-icon,
+  .Account .div6 .acc-icon {
+    display: none;
+  }
+  .Account .div2 .acc-info,
+  .Account .div3 .acc-info,
+  .Account .div4 .acc-info,
+  .Account .div5 .acc-info,
+  .Account .div6 .acc-info {
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .Account .div2 .acc-info h3,
+  .Account .div3 .acc-info h3,
+  .Account .div4 .acc-info h3,
+  .Account .div5 .acc-info h3,
+  .Account .div6 .acc-info h3 {
+    font-size: 6px;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: center;
+  }
+  .Account .div2 .acc-value,
+  .Account .div3 .acc-value,
+  .Account .div4 .acc-value,
+  .Account .div5 .acc-value,
+  .Account .div6 .acc-value {
+    font-size: 9px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1px;
+  }
+  .Account .div2 .acc-trend,
+  .Account .div3 .acc-trend,
+  .Account .div4 .acc-trend,
+  .Account .div5 .acc-trend,
+  .Account .div6 .acc-trend {
+    font-size: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: center;
+  }
+  .Account .div7,
+  .Account .div8,
+  .Account .div9,
+  .Account .div10,
+  .Account .div11 {
+    min-width: 0;
+  }
+  .Account .div7 .chart-box,
+  .Account .div9 .chart-box,
+  .Account .div10 .chart-box,
+  .Account .div11 .chart-box {
+    min-height: 140px;
+  }
+  .Account .div8 .acc-table-wrap {
+    width: 100%;
+  }
+  .Account .div8 .acc-table {
+    table-layout: fixed;
+    width: 100%;
+  }
+  .Account .div8 .acc-table th,
+  .Account .div8 .acc-table td {
+    padding: 4px 2px;
+    font-size: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .Account .div8 .ms-bar {
+    width: 24px;
+    height: 4px;
+  }
+  .Account .div8 .ms-badge {
+    font-size: 6px;
+    padding: 1px 2px;
+  }
+}
+
+/* ===== Safe Area for Notched Devices ===== */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .Account {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
+
+/* ===== Touch Device Optimizations ===== */
+@media (hover: none) and (pointer: coarse) {
+  .Account .div1:hover,
+  .Account .div2:hover,
+  .Account .div3:hover,
+  .Account .div4:hover,
+  .Account .div5:hover,
+  .Account .div6:hover {
+    transform: none;
+  }
+  .Account .div1:active,
+  .Account .div2:active,
+  .Account .div3:active,
+  .Account .div4:active,
+  .Account .div5:active,
+  .Account .div6:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
+/* ===== Landscape Orientation ===== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .Account .div1 {
+    min-height: auto;
+    padding: 12px 16px;
+    flex-direction: row;
+    gap: 12px;
+  }
+  .Account .div1 .acc-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+  .Account .div1 .acc-value {
+    font-size: 18px;
+  }
+  .Account .div7 .chart-box,
+  .Account .div9 .chart-box,
+  .Account .div10 .chart-box,
+  .Account .div11 .chart-box {
+    min-height: 150px;
+    max-height: 200px;
+  }
+}
+
 .acc-card {
   position: relative;
   background: var(--card-grad);
@@ -935,82 +2228,433 @@
 }
 .charts-acc {
   display: grid;
-  grid-template-columns: 1.7fr 1fr;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
   gap: 20px;
   margin-bottom: 28px;
+  align-items: stretch;
+}
+.charts-acc > .acc-panel { min-width: 0; }
+/* Even 1:1 pair — doughnut + table need equal breathing room (stacks earlier on tablets) */
+.charts-pair-even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 1100px) {
+  .charts-pair-even { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 900px) {
-  .charts-acc { grid-template-columns: 1fr; }
+  .charts-acc { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 480px) {
+  .charts-acc { gap: 14px; margin-bottom: 20px; }
 }
 .acc-panel {
   background: var(--surface);
   border: 1px solid var(--border-c);
   border-radius: 22px;
-  padding: 20px;
+  padding: clamp(14px, 4vw, 20px);
+  min-width: 0;
+  overflow: hidden;
   box-shadow: 0 18px 40px var(--shadow-c);
   animation: accCardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .acc-panel h2 {
   color: var(--text-1);
-  font-size: 16px;
+  font-size: clamp(14px, 3.8vw, 16px);
   font-weight: 700;
   margin-bottom: 16px;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
 }
-.chart-box { position: relative; height: 300px; width: 100%; }
+.chart-box { position: relative; height: 300px; width: 100%; max-width: 100%; }
+@media (max-width: 1024px) { .chart-box { height: 280px; } }
+@media (max-width: 768px) { .chart-box { height: 260px; } }
+@media (max-width: 480px) { .chart-box { height: 240px; } }
+/* Investment doughnut panel — owns the fixed aspect box + centered fallback overlay */
+.inv-panel .chart-box { position: relative; width: 100%; max-width: 100%; margin-inline: auto; }
+
+/* Chart aspect ratios: fixed ratios (not px heights) scale perfectly on
+   iPhone SE → Fold → iPad → desktop. 16/10 for bars, 1/1 ring for doughnut. */
+.chart-box { position: relative; width: 100%; max-width: 100%; aspect-ratio: 16 / 10; height: auto; min-height: 240px; max-height: 340px; }
+.chart-box > canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; touch-action: pan-y; }
+.inv-panel .chart-box { aspect-ratio: 1 / 1; min-height: 260px; max-height: 380px; max-width: 460px; }
+@media (max-width: 640px) {
+  .chart-box { aspect-ratio: 4 / 3; min-height: 220px; max-height: 300px; }
+  .inv-panel .chart-box { aspect-ratio: 1 / 1; min-height: 240px; max-height: 330px; max-width: 100%; }
+}
+@media (max-width: 380px) {
+  .chart-box { min-height: 200px; }
+  .inv-panel .chart-box { min-height: 220px; }
+}
+/* Landscape phones (iPhone SE landscape, Galaxy Fold open): keep ring compact. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .inv-panel .chart-box { max-height: 260px; max-width: 340px; }
+  .chart-box { max-height: 260px; }
+}
+
+/* ============================================================
+   INVESTMENT PIE + MEMBER STATUS — PERFECT RESPONSIVE
+   Covers: iPhone SE (375px) / iPhone 14 (390px) / Galaxy S23 (360px)
+           Galaxy Fold closed (280px) / iPad Mini (768px) / iPad Air (820px)
+           iPad Pro (1024px) / Mac/Windows (1280px+)
+   ============================================================ */
+
+/* --- Investment doughnut: constrain + center on every device --- */
+.inv-panel .chart-box {
+  width: 100%;
+  max-width: 460px;
+  margin-inline: auto;
+  aspect-ratio: 1 / 1;
+  min-height: 200px;
+  max-height: 380px;
+}
+.inv-center {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 60%;
+  font-size: clamp(14px, 4vw, 22px);
+  padding: 4px;
+}
+.inv-center-label { font-size: 0.5em; letter-spacing: 0.12em; }
+.inv-center-value { font-size: 1em; line-height: 1.1; }
+
+/* --- Member Status table: smooth horizontal scroll on small screens --- */
+.acc-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148,163,184,.25) transparent;
+  margin: 0 calc(clamp(14px, 4vw, 20px) * -1);
+  padding: 0 clamp(14px, 4vw, 20px);
+}
+.acc-table-wrap::-webkit-scrollbar { height: 5px; }
+.acc-table-wrap::-webkit-scrollbar-track { background: transparent; }
+.acc-table-wrap::-webkit-scrollbar-thumb { background: rgba(148,163,184,.25); border-radius: 999px; }
+.acc-table { min-width: 520px; width: 100%; }
+
+/* --- Charts grid: Investment Pie + Member Status side-by-side --- */
+.charts-acc {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: clamp(14px, 3vw, 20px);
+  margin-bottom: clamp(20px, 4vw, 28px);
+  align-items: stretch;
+}
+.charts-acc > .acc-panel { min-width: 0; overflow: hidden; }
+
+/* ===== BREAKPOINTS ===== */
+
+/* Large tablets / small laptops (≤1100px) */
+@media (max-width: 1100px) {
+  .charts-acc { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+  .inv-panel .chart-box { max-width: 380px; }
+}
+
+/* Tablets portrait (≤900px) — stack charts */
+@media (max-width: 900px) {
+  .charts-acc { grid-template-columns: minmax(0, 1fr); }
+  .inv-panel .chart-box { max-width: 340px; max-height: 320px; }
+  .inv-center { font-size: clamp(15px, 3.5vw, 18px); }
+  .acc-table { min-width: 480px; }
+}
+
+/* Phones landscape + small tablets (≤768px) */
+@media (max-width: 768px) {
+  .inv-panel .chart-box { max-width: 300px; max-height: 280px; min-height: 200px; }
+  .chart-box { aspect-ratio: 16 / 10; min-height: 220px; }
+  .acc-table { min-width: 460px; }
+  .acc-table th, .acc-table td { padding: 10px 8px; font-size: 12px; }
+}
+
+/* Phones (≤640px) */
+@media (max-width: 640px) {
+  .charts-acc { gap: 14px; margin-bottom: 20px; }
+  .inv-panel .chart-box { max-width: 280px; max-height: 260px; min-height: 190px; }
+  .inv-center { font-size: clamp(14px, 4vw, 16px); max-width: 55%; }
+  .acc-table { min-width: 440px; }
+  .ms-bar { width: min(80px, 22vw); }
+  .ms-prog { min-width: 120px; }
+}
+
+/* Small phones (≤480px) — iPhone SE, Galaxy S23 */
+@media (max-width: 480px) {
+  .inv-panel .chart-box { max-width: 240px; max-height: 230px; min-height: 170px; }
+  .inv-center { font-size: 13px; max-width: 50%; gap: 1px; }
+  .inv-center-label { font-size: 0.45em; letter-spacing: 0.08em; }
+  .chart-box { aspect-ratio: 4 / 3; min-height: 200px; max-height: 260px; }
+  .acc-table { min-width: 400px; }
+  .acc-table th, .acc-table td { padding: 9px 6px; font-size: 11.5px; }
+  .ms-bar { width: min(64px, 20vw); height: 6px; }
+  .ms-pct { display: block; margin-left: 0; margin-top: 2px; font-size: 10px; }
+  .ms-badge { font-size: 10px; padding: 2px 8px; }
+  .ms-prog { min-width: 100px; }
+}
+
+/* Very small phones (≤380px) — iPhone SE 1st gen, Galaxy Fold open */
+@media (max-width: 380px) {
+  .inv-panel .chart-box { max-width: 210px; max-height: 200px; min-height: 150px; }
+  .inv-center { font-size: 12px; max-width: 48%; }
+  .chart-box { min-height: 180px; }
+  .acc-table { min-width: 360px; }
+  .acc-table th, .acc-table td { padding: 8px 5px; font-size: 11px; }
+  .ms-bar { width: min(52px, 18vw); }
+  .ms-name { max-width: 28vw; }
+}
+
+/* Foldables / tiny screens (≤320px) */
+@media (max-width: 320px) {
+  .inv-panel .chart-box { max-width: 180px; max-height: 170px; min-height: 130px; }
+  .inv-center { font-size: 11px; max-width: 45%; }
+  .acc-table { min-width: 320px; }
+  .acc-table th, .acc-table td { padding: 7px 4px; font-size: 10.5px; }
+  .ms-bar { width: min(44px, 16vw); height: 5px; }
+}
+
+/* Landscape phones (short height) */
+@media (max-height: 500px) and (orientation: landscape) {
+  .inv-panel .chart-box { max-height: 240px; max-width: 280px; min-height: 150px; }
+  .chart-box { max-height: 220px; min-height: 160px; }
+  .inv-center { font-size: 12px; }
+  .charts-acc { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+  .acc-table { min-width: 420px; }
+}
+
+/* iPad Pro / large tablets landscape (≤1366px) */
+@media (max-width: 1366px) and (min-width: 1024px) {
+  .charts-acc { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+  .inv-panel .chart-box { max-width: 420px; }
+}
+
+/* High-DPI / Retina adjustments */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .inv-center-value { -webkit-font-smoothing: antialiased; }
+}
+
+/* ============================================================
+   COMPREHENSIVE RESPONSIVE FIX — Investment + Member Status
+   Covers: iPhone SE (320px) → Fold → iPad → Desktop → Wide
+   ============================================================ */
+
+/* ---- Investment doughnut panel ---- */
+@media (max-width: 640px) {
+  .inv-panel .chart-box {
+    aspect-ratio: 1 / 1;
+    min-height: 220px;
+    max-height: 300px;
+    max-width: 100%;
+  }
+  .inv-center {
+    font-size: clamp(13px, 4vw, 18px);
+    top: 48%;
+  }
+  .inv-center-label {
+    font-size: 0.5em;
+    letter-spacing: 0.12em;
+  }
+}
+@media (max-width: 380px) {
+  .inv-panel .chart-box {
+    min-height: 200px;
+    max-height: 260px;
+  }
+  .inv-center {
+    font-size: 12px;
+    gap: 2px;
+  }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .inv-panel .chart-box {
+    max-height: 240px;
+    max-width: 300px;
+  }
+}
+
+/* ---- Member Status table scroll ---- */
+@media (max-width: 640px) {
+  .acc-table-wrap {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: visible;
+  }
+  .acc-table {
+    min-width: 100%;
+    width: 100%;
+    table-layout: fixed;
+    font-size: 11px;
+  }
+  .acc-table th, .acc-table td {
+    padding: 8px 6px;
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ms-bar { width: 50px; height: 6px; }
+  .ms-badge { font-size: 9px; padding: 2px 6px; }
+  .ms-pct { font-size: 9px; margin-left: 3px; }
+}
+@media (max-width: 480px) {
+  .acc-table { min-width: 100%; width: 100%; table-layout: fixed; }
+  .acc-table th, .acc-table td { padding: 6px 4px; font-size: 10px; }
+  .ms-bar { width: 40px; height: 5px; }
+  .ms-pct { display: block; margin-left: 0; margin-top: 2px; font-size: 8px; }
+  .ms-name { max-width: 28vw; }
+  .ms-badge { font-size: 8px; padding: 1px 4px; }
+}
+@media (max-width: 380px) {
+  .acc-table { min-width: 100%; width: 100%; table-layout: fixed; }
+  .acc-table th, .acc-table td { padding: 5px 3px; font-size: 9px; }
+  .ms-bar { width: 32px; height: 4px; }
+  .ms-name { max-width: 26vw; }
+  .ms-badge { font-size: 7px; padding: 1px 3px; }
+}
+@media (max-width: 320px) {
+  .acc-table { min-width: 100%; width: 100%; table-layout: fixed; }
+  .acc-table th, .acc-table td { padding: 4px 2px; font-size: 8px; }
+  .ms-bar { width: 24px; height: 4px; }
+  .ms-name { max-width: 24vw; }
+  .ms-badge { font-size: 6px; padding: 1px 2px; }
+}
+
+/* ---- Chart panels padding reduction ---- */
+@media (max-width: 640px) {
+  .acc-panel { padding: 16px; border-radius: 20px; }
+  .acc-panel h2 { font-size: 14px; margin-bottom: 14px; gap: 8px; }
+  .acc-panel h2 > i { width: 28px; height: 28px; border-radius: 9px; font-size: 12px; }
+  .charts-acc, .tables-acc { gap: 16px; margin-bottom: 20px; }
+}
+@media (max-width: 380px) {
+  .acc-panel { padding: 12px; border-radius: 18px; }
+  .acc-panel h2 { font-size: 13px; margin-bottom: 12px; }
+  .charts-acc, .tables-acc { gap: 12px; margin-bottom: 16px; }
+}
+
+/* ---- Account Grid Layout (new .Account class) ---- */
+@media (max-width: 640px) {
+  .Account { gap: 10px; }
+  .Account .div1 { padding: 14px 16px; gap: 14px; display: flex; flex-direction: row; justify-content: flex-start; align-items: center; text-align: left; }
+  .Account .div1 .acc-icon { width: 46px; height: 46px; font-size: 19px; margin: 0; flex-shrink: 0; }
+  .Account .div1 .acc-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; }
+  .Account .div1 .acc-value { font-size: 22px; }
+  .Account .div2 .acc-value,
+  .Account .div3 .acc-value,
+  .Account .div4 .acc-value,
+  .Account .div5 .acc-value,
+  .Account .div6 .acc-value { font-size: 14px; }
+}
+@media (max-width: 480px) {
+  .Account { gap: 8px; }
+  .Account .div1 { padding: 12px 14px; gap: 12px; display: flex; flex-direction: row; justify-content: flex-start; align-items: center; text-align: left; }
+  .Account .div1 .acc-icon { width: 42px; height: 42px; font-size: 17px; margin: 0; flex-shrink: 0; }
+  .Account .div1 .acc-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; }
+  .Account .div1 .acc-value { font-size: 19px; }
+  .Account .div2 .acc-value,
+  .Account .div3 .acc-value,
+  .Account .div4 .acc-value,
+  .Account .div5 .acc-value,
+  .Account .div6 .acc-value { font-size: 13px; }
+  .Account .div2 .acc-info h3,
+  .Account .div3 .acc-info h3,
+  .Account .div4 .acc-info h3,
+  .Account .div5 .acc-info h3,
+  .Account .div6 .acc-info h3 { font-size: 8px; }
+}
+@media (max-width: 380px) {
+  .Account { gap: 6px; }
+  .Account .div1 { padding: 10px 12px; gap: 10px; display: flex; flex-direction: row; justify-content: flex-start; align-items: center; text-align: left; }
+  .Account .div1 .acc-icon { width: 36px; height: 36px; font-size: 15px; margin: 0; flex-shrink: 0; }
+  .Account .div1 .acc-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; }
+  .Account .div1 .acc-value { font-size: 16px; }
+  .Account .div2 .acc-value,
+  .Account .div3 .acc-value,
+  .Account .div4 .acc-value,
+  .Account .div5 .acc-value,
+  .Account .div6 .acc-value { font-size: 11px; }
+  .Account .div2 .acc-info h3,
+  .Account .div3 .acc-info h3,
+  .Account .div4 .acc-info h3,
+  .Account .div5 .acc-info h3,
+  .Account .div6 .acc-info h3 { font-size: 7px; }
+}
+@media (max-width: 320px) {
+  .Account { gap: 5px; }
+  .Account .div1 { padding: 8px 10px; gap: 8px; display: flex; flex-direction: row; justify-content: flex-start; align-items: center; text-align: left; }
+  .Account .div1 .acc-icon { width: 32px; height: 32px; font-size: 13px; margin: 0; flex-shrink: 0; }
+  .Account .div1 .acc-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; }
+  .Account .div1 .acc-value { font-size: 14px; }
+  .Account .div2 .acc-value,
+  .Account .div3 .acc-value,
+  .Account .div4 .acc-value,
+  .Account .div5 .acc-value,
+  .Account .div6 .acc-value { font-size: 9px; }
+  .Account .div2 .acc-info h3,
+  .Account .div3 .acc-info h3,
+  .Account .div4 .acc-info h3,
+  .Account .div5 .acc-info h3,
+  .Account .div6 .acc-info h3 { font-size: 6px; }
+}
+
+/* ---- Div1 inner alignment guard — icon left, text block left-aligned on all screens.
+   Placed last so it beats the generic centered .acc-* rules and any breakpoint gaps. ---- */
+.Account .div1 { flex-direction: row; justify-content: flex-start; align-items: center; text-align: left; }
+.Account .div1::after { display: none; }
+.Account .div1 .acc-icon { align-self: center; margin: 0; flex-shrink: 0; }
+.Account .div1 .acc-info { width: auto; max-width: 100%; text-align: left; align-items: flex-start; }
+.Account .div1 .acc-info h3 { text-align: left; align-self: flex-start; margin-top: 0; margin-left: 0; margin-right: 0; max-width: 100%; }
+.Account .div1 .acc-value { text-align: left; align-self: stretch; margin-top: 0; margin-left: 0; margin-right: 0; max-width: 100%; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: break-word; }
+.Account .div1 .acc-trend { align-self: flex-start; justify-content: flex-start; text-align: left; margin: 0; max-width: 100%; }
+
+/* ---- iPad / Tablet portrait ---- */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .charts-acc { gap: 20px; }
+  .inv-panel .chart-box { max-height: 360px; }
+  .chart-box { height: 280px; }
+}
+
+/* ---- iPad / Tablet landscape & small laptops ---- */
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .charts-acc { gap: 24px; }
+  .inv-panel .chart-box { max-height: 380px; }
+}
+
+/* ---- Large desktop ---- */
+@media (min-width: 1440px) {
+  .inv-panel .chart-box { max-height: 420px; }
+  .chart-box { max-height: 380px; }
+}
+
+/* ---- Fold devices (very narrow, ~280px) ---- */
+@media (max-width: 320px) {
+  .acc-panel { padding: 10px; border-radius: 16px; }
+  .acc-panel h2 { font-size: 12px; margin-bottom: 10px; gap: 6px; }
+  .acc-panel h2 > i { width: 24px; height: 24px; font-size: 11px; }
+  .inv-panel .chart-box { min-height: 180px; max-height: 220px; }
+  .chart-box { min-height: 180px; }
+  .inv-center { font-size: 11px; }
+  .acc-table { min-width: 340px; }
+  .acc-table th, .acc-table td { padding: 7px 4px; font-size: 10.5px; }
+  .ms-bar { width: 38px; }
+  .ms-badge { font-size: 9px; padding: 2px 5px; }
+  .charts-acc, .tables-acc { gap: 10px; }
+}
+
+/* ---- Safe area insets for notched devices ---- */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .acc-table-wrap {
+    padding-left: max(14px, env(safe-area-inset-left));
+    padding-right: max(14px, env(safe-area-inset-right));
+  }
+}
+
+/* ---- Touch device optimizations ---- */
+@media (hover: none) and (pointer: coarse) {
+  .acc-table-wrap { -webkit-overflow-scrolling: touch; }
+  .acc-panel { transform: none !important; }
+}
+
 /* Paid ticker (Current Status panel) — pops up who-paid names every second */
 .paid-ticker {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 14px;
-  padding: 9px 14px;
-  border-radius: 12px;
-  background: rgba(5, 205, 153, 0.08);
-  border: 1px solid rgba(5, 205, 153, 0.25);
-  color: #a7f3d0;
-  font-size: 13px;
-  font-weight: 600;
-  overflow: hidden;
-}
-.paid-ticker-icon {
-  color: #34d399;
-  flex-shrink: 0;
-}
-.paid-ticker-text { display: inline-block; white-space: nowrap; }
-.paid-pop { animation: paidPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.4) both; }
-@keyframes paidPop {
-  0%   { opacity: 0; transform: scale(0.5) translateY(8px); }
-  60%  { opacity: 1; transform: scale(1.08) translateY(0); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
-}
-/* iconPulse — removed for clean professional look */
-
-/* Investment doughnut — spinning orbit ring + replay glow */
-.inv-chart-wrap { position: relative; }
-
-.inv-center {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  border-radius: 999px;
-  pointer-events: none;
-  z-index: 2;
-}
-.inv-center-label {
-  font-size: 0.55em;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
   color: var(--text-3);
 }
 .inv-center-value {
@@ -1026,12 +2670,17 @@
   0%   { opacity: 0; transform: translateX(18px); }
   100% { opacity: 1; transform: translateX(0); }
 }
-.ms-name { font-weight: 600; color: var(--text-2); white-space: nowrap; }
-.ms-num { color: #38bdf8; font-weight: 700; }
+.ms-name { font-weight: 600; color: var(--text-2); }
+@media (max-width: 640px) {
+  .ms-name { max-width: 34vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; }
+}
+.ms-num { color: #38bdf8; font-weight: 700; font-variant-numeric: tabular-nums; }
+.ms-prog { min-width: 148px; }
+@media (max-width: 640px) { .ms-prog { min-width: 0; } }
 .ms-bar {
   display: inline-block;
   vertical-align: middle;
-  width: 100px;
+  width: min(100px, 26vw);
   height: 7px;
   border-radius: 6px;
   background: rgba(148, 163, 184, 0.15);
@@ -1084,6 +2733,36 @@
 }
 @media (max-width: 900px) {
   .tables-acc { grid-template-columns: 1fr; }
+}
+.acc-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 calc(clamp(14px, 4vw, 20px) * -1);
+  padding: 0 clamp(14px, 4vw, 20px);
+  scrollbar-width: thin;
+}
+.acc-table { min-width: 560px; }
+.acc-table th, .acc-table td { white-space: nowrap; }
+.acc-table td:first-child, .acc-table th:first-child { white-space: normal; }
+@media (max-width: 640px) {
+  .acc-panel h2 { font-size: 13.5px; gap: 8px; margin-bottom: 14px; }
+  .acc-panel h2 > i { width: 28px; height: 28px; border-radius: 9px; font-size: 12.5px; }
+  .acc-table { min-width: 500px; }
+  .acc-table th, .acc-table td { padding: 10px 8px; font-size: 12px; }
+  .ms-bar { width: 72px; }
+  .ms-badge { font-size: 10px; padding: 2px 8px; }
+  .ms-pct { font-size: 10px; margin-left: 6px; }
+}
+@media (max-width: 420px) {
+  .acc-table { min-width: 440px; }
+  .acc-table th, .acc-table td { padding: 9px 6px; font-size: 11.5px; }
+  .ms-bar { width: 60px; }
+  .ms-pct { display: block; margin-left: 0; margin-top: 3px; }
+}
+@media (max-width: 360px) {
+  .acc-table { min-width: 400px; }
+  .ms-bar { width: 52px; }
+  .ms-name { max-width: 30vw; }
 }
 .acc-table { width: 100%; border-collapse: collapse; text-align: left; }
 .acc-table th, .acc-table td {
@@ -1871,6 +3550,463 @@ html, body { overflow-x: hidden; }
   .acc-table tbody tr:hover td:first-child { background: var(--neu-bg-2); }
 }
 
+/* ============================================================
+   COMPREHENSIVE RESPONSIVE FIX — Investment + Member Status
+   Covers: iPhone SE (320px) → Fold → iPad → Desktop → Wide
+   ============================================================ */
+
+/* ---- Investment doughnut panel ---- */
+@media (max-width: 640px) {
+  .inv-panel .chart-box {
+    aspect-ratio: 1 / 1;
+    min-height: 220px;
+    max-height: 300px;
+    max-width: 100%;
+  }
+  .inv-center {
+    font-size: clamp(13px, 4vw, 18px);
+    top: 48%;
+  }
+  .inv-center-label {
+    font-size: 0.5em;
+    letter-spacing: 0.12em;
+  }
+}
+@media (max-width: 380px) {
+  .inv-panel .chart-box {
+    min-height: 200px;
+    max-height: 260px;
+  }
+  .inv-center {
+    font-size: 12px;
+    gap: 2px;
+  }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .inv-panel .chart-box {
+    max-height: 240px;
+    max-width: 300px;
+  }
+}
+
+/* ---- Member Status table scroll ---- */
+@media (max-width: 640px) {
+  .acc-table-wrap {
+    margin: 0 -14px;
+    padding: 0 14px;
+  }
+  .acc-table { min-width: 480px; }
+  .acc-table th, .acc-table td { padding: 9px 7px; font-size: 12px; }
+  .ms-bar { width: 64px; height: 8px; }
+  .ms-badge { font-size: 10px; padding: 2px 7px; }
+  .ms-pct { font-size: 10px; margin-left: 4px; }
+}
+@media (max-width: 420px) {
+  .acc-table { min-width: 420px; }
+  .acc-table th, .acc-table td { padding: 8px 5px; font-size: 11px; }
+  .ms-bar { width: 52px; }
+  .ms-pct { display: block; margin-left: 0; margin-top: 2px; font-size: 9px; }
+  .ms-name { max-width: 28vw; }
+}
+@media (max-width: 360px) {
+  .acc-table { min-width: 380px; }
+  .ms-bar { width: 44px; }
+  .ms-name { max-width: 26vw; }
+}
+
+/* ---- Chart panels padding reduction ---- */
+@media (max-width: 640px) {
+  .acc-panel { padding: 16px; border-radius: 20px; }
+  .acc-panel h2 { font-size: 14px; margin-bottom: 14px; gap: 8px; }
+  .acc-panel h2 > i { width: 28px; height: 28px; border-radius: 9px; font-size: 12px; }
+  .charts-acc, .tables-acc { gap: 16px; margin-bottom: 20px; }
+}
+@media (max-width: 380px) {
+  .acc-panel { padding: 12px; border-radius: 18px; }
+  .acc-panel h2 { font-size: 13px; margin-bottom: 12px; }
+  .charts-acc, .tables-acc { gap: 12px; margin-bottom: 16px; }
+}
+
+/* ---- Stat cards grid ---- */
+@media (max-width: 640px) {
+  .acc-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .acc-value { font-size: 18px; }
+  .acc-info h3 { font-size: 11px; }
+}
+@media (max-width: 380px) {
+  .acc-grid { gap: 10px; }
+  .acc-card { padding: 14px 10px; border-radius: 18px; }
+  .acc-icon { width: 44px; height: 44px; font-size: 17px; }
+  .acc-value { font-size: 16px; }
+}
+
+/* ---- iPad / Tablet portrait ---- */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .charts-acc { gap: 20px; }
+  .inv-panel .chart-box { max-height: 360px; }
+  .chart-box { height: 280px; }
+}
+
+/* ---- iPad / Tablet landscape & small laptops ---- */
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .charts-acc { gap: 24px; }
+  .inv-panel .chart-box { max-height: 380px; }
+}
+
+/* ---- Large desktop ---- */
+@media (min-width: 1440px) {
+  .inv-panel .chart-box { max-height: 420px; }
+  .chart-box { max-height: 380px; }
+}
+
+/* ---- Fold devices (very narrow, ~280px) ---- */
+@media (max-width: 320px) {
+  .acc-panel { padding: 10px; border-radius: 16px; }
+  .acc-panel h2 { font-size: 12px; margin-bottom: 10px; gap: 6px; }
+  .acc-panel h2 > i { width: 24px; height: 24px; font-size: 11px; }
+  .inv-panel .chart-box { min-height: 180px; max-height: 220px; }
+  .chart-box { min-height: 180px; }
+  .inv-center { font-size: 11px; }
+  .acc-table { min-width: 340px; }
+  .acc-table th, .acc-table td { padding: 7px 4px; font-size: 10.5px; }
+  .ms-bar { width: 38px; }
+  .ms-badge { font-size: 9px; padding: 2px 5px; }
+  .charts-acc, .tables-acc { gap: 10px; }
+}
+
+/* ---- Safe area insets for notched devices ---- */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .acc-table-wrap {
+    padding-left: max(14px, env(safe-area-inset-left));
+    padding-right: max(14px, env(safe-area-inset-right));
+  }
+}
+
+/* ---- Touch device optimizations ---- */
+@media (hover: none) and (pointer: coarse) {
+  .acc-table-wrap { -webkit-overflow-scrolling: touch; }
+  .acc-panel { transform: none !important; }
+}
+
+/* ============================================================
+   DIV1 HERO — FINAL INNER-ALIGNMENT FIX (MOBILE ONLY ≤767px)
+   Icon left + text block left, whole row vertically centered.
+   Structural properties only (no padding / gap / sizes / grid),
+   so every breakpoint's sizing above keeps working.
+   Gated to phones/mobile (≤767px) so tablets, iPads, Windows
+   and Mac get the new top-center hero redesign further below.
+   ============================================================ */
+@media (max-width: 767px) {
+.Account .div1 {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  align-content: center !important;
+  text-align: left !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+}
+.Account .div1::after { display: none !important; }
+.Account .div1 .acc-icon {
+  align-self: center !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+}
+.Account .div1 .acc-info {
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  width: auto !important;
+  max-width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  align-content: flex-start !important;
+  text-align: left !important;
+  margin: 0 !important;
+}
+.Account .div1 .acc-info h3,
+.Account .div1 .acc-value,
+.Account .div1 .acc-trend {
+  text-align: left !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: 100% !important;
+}
+.Account .div1 .acc-info h3 { align-self: flex-start !important; margin-top: 0 !important; }
+.Account .div1 .acc-value { align-self: stretch !important; }
+.Account .div1 .acc-trend { align-self: flex-start !important; justify-content: flex-start !important; }
+}
+
+/* ============================================================
+   DIV1 HERO — REDESIGN: TABLET / iPAD / WINDOWS / MAC (≥768px)
+   Icon on top-center, title & data centered inside the box,
+   big glowing highlighted currency value.
+   Mobile view (≤767px) keeps its left-icon row layout.
+   ============================================================ */
+@media (min-width: 768px) {
+  /* Hero card becomes a centered vertical stack */
+  .Account .div1 {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    align-content: center !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    min-height: 250px;
+    padding: 28px 22px;
+    gap: 8px;
+    border-radius: 22px;
+  }
+  .Account .div1::after { display: none !important; }
+  /* Soft halo centered behind the top icon */
+  .Account .div1::before {
+    top: -18%;
+    right: auto;
+    bottom: auto;
+    left: 50%;
+    width: 75%;
+    height: 75%;
+    transform: translate(-50%, 0);
+  }
+  /* Icon: big circle, top center */
+  .Account .div1 .acc-icon {
+    align-self: center !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+    width: 84px;
+    height: 84px;
+    font-size: 34px;
+    border-radius: 50%;
+    box-shadow: 0 8px 28px rgba(56, 189, 248, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  /* Text block: full width, centered */
+  .Account .div1 .acc-info {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    align-content: center !important;
+    text-align: center !important;
+    margin: 0 !important;
+    gap: 10px !important;
+  }
+  .Account .div1 .acc-info h3 {
+    align-self: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    margin: 0 !important;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    width: 100%;
+    max-width: 100% !important;
+  }
+  /* Data: big highlighted glowing pill */
+  .Account .div1 .acc-value {
+    align-self: center !important;
+    display: inline-block !important;
+    width: auto !important;
+    max-width: 100% !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 10px 26px;
+    border-radius: 16px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(56, 189, 248, 0.28);
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    font-size: 44px;
+    font-weight: 800;
+    color: #f1f5f9;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  .Account .div1 .acc-trend {
+    align-self: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 18px;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    color: #94a3b8;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    max-width: 100% !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0 auto !important;
+  }
+}
+
+@media (min-width: 1440px) {
+  .Account .div1 {
+    min-height: 300px;
+    padding: 34px 26px;
+    gap: 10px;
+  }
+  .Account .div1 .acc-icon {
+    width: 96px;
+    height: 96px;
+    font-size: 38px;
+  }
+  .Account .div1 .acc-info h3 { font-size: 16px; }
+  .Account .div1 .acc-value { font-size: 52px; padding: 12px 30px; }
+  .Account .div1 .acc-trend { font-size: 14px; padding: 7px 20px; }
+}
+
+/* ============================================================
+   MEMBER STATUS TABLE (div8) — CONTAINMENT FIX
+   div8 uses class "ms-panel" (NOT "acc-panel") so it had no card
+   styling and nothing clipped the table: long member names and
+   the status icons/badges could render OUTSIDE the box.
+
+   This block is placed LAST so it beats every earlier conflicting
+   .acc-table rule:
+   1. Gives .ms-panel the same card look as the other panels and
+      clips ALL overflow inside the card.
+   2. Tablet/Desktop (≥641px): table becomes a fixed layout that
+      always fills the card exactly, so columns can never push
+      wider than the box.
+   3. Long names / badges truncate with "…" instead of escaping.
+   4. Mobile (≤640px) KEEPS the horizontal-swipe table with the
+      pinned name column, now fully contained inside the card.
+   ============================================================ */
+
+/* --- 1. Panel card + hard clipping (matches sibling .acc-panel) --- */
+.ms-panel {
+  min-width: 0;
+  overflow: hidden;
+  background: var(--neu-bg);
+  border-radius: 24px;
+  padding: 18px 16px 12px;
+  box-shadow:
+    -3px -3px 18px var(--neu-hi),
+    4px 4px 20px var(--neu-lo),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.ms-panel h2 {
+  color: var(--text-1);
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ms-panel h2 > i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--neu-bg-2);
+  color: var(--primary-accent);
+  font-size: 14px;
+  line-height: 1;
+  box-shadow:
+    inset 2px 2px 7px var(--neu-lo),
+    inset -2px -2px 7px var(--neu-hi);
+}
+
+/* --- 2. Cells can never push outside the table --- */
+.ms-panel .acc-table th,
+.ms-panel .acc-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  min-width: 0;
+}
+.ms-panel .acc-table th { white-space: normal; }
+.ms-panel .acc-table th:first-child,
+.ms-panel .acc-table td:first-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ms-panel .ms-name {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.ms-panel .ms-badge {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ms-panel .ms-bar,
+.ms-panel .ms-pct { max-width: 100%; }
+
+/* --- 3. Tablet + Desktop (≥641px): fixed layout fills the card --- */
+@media (min-width: 641px) {
+  .ms-panel .acc-table-wrap {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-width: 0;
+  }
+  .ms-panel .acc-table {
+    table-layout: fixed;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    font-size: 13px;
+  }
+  .ms-panel .acc-table th,
+  .ms-panel .acc-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 10px 8px;
+  }
+  .ms-panel .acc-table th:nth-child(1),
+  .ms-panel .acc-table td:nth-child(1) { width: 40%; }
+  .ms-panel .acc-table th:nth-child(2),
+  .ms-panel .acc-table td:nth-child(2) { width: 16%; }
+  .ms-panel .acc-table th:nth-child(3),
+  .ms-panel .acc-table td:nth-child(3) { width: 22%; }
+  .ms-panel .acc-table th:nth-child(4),
+  .ms-panel .acc-table td:nth-child(4) { width: 22%; }
+}
+
+/* --- 4. Mobile (≤640px): keep swipe + pinned name, contained --- */
+@media (max-width: 640px) {
+  .ms-panel .acc-table-wrap {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+  .ms-panel .acc-table th:first-child,
+  .ms-panel .acc-table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--neu-bg);
+    box-shadow: 2px 0 8px -5px rgba(0, 0, 0, 0.45);
+  }
+  .ms-panel .acc-table th:first-child { background: var(--input-bg); }
+  .ms-panel .acc-table tbody tr:hover td:first-child { background: var(--neu-bg-2); }
+}
   </style>
 </head>
 <body class="text-slate-100 font-sans antialiased flex flex-col min-h-screen app-body">
@@ -2288,37 +4424,40 @@ html, body { overflow-x: hidden; }
           </button>
         </div>
 
-<!-- 6 Stat Cards (Live from Google Sheets) -->
-        <div class="acc-grid" id="acc-cards">
-          <div class="acc-card" style="animation-delay:.05s">
+<!-- Accounts Dashboard Grid Layout -->
+        <div class="Account">
+          <!-- div1: Total Amount (spans 2 cols, 2 rows) -->
+          <div class="div1 acc-card" style="animation-delay:.05s">
             <div class="acc-icon" style="background:rgba(56,189,248,.15);color:#38bdf8"><i class="fa-solid fa-wallet"></i></div>
             <div class="acc-info"><h3>Total Amount</h3><div class="acc-value" id="totalAmount">৳0</div><div class="acc-trend" style="color:#94a3b8">Lifetime Collection</div></div>
           </div>
-          <div class="acc-card" style="animation-delay:.12s">
+          <!-- div2: Monthly Deposit -->
+          <div class="div2 acc-card" style="animation-delay:.12s">
             <div class="acc-icon" style="background:rgba(52,211,153,.15);color:#34d399"><i class="fa-solid fa-piggy-bank"></i></div>
             <div class="acc-info"><h3>Monthly Deposit</h3><div class="acc-value" id="monthlyDeposit">৳0</div><div class="acc-trend" style="color:#94a3b8">Including This Month</div></div>
           </div>
-          <div class="acc-card" style="animation-delay:.19s">
+          <!-- div3: Advance Amount -->
+          <div class="div3 acc-card" style="animation-delay:.19s">
             <div class="acc-icon" style="background:rgba(251,191,36,.15);color:#fbbf24"><i class="fa-solid fa-hand-holding-dollar"></i></div>
             <div class="acc-info"><h3>Advance</h3><div class="acc-value" id="advance">৳0</div><div class="acc-trend" style="color:#94a3b8">Advance Deposits</div></div>
           </div>
-          <div class="acc-card" style="animation-delay:.26s">
-            <div class="acc-icon" style="background:rgba(167,139,250,.15);color:#a78bfa"><i class="fa-solid fa-arrow-trend-up"></i></div>
-            <div class="acc-info"><h3>Profit</h3><div class="acc-value" id="profit">৳0</div><div class="acc-trend" style="color:#34d399"><i class="fa-solid fa-arrow-up"></i> Growth</div></div>
-          </div>
-          <div class="acc-card" style="animation-delay:.33s">
+          <!-- div4: Active Investment -->
+          <div class="div4 acc-card" style="animation-delay:.26s">
             <div class="acc-icon" style="background:rgba(56,189,248,.15);color:#38bdf8"><i class="fa-solid fa-chart-pie"></i></div>
             <div class="acc-info"><h3>Active Investment</h3><div class="acc-value" id="activeInvestment">৳0</div><div class="acc-trend" style="color:#94a3b8">Running</div></div>
           </div>
-          <div class="acc-card" style="animation-delay:.40s">
+          <!-- div5: Profit -->
+          <div class="div5 acc-card" style="animation-delay:.33s">
+            <div class="acc-icon" style="background:rgba(167,139,250,.15);color:#a78bfa"><i class="fa-solid fa-arrow-trend-up"></i></div>
+            <div class="acc-info"><h3>Profit</h3><div class="acc-value" id="profit">৳0</div><div class="acc-trend" style="color:#34d399"><i class="fa-solid fa-arrow-up"></i> Growth</div></div>
+          </div>
+          <!-- div6: Remaining Cash -->
+          <div class="div6 acc-card" style="animation-delay:.40s">
             <div class="acc-icon" style="background:rgba(52,211,153,.15);color:#059669"><i class="fa-solid fa-vault"></i></div>
             <div class="acc-info"><h3>Remaining Cash</h3><div class="acc-value" id="remainingCash">৳0</div><div class="acc-trend" style="color:#94a3b8">On Hand</div></div>
           </div>
-        </div>
-
-<!-- Charts: Current Status + Advances -->
-        <div class="charts-acc">
-          <div class="acc-panel">
+          <!-- div7: Current Status Chart (spans 3 cols, 2 rows) -->
+          <div class="div7 acc-panel">
             <h2><i class="fa-solid fa-user-group"></i> Current Status (Paid / Partial)</h2>
             <div class="paid-ticker">
               <span class="paid-ticker-icon"><i class="fa-solid fa-circle-check"></i></span>
@@ -2326,37 +4465,33 @@ html, body { overflow-x: hidden; }
             </div>
             <div class="chart-box"><canvas id="currentStatusChart"></canvas></div>
           </div>
-          <div class="acc-panel">
-            <h2><i class="fa-solid fa-hand-holding-dollar"></i> Advances (1st / 2nd)</h2>
-            <div class="chart-box"><canvas id="advanceChart"></canvas></div>
+          <!-- div8: Member Status Table (spans 3 cols, 2 rows) -->
+          <div class="div8 ms-panel">
+            <h2><i class="fa-solid fa-list-check" aria-hidden="true"></i> Member Status</h2>
+            <div class="acc-table-wrap">
+              <table class="acc-table">
+                <thead><tr><th scope="col">Member Name</th><th scope="col">Expected</th><th scope="col">Paid %</th><th scope="col">Unpaid</th></tr></thead>
+                <tbody id="memberStatusTable"><tr><td colspan="4" style="text-align:center;color:#64748b">Loading…</td></tr></tbody>
+              </table>
+            </div>
           </div>
-        </div>
-
-        <!-- Charts: Investment Pie + Member Status List -->
-        <div class="charts-acc">
-          <div class="acc-panel">
-            <h2><i class="fa-solid fa-chart-pie"></i> Investment Allocation (Running)</h2>
-            <div class="chart-box inv-chart-wrap"><canvas id="investmentPieChart"></canvas>
-              <div class="inv-center">
+          <!-- div9: Investment Allocation Pie (spans 2 rows) -->
+          <div class="div9 acc-panel inv-panel">
+            <h2><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Investment Allocation (Running)</h2>
+            <div class="chart-box inv-chart-wrap"><canvas id="investmentPieChart" role="img" aria-label="Investment allocation doughnut chart"></canvas>
+              <div class="inv-center" aria-hidden="true">
                 <span class="inv-center-label">Total Running</span>
                 <span class="inv-center-value" id="invCenterValue">৳0</span>
               </div>
             </div>
           </div>
-<div class="acc-panel">
-            <h2><i class="fa-solid fa-list-check"></i> Member Status</h2>
-            <div class="acc-table-wrap" style="overflow-x:auto">
-              <table class="acc-table">
-<thead><tr><th>Member Name</th><th>Expected</th><th>Paid %</th><th>Unpaid</th></tr></thead>
-                <tbody id="memberStatusTable"><tr><td colspan="4" style="text-align:center;color:#64748b">Loading…</td></tr></tbody>
-              </table>
-            </div>
+          <!-- div10: Advances Chart (spans 2 rows) -->
+          <div class="div10 acc-panel">
+            <h2><i class="fa-solid fa-hand-holding-dollar"></i> Advances (1st / 2nd)</h2>
+            <div class="chart-box"><canvas id="advanceChart"></canvas></div>
           </div>
-        </div>
-
-        <!-- Profit Graph (Investment profit over time) -->
-        <div class="charts-acc profit-growth-row" style="grid-template-columns:1fr">
-          <div class="acc-panel">
+          <!-- div11: Profit Chart (spans 3 cols, 2 rows) -->
+          <div class="div11 acc-panel">
             <h2><i class="fa-solid fa-arrow-trend-up"></i> Profit Growth</h2>
             <div class="chart-box"><canvas id="profitChart"></canvas></div>
           </div>
@@ -2545,6 +4680,9 @@ return `${toBanglaNumerals(bDay)}${banglaMonths[bMonth]}, ${toBanglaNumerals(bYe
 
 // 1. Page Switch Logic (4 Pages) — with smooth exit & enter transition
     function switchPage(pageId) {
+      // Remember the last-visited page so a refresh can return to it
+      try { localStorage.setItem('unionLastPage', pageId); } catch (err) { /* storage unavailable - ignore */ }
+
       const current = document.querySelector('.page-content.active');
       const target = document.getElementById(`page-${pageId}`);
 
@@ -3201,6 +5339,38 @@ function toggleProfile(button) {
         // Bars animate once on load — no replay loop
       }
 
+      // ===== Investment doughnut center-text plugin =====
+      // Draws "TOTAL RUNNING / ৳X" directly on the canvas at the exact
+      // geometric center of the doughnut hole. Canvas-native = always
+      // centered on iOS / Android / iPad / Mac / Windows, at any width,
+      // zoom level, or devicePixelRatio — no overlay div to drift.
+      let invCenterTotal = 0;
+      const invCenterTextPlugin = {
+        id: 'invCenterText',
+        afterDraw(chart) {
+          const meta = chart.getDatasetMeta(0);
+          const arc = meta && meta.data && meta.data[0];
+          if (!arc || typeof arc.x !== 'number' || typeof arc.y !== 'number') return;
+          const hole = Math.max((arc.innerRadius || 0) * 2, 0);
+          if (!hole) return;
+          const ctx = chart.ctx;
+          ctx.save();
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          const labelSize = Math.max(8, Math.min(11, hole * 0.10));
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = '700 ' + labelSize + 'px Inter, system-ui, sans-serif';
+          ctx.fillText('TOTAL RUNNING', arc.x, arc.y - hole * 0.12);
+          const valSize = Math.max(11, Math.min(22, hole * 0.17));
+          ctx.fillStyle = '#05cd99';
+          ctx.shadowColor = 'rgba(5,205,153,0.55)';
+          ctx.shadowBlur = 14;
+          ctx.font = '800 ' + valSize + 'px Inter, system-ui, sans-serif';
+          ctx.fillText(formatCurrency(invCenterTotal), arc.x, arc.y + hole * 0.13);
+          ctx.restore();
+        }
+      };
+
       // Counts the center "Total Running" amount up (reuses the card counter)
       function animateCenterValue(target) {
         const el = document.getElementById('invCenterValue');
@@ -3209,21 +5379,13 @@ function toggleProfile(button) {
       }
 
       // Positions the inner text exactly on the doughnut's hole (centers on any screen)
+      // NOTE: center total is canvas-drawn by invCenterTextPlugin; this only
+      // hides the legacy HTML overlay once the chart exists, and keeps the
+      // overlay as a static fallback if the chart ever fails to render.
       function alignInvCenter() {
         const centerEl = document.querySelector('.inv-center');
-        if (!centerEl || !investmentChartInstance) return;
-        const meta = investmentChartInstance.getDatasetMeta(0);
-        const arc = meta && meta.data && meta.data[0];
-        if (!arc || typeof arc.x !== 'number' || typeof arc.y !== 'number') return;
-        centerEl.style.left = arc.x + 'px';
-        centerEl.style.top = arc.y + 'px';
-        const diameter = Math.max((arc.innerRadius || 0) * 2, 70);
-        centerEl.style.width = diameter + 'px';
-        centerEl.style.height = diameter + 'px';
-        // Scale the center text to the hole size so it never overflows
-        // the doughnut on small screens (desktop keeps the 19px cap).
-        const fs = Math.max(10, Math.min(19, diameter * 0.16));
-        centerEl.style.fontSize = fs + 'px';
+        if (!centerEl) return;
+        centerEl.style.display = investmentChartInstance ? 'none' : '';
       }
 
       // Investment Pie Chart — only Running investments
@@ -3268,12 +5430,15 @@ function toggleProfile(button) {
             },
             plugins: {
               legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } }
-            }
-          }
+            },
+            layout: { padding: { top: 6 } }
+          },
+          plugins: [invCenterTextPlugin]
         });
 
-        // Center total (animates up once per render)
-        animateCenterValue(total);
+        // Center total: freeze the shared value, animate the visible label once,
+        // then redraw so the canvas text lands exactly on the final number.
+        invCenterTotal = total;
 
         // Align the center text exactly on the doughnut hole (after layout settles)
         setTimeout(alignInvCenter, 100);
@@ -3485,6 +5650,39 @@ function toggleProfile(button) {
 
       // Auto Refresh every 30 seconds
       setInterval(fetchDashboardData, 30000);
+    })();
+
+    // ============================================================
+    // RESTORE LAST-VISITED PAGE AFTER REFRESH
+    // switchPage() stores the page in localStorage; here we jump
+    // straight back to it (no exit animation) so a browser refresh
+    // lands on the SAME page the user was viewing, not the Home
+    // page. Placed last so all helpers it needs are defined above.
+    // ============================================================
+    (function restoreLastPage() {
+      try {
+        const stored = localStorage.getItem('unionLastPage');
+        const valid = ['home', 'rules', 'members', 'accounts'];
+        if (!stored || !valid.includes(stored) || stored === 'home') return;
+
+        const target = document.getElementById('page-' + stored);
+        if (!target) return;
+
+        // Swap active page straight away (no leave/enter animation)
+        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active', 'leaving'));
+        target.classList.add('active');
+
+        // Update the dock / nav highlight
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-link'));
+        const navBtn = document.getElementById('nav-' + stored);
+        if (navBtn) navBtn.classList.add('active-link');
+        if (typeof window.moveDockIndicator === 'function') window.moveDockIndicator();
+
+        // If the Accounts page was restored, re-render its charts at the right size
+        if (stored === 'accounts' && typeof window.refreshAccountsCharts === 'function') {
+          setTimeout(() => window.refreshAccountsCharts(), 120);
+        }
+      } catch (err) { /* localStorage may be unavailable - keep default Home page */ }
     })();
 
   </script>
