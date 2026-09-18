@@ -424,20 +424,18 @@
       .hero-logo { width: min(180px, 55vw); }
     }
 
-        /* ===== MEMBER CARDS — Glassmorphism UI ===== */
+        /* ===== MEMBER CARDS — NEUMORPHIC UI (public: photo + name, details pass-protected) ===== */
     .member-card {
       position: relative;
-      border-radius: 1.35rem;
-      padding: 1.3rem 1.1rem;
+      border-radius: 1.4rem;
+      padding: 1.45rem 1.1rem 1.15rem;
       overflow: hidden;
-      background:
-        linear-gradient(160deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.03) 55%, rgba(255,255,255,.06) 100%);
-      border: 1px solid rgba(255,255,255,.14);
+      background: linear-gradient(145deg, #1f2d49, #15213a);
+      border: 1px solid rgba(255,255,255,.06);
       box-shadow:
-        0 22px 48px -14px var(--shadow-c),
-        inset 0 1px 0 rgba(255,255,255,.16);
-      -webkit-backdrop-filter: blur(14px) saturate(1.3);
-      backdrop-filter: blur(14px) saturate(1.3);
+        9px 9px 20px rgba(4,9,22,.85),
+        -7px -7px 18px rgba(80,125,190,.08),
+        inset 1px 1px 0 rgba(255,255,255,.04);
       animation: memberCardIn .65s cubic-bezier(.22,1,.36,1) both;
       transition:
         transform .55s cubic-bezier(.22,1,.36,1),
@@ -449,22 +447,22 @@
       from { opacity: 0; transform: translateY(22px) scale(.96); }
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
-    /* Smooth glass hover — soft lift, accent glow, brighter glass edge */
+    /* Neumorphic hover — soft lift with a deeper dual shadow */
     .member-card:hover {
       transform: translateY(-8px) scale(1.015);
-      border-color: rgba(255,255,255,.3);
+      border-color: rgba(255,255,255,.12);
       box-shadow:
-        0 30px 62px -16px var(--shadow-c),
-        0 0 0 1px rgba(255,255,255,.12),
-        0 0 36px -6px var(--accent-glow);
+        13px 13px 28px rgba(4,9,22,.92),
+        -9px -9px 24px rgba(80,125,190,.12),
+        inset 1px 1px 0 rgba(255,255,255,.05);
     }
-    /* Gentle diagonal sheen that glides across the glass on hover */
+    /* Soft light pass that glides across the card on hover */
     .member-card::before {
       content: "";
       position: absolute;
       inset: 0;
-      border-radius: 1.35rem;
-      background: linear-gradient(115deg, transparent 18%, rgba(255,255,255,.13) 42%, transparent 62%);
+      border-radius: 1.4rem;
+      background: linear-gradient(115deg, transparent 18%, rgba(120,170,240,.07) 42%, transparent 62%);
       opacity: 0;
       transform: translateX(-24%);
       transition: opacity .45s ease, transform .75s cubic-bezier(.22,1,.36,1);
@@ -475,7 +473,7 @@
       opacity: 1;
       transform: translateX(14%);
     }
-    /* Refracted accent light along the glass top edge */
+    /* Accent light along the top edge */
     .member-card::after {
       content: "";
       position: absolute;
@@ -488,7 +486,7 @@
       z-index: 1;
     }
 
-/* Circular avatar — glass ring that glows with the accent on hover */
+/* Circular avatar — neumorphic ring that deepens with the accent on hover */
     .member-img-box {
       position: relative;
       width: min(134px, 64%);
@@ -496,12 +494,12 @@
       margin: 0 auto 1.05rem;
       border-radius: 50%;
       overflow: hidden;
-      border: 3px solid var(--accent-glow);
-      background: linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.02));
+      border: 4px solid #1a2742;
+      background: #15213a;
       box-shadow:
-        0 0 0 4px rgba(255,255,255,.08),
-        0 14px 34px -8px var(--shadow-c),
-        0 0 24px -4px var(--accent-glow);
+        7px 7px 15px rgba(4,9,22,.8),
+        -6px -6px 14px rgba(80,125,190,.09),
+        0 0 22px -6px rgba(56,189,248,.4);
       transition:
         transform .55s cubic-bezier(.22,1,.36,1),
         box-shadow .55s ease,
@@ -509,11 +507,11 @@
     }
     .member-card:hover .member-img-box {
       transform: scale(1.06);
-      border-color: var(--accent-glow);
+      border-color: rgba(56,189,248,.55);
       box-shadow:
-        0 0 0 5px rgba(255,255,255,.14),
-        0 18px 44px -8px var(--shadow-c),
-        0 0 34px 2px var(--accent-glow);
+        9px 9px 18px rgba(4,9,22,.85),
+        -7px -7px 16px rgba(80,125,190,.12),
+        0 0 30px -4px var(--accent-glow);
     }
     .member-img-box img {
       width: 100%;
@@ -675,12 +673,36 @@
       margin-bottom: 0.85rem;
       padding: 0.32rem 1rem;
       border-radius: 9999px;
-      background: var(--accent-soft);
-      border: 1px solid var(--accent-soft);
-      backdrop-filter: blur(6px);
+      background: linear-gradient(145deg, #1f2d49, #15213a);
+      border: 1px solid rgba(255,255,255,.06);
+      box-shadow: 3px 3px 7px rgba(4,9,22,.6), -2px -2px 6px rgba(80,125,190,.07);
     }
     .member-id-wrap {
       text-align: center;
+    }
+    /* Pass-protection badge shown on every locked member card */
+    .lock-tag {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin: -0.35rem 0 0.85rem;
+      padding: 0.3rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      background: linear-gradient(145deg, #1f2d49, #15213a);
+      border: 1px solid rgba(255,255,255,.06);
+      box-shadow: 3px 3px 7px rgba(4,9,22,.6), -2px -2px 6px rgba(80,125,190,.07);
+      transition: color .4s ease, box-shadow .4s ease;
+    }
+    .member-card.member-unlocked .lock-tag {
+      color: #34d399;
+      box-shadow: 0 0 16px -4px rgba(52,211,153,.45), 3px 3px 7px rgba(4,9,22,.6), -2px -2px 6px rgba(80,125,190,.07);
     }
     .primary-info {
       position: relative;
@@ -688,6 +710,7 @@
       display: grid;
       gap: 0.6rem;
       margin-bottom: 0.9rem;
+      transition: filter .5s ease, opacity .5s ease;
     }
     .info-item {
       display: flex;
@@ -695,19 +718,39 @@
       gap: 0.55rem;
       font-size: 0.82rem;
       color: var(--text-2);
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.1);
+      background: #142038;
       border-radius: 0.85rem;
       padding: 0.55rem 0.65rem;
-      backdrop-filter: blur(6px);
-      transition: background-color .35s ease, color .35s ease;
+      box-shadow: inset 3px 3px 7px rgba(4,9,22,.6), inset -3px -3px 7px rgba(80,125,190,.07);
+      transition: color .35s ease, box-shadow .35s ease;
     }
     .info-item i {
       color: var(--primary-accent);
       min-width: 14px;
     }
-    .member-card:hover .info-item {
-      background: rgba(255,255,255,.12);
+    /* LOCKED STATE — phone & email blurred behind a notice until the member's pass unlocks the card */
+    .member-card.locked .primary-info {
+      filter: blur(5px) saturate(.6);
+      opacity: .92;
+      user-select: none;
+      pointer-events: none;
+    }
+    .member-card.locked .primary-info::after {
+      content: "🔒 Phone & Email — pass protected";
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: var(--text-3);
+      background: rgba(8,14,28,.55);
+      border-radius: 0.85rem;
+      filter: none;
+      pointer-events: none;
     }
 .view-profile-btn {
       position: relative;
@@ -717,26 +760,38 @@
       justify-content: space-between;
       align-items: center;
       margin-top: 0.15rem;
-      background: var(--accent-soft);
-      border: 1px solid var(--accent-soft);
+      background: linear-gradient(145deg, #1f2d49, #15213a);
+      border: 1px solid rgba(255,255,255,.06);
       color: var(--primary-accent);
       font-weight: 700;
       border-radius: 0.9rem;
       padding: 0.72rem 0.9rem;
       cursor: pointer;
-      backdrop-filter: blur(8px);
       transition:
-        background-color .4s ease,
         box-shadow .45s ease,
-        transform .45s cubic-bezier(.22,1,.36,1);
-      box-shadow: 0 0 14px -4px var(--accent-glow);
+        transform .45s cubic-bezier(.22,1,.36,1),
+        color .35s ease;
+      box-shadow: 5px 5px 12px rgba(4,9,22,.75), -4px -4px 10px rgba(80,125,190,.08);
     }
     .view-profile-btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 0 22px -2px var(--accent-glow);
+      box-shadow: 7px 7px 16px rgba(4,9,22,.8), -5px -5px 12px rgba(80,125,190,.1);
     }
     .view-profile-btn:active {
       transform: translateY(0) scale(0.98);
+      box-shadow: inset 3px 3px 7px rgba(4,9,22,.6), inset -3px -3px 7px rgba(80,125,190,.06);
+    }
+    /* Locked card button — pressed-in look, muted colour */
+    .member-card.locked .view-profile-btn {
+      color: var(--text-3);
+      background: #142038;
+      border-color: transparent;
+      box-shadow: inset 3px 3px 7px rgba(4,9,22,.6), inset -3px -3px 7px rgba(80,125,190,.06);
+    }
+    .member-card.locked .view-profile-btn:hover {
+      color: #fbbf24;
+      transform: translateY(0);
+      box-shadow: inset 3px 3px 7px rgba(4,9,22,.6), inset -3px -3px 7px rgba(80,125,190,.06);
     }
     /* Chevron rotates smoothly when the profile details open */
     .view-profile-btn .fa-chevron-down {
@@ -775,6 +830,10 @@
     .full-details.open > .fd-inner {
       opacity: 1;
     }
+    /* While locked the full profile rows can never expand */
+    .member-card.locked .full-details {
+      display: none;
+    }
     .detail-row {
       display: grid;
       grid-template-columns: 110px 1fr;
@@ -783,9 +842,8 @@
       padding: 0.55rem 0.7rem;
       border-radius: 0.65rem;
       margin-bottom: 0.4rem;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.1);
-      backdrop-filter: blur(4px);
+      background: #142038;
+      box-shadow: inset 3px 3px 7px rgba(4,9,22,.55), inset -3px -3px 7px rgba(80,125,190,.06);
     }
     .detail-row:last-child {
       margin-bottom: 0;
@@ -797,6 +855,77 @@
 .detail-value {
       color: var(--text-1);
     }
+
+/* ============================================================
+   MEMBER CARDS — PER-CARD PASS LOCK
+   Each card has its own pass field · no pass hints are shown.
+   ============================================================ */
+    .member-pass-row {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+      margin-bottom: 0.55rem;
+      transition: opacity .4s ease, transform .4s ease;
+    }
+    .member-pass-input {
+      flex: 1 1 100%;
+      min-width: 0;
+      background: #142038;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 0.8rem;
+      padding: 0.6rem 0.8rem;
+      color: var(--text-1);
+      font-size: 0.82rem;
+      outline: none;
+      box-shadow: inset 3px 3px 7px rgba(4,9,22,.6), inset -3px -3px 7px rgba(80,125,190,.06);
+      transition: border-color .3s ease, box-shadow .3s ease;
+    }
+    .member-pass-input:focus {
+      border-color: rgba(96,165,250,.7);
+      box-shadow: inset 3px 3px 7px rgba(4,9,22,.6), inset -3px -3px 7px rgba(80,125,190,.06), 0 0 0 3px rgba(59,130,246,.16);
+    }
+    .member-pass-input::placeholder { color: var(--text-2); opacity: .75; }
+    .member-unlock-btn {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: linear-gradient(145deg, #1f2d49, #15213a);
+      border: 1px solid rgba(255,255,255,.06);
+      color: var(--primary-accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      border-radius: 0.8rem;
+      padding: 0.6rem 0.85rem;
+      cursor: pointer;
+      box-shadow: 4px 4px 10px rgba(4,9,22,.7), -3px -3px 8px rgba(80,125,190,.08);
+      transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease, color .35s ease;
+    }
+    .member-unlock-btn:hover {
+      transform: translateY(-1px);
+      color: #fbbf24;
+      box-shadow: 6px 6px 12px rgba(4,9,22,.8), -4px -4px 10px rgba(80,125,190,.1);
+    }
+    .member-unlock-btn:active {
+      transform: translateY(0) scale(.97);
+      box-shadow: inset 3px 3px 7px rgba(4,9,22,.6), inset -3px -3px 7px rgba(80,125,190,.06);
+    }
+    /* Per-card feedback line — appears only when a pass is empty / wrong */
+    .member-pass-msg {
+      min-height: 0;
+      margin: 0 0 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      display: none;
+    }
+    .member-pass-msg:not(:empty) { display: block; }
+    .member-pass-msg[data-type="error"] { color: #f87171; }
+    .member-pass-msg[data-type="success"] { color: #34d399; }
+    
+    
 
 /* ============================================================
    RULES PAGE — PROFESSIONAL SMOOTH ANIMATIONS
@@ -4371,7 +4500,7 @@ html, body { overflow-x: hidden; }
                 Our Core <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Members</span>
               </h2>
               <p class="text-slate-400 mt-3 max-w-xl text-sm md:text-base leading-relaxed">
-                Complete directory with verification status, monthly contributions, and contact information for all members of 19's Union.
+                Public directory showing photos &amp; names. Full contact and profile details are pass-protected.
               </p>
             </div>
 
@@ -4394,7 +4523,7 @@ html, body { overflow-x: hidden; }
         </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7" id="member-grid">
-          <!-- 11 Member Cards Rendered via JS -->
+          <!-- Member cards are always shown (photo + name); each card carries its own pass lock -->
         </div>
       </section>
     </div>
@@ -4711,7 +4840,8 @@ const finishTransition = () => {
         if (pageId === 'accounts' && typeof window.refreshAccountsCharts === 'function') {
           setTimeout(() => window.refreshAccountsCharts(), 80);
         }
-      };
+
+        };
 
       if (current) {
         // Play the exit animation first, then swap pages
@@ -4831,6 +4961,7 @@ const typeSpeed = 75;      // ms per character while typing
         photo: "https://drive.google.com/file/d/1AzzoTf-mtGGbcdM5fx8-UVGhkKOpi9wf/view?usp=drive_link", 
         name: "Mohammed Shaker Hossen",
         member_id: "M001",
+        pass: "19sunion@Shaker",
         phone: "+880 1872-952812",
         email: "shakerhosen176@gmail.com",
         Mother: "Mina Begum",
@@ -4843,6 +4974,7 @@ const typeSpeed = 75;      // ms per character while typing
         photo: "https://drive.google.com/file/d/1ChX2ZMHGL_Op0jLxofSljKf5hP260Vg-/view?usp=drive_link", 
         name: "Abu Naim Bin Habib",
         member_id: "M002",
+        pass: "19sunion@Naim",
         phone: "+880 1832-200627",
         email: "abunaimbinhabib2164@gmail.com",
         Mother: "Estafa khanam",
@@ -4855,6 +4987,7 @@ const typeSpeed = 75;      // ms per character while typing
         photo: "https://drive.google.com/file/d/1B-Zrh3YdNBmXFDfvz-dcAfBTTwCskI-g/view?usp=drive_link", 
         name: "Mohammed Walid Ehasan",
         member_id: "M003",
+        pass: "19sunion@Walid",
         phone: "+880 1611-835976",
         email: "walidahsanmohim@gmail.com",
         Mother: "Nasima Begum",
@@ -4867,6 +5000,7 @@ const typeSpeed = 75;      // ms per character while typing
         photo: "https://drive.google.com/file/d/14vyxQM6CQlr6yQaEucIkI2C-pKRfEamW/view?usp=drive_link", 
         name: "Sajjatul Islam",
         member_id: "M004",
+        pass: "19sunion@Sajjad",
         phone: "+880 1891-695765",
         email: "sajjatul71@gmail.com",
         Mother: "Rabea Begum",
@@ -4879,6 +5013,7 @@ const typeSpeed = 75;      // ms per character while typing
         photo: "https://drive.google.com/file/d/1kJvOW6Lg2E4zxczpbjI0L_ECmj1PVplr/view?usp=drive_link", 
         name: "Atiqul Islam Noman",
         member_id: "M005",
+        pass: "19sunion@Atiqul",
         phone: "+0096 6506-723783",
         email: "atikulislamnoman@gmail.com",
         Mother: "Saheda Begum",
@@ -4891,6 +5026,7 @@ const typeSpeed = 75;      // ms per character while typing
         photo: "https://drive.google.com/file/d/1vSs4VvG6R8IjcmxkcUaJrrq2skNto5ap/view?usp=drive_link", 
         name: "Salah Uddin ",
         member_id: "M006",
+        pass: "19sunion@Salah",
         phone: "+880 1880-959149",
         email: "mdsalah3062000@gmail.com",
         Mother: "Monuara Begum",
@@ -4903,6 +5039,7 @@ const typeSpeed = 75;      // ms per character while typing
         photo: "https://drive.google.com/file/d/1A9VRS5GRTCun4oACg_Pepx5SwYORBVJy/view?usp=drive_link", 
         name: "Mohammed Humayon Karim",
         member_id: "M007",
+        pass: "19sunion@Humayun",
         phone: "+880 1837-577621",
         email: "mdhumayunkarim555666@gmail.com",
         Mother: "Shabekunnahar",
@@ -4915,6 +5052,7 @@ const typeSpeed = 75;      // ms per character while typing
         photo: "https://drive.google.com/file/d/1hXXvEbrRIuuJO0YXW8VdrNvZseostB7l/view?usp=drive_link", 
         name: "Shahed Mohammed Jala Uddin",
         member_id: "M008",
+        pass: "19sunion@Shahed",
         phone: "+880 1921-407345",
         email: "walkershahed@gmail.com",
         Mother: "Nesera Begum",
@@ -4927,6 +5065,7 @@ const typeSpeed = 75;      // ms per character while typing
         photo: "https://drive.google.com/file/d/1q-94yWQ0scc0d6MbTZD8eeqE_-muWZmO/view?usp=drive_link", 
         name: "Abdul Mannan",
         member_id: "M009",
+        pass: "19sunion@Mannan",
         phone: "+0097 1547-952750",
         email: "mannanctg0214@gmail.com",
         Mother: "Joynab Ara",
@@ -4939,6 +5078,7 @@ const typeSpeed = 75;      // ms per character while typing
         photo: "https://drive.google.com/file/d/1QsZ6w51xXAr9jSuShYA2_csbykTNSbhz/view?usp=drive_link", 
         name: "Abdu Shukkur",
         member_id: "M010",
+        pass: "19sunion@Sukkur",
         phone: "+0096 6503-862897",
         email: "abdushukkur903@gmail.com",
         Mother: "Lotfunnesa",
@@ -4951,6 +5091,7 @@ const typeSpeed = 75;      // ms per character while typing
         photo: "https://drive.google.com/file/d/1SXCiYQ61yrB8jRsiwJAovId5bUUVDVDG/view?usp=drive_link", 
         name: "Muhammed Khukan",
         member_id: "M011",
+        pass: "19sunion@Khukan",
         phone: "+055 317 3290",
         email: "mommadhossin785@gmail.com",
         Mother: "Rokeya Begum",
@@ -4961,12 +5102,29 @@ const typeSpeed = 75;      // ms per character while typing
       }
     ];
 
-    // 🛠️ কার্ড জেনারেটর কোড
-    const grid = document.getElementById('member-grid');
+    // 🛠️ Member card generator + 🔐 PER-CARD PASS LOCK
+    // ============================================================
+    // The directory is ALWAYS VISIBLE to the public, but only as
+    // photos + names (with member ID). Every other detail (phone,
+    // email, parents, NID, nominee, address) stays locked on each
+    // card behind that member's own pass entry field.
+    // A pass typed into a card unlocks exactly that card.
+    //
+    // ⚠️ SECURITY NOTE: this is client-side gating. The passes and
+    // member data still travel inside the HTML source and can be
+    // read from "View Source". For TRUE privacy this check belongs
+    // on a server (e.g. the Google Apps Script endpoint).
+    // ============================================================
 
-    membersData.forEach((member, index) => {
+    const memberGrid = document.getElementById('member-grid');
+
+    // Builds one card. Public sees photo + name + ID only — the card
+    // always starts in the "locked" state (phone/email blurred,
+    // full details hidden) until its dedicated pass is entered.
+    function renderMemberCard(member, index) {
       const card = document.createElement('div');
-      card.className = 'member-card';
+      card.className = 'member-card locked';
+      card.dataset.memberId = member.member_id;
       card.style.animationDelay = `${index * 0.05}s`;
       const photoUrl = safeImgSrc(getDirectDriveLink(member.photo));
       const imgContent = photoUrl ? `<img src="${photoUrl}" alt="${escapeHtml(member.name)}">` : `<i class="fa-solid fa-user"></i>`;
@@ -4975,7 +5133,8 @@ card.innerHTML = `
         <div class="member-img-box">${imgContent}</div>
         <div class="member-name">${escapeHtml(member.name)}</div>
         <div class="member-id-wrap"><span class="member_id">ID: ${escapeHtml(member.member_id)}</span></div>
-        
+        <span class="lock-tag"><i class="fa-solid fa-lock"></i> Pass Protected</span>
+
         <div class="primary-info">
           <div class="info-item"><i class="fa-solid fa-phone"></i> ${escapeHtml(member.phone)}</div>
           <div class="info-item"><i class="fa-solid fa-envelope"></i> ${escapeHtml(member.email)}</div>
@@ -4991,15 +5150,84 @@ card.innerHTML = `
           </div>
         </div>
 
-        <button class="view-profile-btn" onclick="toggleProfile(this)">
+        <div class="member-pass-row">
+          <input type="password" class="member-pass-input" placeholder="Enter pass" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter'){event.preventDefault();unlockCardPass(this);}">
+          <button type="button" class="member-unlock-btn" onclick="unlockCardPass(this)"><i class="fa-solid fa-lock-open"></i> Unlock</button>
+        </div>
+        <p class="member-pass-msg" role="status" aria-live="polite"></p>
+
+        <button class="view-profile-btn details-toggle" onclick="toggleProfile(this)" style="display:none">
           <span>View Full Profile</span> <i class="fa-solid fa-chevron-down"></i>
         </button>
       `;
-      grid.appendChild(card);
-    });
+      memberGrid.appendChild(card);
+    }
+
+    // Always render the full public directory — photos + names for everyone
+    function renderMembers(list) {
+      memberGrid.innerHTML = "";
+      list.forEach((member, index) => renderMemberCard(member, index));
+    }
+
+    // Finds a member record by member_id (case-insensitive)
+    function findMemberById(idValue) {
+      const key = String(idValue || "").trim().toUpperCase();
+      if (!key) return null;
+      return membersData.find(m => String(m.member_id).trim().toUpperCase() === key) || null;
+    }
+
+    // Per-card feedback line (empty / wrong / correct pass)
+    function setCardMsg(card, text, type) {
+      const msg = card.querySelector('.member-pass-msg');
+      if (!msg) return;
+      msg.textContent = text || "";
+      msg.dataset.type = type || "info";
+    }
+
+    // Unlock ONE member card by its member_id
+    function unlockMemberCard(memberId) {
+      const card = memberGrid.querySelector(`.member-card[data-member-id="${memberId}"]`);
+      if (!card) return;
+      card.classList.remove('locked');
+      card.classList.add('member-unlocked', 'active');
+      const tag = card.querySelector('.lock-tag');
+      if (tag) tag.innerHTML = '<i class="fa-solid fa-lock-open"></i> Unlocked';
+      const passRow = card.querySelector('.member-pass-row');
+      if (passRow) passRow.style.display = 'none';
+      setCardMsg(card, "");
+      const toggleBtn = card.querySelector('.details-toggle');
+      if (toggleBtn) toggleBtn.style.display = 'flex';
+      const details = card.querySelector('.full-details');
+      if (details) details.classList.add('open');
+    }
+
+    // Called from each card's unlock button or Enter key.
+    // The pass typed into a card can only open that member's card.
+    function unlockCardPass(buttonOrInput) {
+      const card = buttonOrInput.closest('.member-card');
+      const input = card.querySelector('.member-pass-input');
+      const member = findMemberById(card.dataset.memberId);
+      const pass = String(input.value || "").trim().toLowerCase();
+      if (!pass) {
+        setCardMsg(card, "Enter the pass.", "error");
+        input.focus();
+        return;
+      }
+      if (member && String(member.pass || "").trim().toLowerCase() === pass) {
+        unlockMemberCard(member.member_id);
+      } else {
+        input.value = "";
+        setCardMsg(card, "Incorrect pass.", "error");
+        input.focus();
+      }
+    }
+
+    // Kick off: everyone sees the public directory (photos + names) immediately
+    renderMembers(membersData);
 
 function toggleProfile(button) {
       const card = button.closest('.member-card');
+      if (card.classList.contains('locked')) return;   // safety — button is hidden until unlocked
       const details = card.querySelector('.full-details');
       const span = button.querySelector('span');
       const isOpening = !details.classList.contains('open');
