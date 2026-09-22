@@ -5,14 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="19's Union — a savings and investment based cooperative society in Badarkhali, Cox's Bazar. Transparent accounts, member directory, and a live financial dashboard.">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src https: data:; connect-src https://script.google.com https://script.googleusercontent.com; base-uri 'none'; form-action 'none'">
+  <meta name="theme-color" content="#38bdf8">
+  <meta name="author" content="19's Union — Badarkhali, Cox's Bazar">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <!-- SEO / Social sharing (Open Graph + Twitter Card + canonical) -->
+  <link rel="canonical" href="https://walidahsanmohim.github.io/19sUnion/Index.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="19's Union">
+  <meta property="og:title" content="19's Union — Savings &amp; Investment Cooperative Society">
+  <meta property="og:description" content="Transparent savings &amp; investment records, member directory, payment methods and a live financial dashboard for 19's Union, Badarkhali, Cox's Bazar.">
+  <meta property="og:url" content="https://walidahsanmohim.github.io/19sUnion/Index.html">
+  <meta property="og:image" content="https://lh3.googleusercontent.com/d/11ThNflUwUugkq_slzoC__gaoZ-uct354">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="19's Union — Savings &amp; Investment Cooperative Society">
+  <meta name="twitter:description" content="Transparent records, member directory, payment methods and a live financial dashboard — Badarkhali, Cox's Bazar.">
+  <meta name="twitter:image" content="https://lh3.googleusercontent.com/d/11ThNflUwUugkq_slzoC__gaoZ-uct354">
+
+  <!-- Structured data (Organization schema for search engines) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "19's Union",
+    "alternateName": "19's Union Cooperative Society",
+    "url": "https://walidahsanmohim.github.io/19sUnion/",
+    "logo": "https://lh3.googleusercontent.com/d/11ThNflUwUugkq_slzoC__gaoZ-uct354",
+    "description": "Savings and investment based cooperative society in Badarkhali, Cox's Bazar.",
+    "foundingDate": "2019"
+  }
+  </script>
+
+  <!-- Service worker registration (offline PWA-lite support) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () { /* offline support unavailable — non-https/file context */ });
+      });
+    }
+  </script>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'unsafe-inline' 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src https: data:; connect-src https://script.google.com https://script.googleusercontent.com; base-uri 'none'; form-action 'none'">
   <title>19's Union</title>
   <!-- Address-bar favicon (logo from Google Drive, direct-served via lh3) -->
   <link rel="icon" href="https://lh3.googleusercontent.com/d/1OqVeAKGM3nJfTYy0S7go8QE0QoDaXH44" sizes="any">
   <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1OqVeAKGM3nJfTYy0S7go8QE0QoDaXH44">
   
-<!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+<!-- Tailwind CSS (static production build — replaces the dev-only Play CDN) -->
+  <link rel="stylesheet" href="tailwind.css">
 <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- Chart.js CDN -->
@@ -887,6 +926,10 @@
       box-shadow: inset 3px 3px 7px rgba(4,9,22,.6), inset -3px -3px 7px rgba(80,125,190,.06), 0 0 0 3px rgba(59,130,246,.16);
     }
     .member-pass-input::placeholder { color: var(--text-2); opacity: .75; }
+    /* iOS Safari zooms the page when focusing an input below 16px — keep input ≥16px on touch */
+    @media (hover: none) and (pointer: coarse) {
+      .member-pass-input { font-size: 16px; }
+    }
     .member-unlock-btn {
       flex-shrink: 0;
       display: inline-flex;
@@ -2405,6 +2448,25 @@
    iPhone SE → Fold → iPad → desktop. 16/10 for bars, 1/1 ring for doughnut. */
 .chart-box { position: relative; width: 100%; max-width: 100%; aspect-ratio: 16 / 10; height: auto; min-height: 240px; max-height: 340px; }
 .chart-box > canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; touch-action: pan-y; }
+    /* Chart loading shimmer — fades out once each chart has rendered */
+    .chart-box::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      border-radius: inherit;
+      background: linear-gradient(100deg, transparent 30%, rgba(148, 163, 184, 0.10) 50%, transparent 70%);
+      background-size: 200% 100%;
+      animation: chartShimmer 1.4s linear infinite;
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity .45s ease;
+    }
+    .chart-box.is-loaded::after { opacity: 0; }
+    @keyframes chartShimmer {
+      from { background-position: 200% 0; }
+      to   { background-position: -200% 0; }
+    }
 .inv-panel .chart-box { aspect-ratio: 1 / 1; min-height: 260px; max-height: 380px; max-width: 460px; }
 @media (max-width: 640px) {
   .chart-box { aspect-ratio: 4 / 3; min-height: 220px; max-height: 300px; }
@@ -4136,6 +4198,12 @@ html, body { overflow-x: hidden; }
   .ms-panel .acc-table th:first-child { background: var(--input-bg); }
   .ms-panel .acc-table tbody tr:hover td:first-child { background: var(--neu-bg-2); }
 }
+  /* Accessible focus ring for keyboard navigation */
+    a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+      outline: 2px solid #38bdf8;
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
   </style>
 </head>
 <body class="text-slate-100 font-sans antialiased flex flex-col min-h-screen app-body">
@@ -4149,7 +4217,7 @@ html, body { overflow-x: hidden; }
     </button>
     <div class="dock-items" id="dock-items">
       <span id="dock-indicator" aria-hidden="true"></span>
-      <button onclick="switchPage('home')" id="nav-home" class="nav-btn active-link"><i class="fa-solid fa-house"></i><span>Home</span></button>
+      <button onclick="switchPage('home')" id="nav-home" class="nav-btn active-link" aria-current="page"><i class="fa-solid fa-house"></i><span>Home</span></button>
       <button onclick="switchPage('rules')" id="nav-rules" class="nav-btn"><i class="fa-solid fa-scale-balanced"></i><span>Rules</span></button>
       <button onclick="switchPage('members')" id="nav-members" class="nav-btn"><i class="fa-solid fa-users"></i><span>Members</span></button>
       <button onclick="switchPage('accounts')" id="nav-accounts" class="nav-btn"><i class="fa-solid fa-chart-pie"></i><span>Accounts</span></button>
@@ -4239,7 +4307,7 @@ html, body { overflow-x: hidden; }
     <!-- Compact Clock -->
     <section class="clock-section">
       <div class="time-display" id="clock">
-        00:00:00<span class="time-period" id="ampm">AM</span>
+        <span id="clock-time">00:00:00</span><span class="time-period" id="ampm">AM</span>
       </div>
     </section>
 
@@ -4256,7 +4324,7 @@ html, body { overflow-x: hidden; }
 
       <!-- Hijri (Islamic) -->
       <div class="cal-row hijri">
-        <span class="cal-label"><i class="fa-brands fa-opencart"></i> Hijri</span>
+        <span class="cal-label"><i class="fa-solid fa-moon" aria-hidden="true"></i> Hijri</span>
         <span class="cal-value"><span id="hijri-english">...</span> <small id="arabic-day"></small></span>
       </div>
 
@@ -4592,7 +4660,7 @@ html, body { overflow-x: hidden; }
               <span class="paid-ticker-icon"><i class="fa-solid fa-circle-check"></i></span>
               <span class="paid-ticker-text" id="paidTickerText">Loading payments…</span>
             </div>
-            <div class="chart-box"><canvas id="currentStatusChart"></canvas></div>
+            <div class="chart-box"><canvas id="currentStatusChart" role="img" aria-label="Current status of paid and partial contributions per member"></canvas></div>
           </div>
           <!-- div8: Member Status Table (spans 3 cols, 2 rows) -->
           <div class="div8 ms-panel">
@@ -4617,12 +4685,12 @@ html, body { overflow-x: hidden; }
           <!-- div10: Advances Chart (spans 2 rows) -->
           <div class="div10 acc-panel">
             <h2><i class="fa-solid fa-hand-holding-dollar"></i> Advances (1st / 2nd)</h2>
-            <div class="chart-box"><canvas id="advanceChart"></canvas></div>
+            <div class="chart-box"><canvas id="advanceChart" role="img" aria-label="First and second advance amounts per member"></canvas></div>
           </div>
           <!-- div11: Profit Chart (spans 3 cols, 2 rows) -->
           <div class="div11 acc-panel">
             <h2><i class="fa-solid fa-arrow-trend-up"></i> Profit Growth</h2>
-            <div class="chart-box"><canvas id="profitChart"></canvas></div>
+            <div class="chart-box"><canvas id="profitChart" role="img" aria-label="Monthly net profit growth line chart"></canvas></div>
           </div>
         </div>
 
@@ -4781,7 +4849,7 @@ return `${toBanglaNumerals(bDay)}${banglaMonths[bMonth]}, ${toBanglaNumerals(bYe
       hours = hours ? hours : 12;
       const formattedHours = String(hours).padStart(2, '0');
 
-      document.getElementById('clock').childNodes[0].nodeValue = `${formattedHours}:${minutes}:${seconds} `;
+      document.getElementById('clock-time').textContent = `${formattedHours}:${minutes}:${seconds} `;
       document.getElementById('ampm').textContent = ampm;
 
       // 2. English (Gregorian) Calendar — all English text & digits
@@ -4822,9 +4890,9 @@ return `${toBanglaNumerals(bDay)}${banglaMonths[bMonth]}, ${toBanglaNumerals(bYe
       }
 
       // Update nav highlight + slide the dock indicator
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-link'));
+      document.querySelectorAll('.nav-btn').forEach(btn => { btn.classList.remove('active-link'); btn.removeAttribute('aria-current'); });
       const navBtn = document.getElementById(`nav-${pageId}`);
-      if (navBtn) navBtn.classList.add('active-link');
+      if (navBtn) { navBtn.classList.add('active-link'); navBtn.setAttribute('aria-current', 'page'); }
       if (typeof window.moveDockIndicator === 'function') window.moveDockIndicator();
 const finishTransition = () => {
         // Deactivate all pages
@@ -5014,7 +5082,7 @@ const typeSpeed = 75;      // ms per character while typing
         name: "Atiqul Islam Noman",
         member_id: "M005",
         pass: "19sunion@Atiqul",
-        phone: "+0096 6506-723783",
+        phone: "+966 50 672 3783",
         email: "atikulislamnoman@gmail.com",
         Mother: "Saheda Begum",
         Father: "Nazir Ahmed",
@@ -5066,7 +5134,7 @@ const typeSpeed = 75;      // ms per character while typing
         name: "Abdul Mannan",
         member_id: "M009",
         pass: "19sunion@Mannan",
-        phone: "+0097 1547-952750",
+        phone: "+971 54 795 2750",
         email: "mannanctg0214@gmail.com",
         Mother: "Joynab Ara",
         Father: "Golam Quader",
@@ -5079,7 +5147,7 @@ const typeSpeed = 75;      // ms per character while typing
         name: "Abdu Shukkur",
         member_id: "M010",
         pass: "19sunion@Sukkur",
-        phone: "+0096 6503-862897",
+        phone: "+966 50 386 2897",
         email: "abdushukkur903@gmail.com",
         Mother: "Lotfunnesa",
         Father: "Abul Bashar",
@@ -5092,7 +5160,7 @@ const typeSpeed = 75;      // ms per character while typing
         name: "Muhammed Khukan",
         member_id: "M011",
         pass: "19sunion@Khukan",
-        phone: "+055 317 3290",
+        phone: "+966 55 317 3290",
         email: "mommadhossin785@gmail.com",
         Mother: "Rokeya Begum",
         Father: "Joynal Abedin",
@@ -5161,6 +5229,19 @@ card.innerHTML = `
         </button>
       `;
       memberGrid.appendChild(card);
+
+      // If a member's Drive photo 404s (file not shared "Anyone with the link"),
+      // swap the broken image for the styled user icon instead.
+      const cardImg = card.querySelector('.member-img-box img');
+      if (cardImg) {
+        cardImg.onerror = function () {
+          if (!this.nextElementSibling || this.nextElementSibling.className !== 'fa-solid fa-user') {
+            const icon = document.createElement('i');
+            icon.className = 'fa-solid fa-user';
+            this.replaceWith(icon);
+          }
+        };
+      }
     }
 
     // Always render the full public directory — photos + names for everyone
@@ -5266,7 +5347,6 @@ function toggleProfile(button) {
       let investmentChartInstance = null;
       let profitChartInstance = null;
       let paidTickerTimer = null;
-      let currentStatusReplayTimer = null;
 
       // Chart defaults for dark theme
       Chart.defaults.color = '#94a3b8';
@@ -5274,17 +5354,58 @@ function toggleProfile(button) {
 
       let cachedData = null;
 
-      function renderDashboard(data) {
+      // ---- Performance: client-side cache + change detection ----
+      let fetchInFlight = false;
+      let lastSuccessAt = 0;
+      let hasInitialData = false;
+      let lastRenderedFingerprint = '';
+      const CACHE_KEY = 'unionAccountsCache_v1';
+      const CACHE_MAX_AGE = 10 * 60 * 1000; // accept a cache up to 10 minutes old
+
+      // localStorage cache: instantly paint the dashboard on reload, then refresh
+      // from Google Apps Script in the background so its latency is invisible.
+      function readCache() {
+        try {
+          const raw = localStorage.getItem(CACHE_KEY);
+          if (!raw) return null;
+          const entry = JSON.parse(raw);
+          if (!entry || !entry.data || !entry.savedAt) return null;
+          if (Date.now() - entry.savedAt > CACHE_MAX_AGE) return null;
+          return entry;
+        } catch (err) { return null; } // private mode / storage blocked — fetch live instead
+      }
+      function writeCache(data) {
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), data }));
+        } catch (err) { /* quota exceeded / storage blocked — ignore */ }
+      }
+      function dataFingerprint(data) {
+        try { return JSON.stringify(data); } catch (err) { return ''; }
+      }
+
+      // Fades out the chart loading shimmer once charts are drawn (or known empty).
+      function markAllChartsLoaded() {
+        document.querySelectorAll('.chart-box').forEach(b => b.classList.add('is-loaded'));
+      }
+
+      // instant = snap to final values + skip chart/count animations (re-entry,
+      // silent background updates). Animated = only the first real data load.
+      function renderDashboard(data, instant) {
         if (!data) return;
-        populateSummary(data.Summary);
-        renderCurrentStatusChart(data.CurrentStatus);
-        renderAdvanceChart(data.Advances);
-        renderInvestmentChart(data.Investment);
-        renderProfitChart(data.NetProfit || data.Investment);
-        populateMemberStatusTable(data.MemberStatus);
+        populateSummary(data.Summary, instant);
+        renderCurrentStatusChart(data.CurrentStatus, instant);
+        renderAdvanceChart(data.Advances, instant);
+        renderInvestmentChart(data.Investment, instant);
+        renderProfitChart(data.NetProfit || data.Investment, instant);
+        populateMemberStatusTable(data.MemberStatus, instant);
+        // Charts (re)built above — fade the loading shimmer out.
+        if (typeof requestAnimationFrame === 'function') requestAnimationFrame(markAllChartsLoaded);
+        else markAllChartsLoaded();
       }
 
       async function fetchDashboardData() {
+        if (fetchInFlight) return;              // never stack overlapping requests
+        fetchInFlight = true;
         const banner = document.getElementById('acc-status-banner');
         const bannerMsg = document.getElementById('acc-status-msg');
         try {
@@ -5297,19 +5418,32 @@ function toggleProfile(button) {
 
           const data = await response.json();
           cachedData = data;
+          writeCache(data);
+          lastSuccessAt = Date.now();
+
+          // Identical payload → charts already show it; skip destroy/rebuild + animations
+          if (hasInitialData && dataFingerprint(data) === lastRenderedFingerprint) return;
+
+          hasInitialData = true;
+          lastRenderedFingerprint = dataFingerprint(data);
           renderDashboard(data);
 
           // Valid response but missing the keys the page expects → warn the user
           if (banner && bannerMsg && !data.Summary && !data.MemberStatus && !data.Advances) {
             bannerMsg.textContent = 'Apps Script responded, but the expected keys (Summary / CurrentStatus / Advances / Investment / NetProfit / MemberStatus) were missing. Check the sheet tab names in the script.';
             banner.style.display = 'block';
+            markAllChartsLoaded();
           }
         } catch (error) {
           console.error("Data Fetching Error:", error);
+          lastSuccessAt = 0;
+          markAllChartsLoaded(); // stop shimmer — charts can't draw without data
           if (banner && bannerMsg) {
             bannerMsg.textContent = 'Accounts data could not load — Google Apps Script unreachable or returning an error. Redeploy it as a public web app, then press Retry.';
             banner.style.display = 'block';
           }
+        } finally {
+          fetchInFlight = false;
         }
       }
 
@@ -5347,7 +5481,7 @@ function toggleProfile(button) {
       }
 
       // Summary Helper — stores numeric targets, then fires the counting animation
-      function populateSummary(summaryData) {
+      function populateSummary(summaryData, instant) {
         if (!summaryData) return;
 
         const map = {
@@ -5368,16 +5502,42 @@ function toggleProfile(button) {
           if (!isNaN(num)) summaryTargets[targetId] = num;
         });
 
-        runSummaryCountAnimation();
+        if (instant) {
+          // Re-entry / silent refresh → snap to final values (no 5s count-up)
+          ACCOUNT_VALUE_IDS.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerText = formatCurrency(summaryTargets[id] || 0);
+          });
+        } else {
+          runSummaryCountAnimation();
+        }
       }
 
 // Current Status Horizontal Bar Chart (Paid / Partial) — Members on Y-axis, Status bars
-      function renderCurrentStatusChart(statusData) {
+      function renderCurrentStatusChart(statusData, instant) {
         if (!statusData) return;
+        if (typeof Chart === 'undefined') return; // CDN blocked/offline — skip, don't break the page
 
         const labels = statusData.map(m => m["Member Name"]);
         const paidData = statusData.map(m => m["Status"] === "Paid" ? m["Amount"] || 1500 : 0);
         const partialData = statusData.map(m => m["Status"] === "Partial" ? 1 : 0);
+
+        // Fit ALL member names on the chart — size the box to the row count.
+        // The fixed .chart-box heights (300–400px + max-height caps) only fit
+        // ~5–6 Y-axis labels, so on small phones most members were cut off.
+        // Each member now gets its own row of px, adapted to screen width.
+        const box = document.getElementById('currentStatusChart').closest('.chart-box');
+        if (box) {
+          const vw = window.innerWidth || document.documentElement.clientWidth;
+          let rowH = 32;                 // px per member row (desktop / tablet)
+          if (vw <= 380) rowH = 23;      // Galaxy Fold / tiny phones
+          else if (vw <= 480) rowH = 25; // iPhone SE / small Androids
+          else if (vw <= 640) rowH = 28; // regular phones
+          else if (vw <= 768) rowH = 30; // phablets / small tablets
+          box.style.height = Math.min(2400, Math.max(220, labels.length * rowH + 95)) + 'px';
+          box.style.maxHeight = 'none';    // override stylesheet caps (340px / 300px / 260px)
+          box.style.aspectRatio = 'auto';  // fixed height wins over aspect-ratio
+        }
 
         const ctx = document.getElementById('currentStatusChart').getContext('2d');
 
@@ -5433,10 +5593,11 @@ function toggleProfile(button) {
             responsive: true,
             maintainAspectRatio: false,
             animation: {
-              duration: 1100,
+              duration: instant ? 0 : 1100,
               easing: 'easeOutQuart',
               delay(context) {
                 // Bars pop in one-by-one (staggered, professional feel)
+                if (instant) return 0;
                 return context.type === 'data' ? context.dataIndex * 90 : 0;
               }
             },
@@ -5445,7 +5606,14 @@ function toggleProfile(button) {
             },
             scales: {
               x: { beginAtZero: true },
-              y: { grid: { display: false } }
+              y: {
+                grid: { display: false },
+                ticks: {
+                  autoSkip: false, // show EVERY member name on small screens
+                  maxRotation: 0,
+                  font: { size: (window.innerWidth || document.documentElement.clientWidth) <= 480 ? 11 : 12 }
+                }
+              }
             }
           }
         });
@@ -5487,8 +5655,9 @@ function toggleProfile(button) {
       }
 
       // Advances Chart — Members on X-axis, 1st & 2nd advance amounts (paid/remaining)
-      function renderAdvanceChart(advData) {
+      function renderAdvanceChart(advData, instant) {
         if (!advData) return;
+        if (typeof Chart === 'undefined') return; // CDN blocked/offline — skip, don't break the page
 
         const labels = advData.map(m => m["Name"]);
         const firstAdv = advData.map(m => m["Advance 1st"] ? Number(m["Advance 1st"]) : 0);
@@ -5547,10 +5716,11 @@ function toggleProfile(button) {
             responsive: true,
             maintainAspectRatio: false,
             animation: {
-              duration: 1200,
+              duration: instant ? 0 : 1200,
               easing: 'easeOutQuart',
               delay(context) {
                 // Bars rise up one-by-one (staggered)
+                if (instant) return 0;
                 return context.type === 'data' ? context.dataIndex * 100 : 0;
               }
             },
@@ -5617,8 +5787,9 @@ function toggleProfile(button) {
       }
 
       // Investment Pie Chart — only Running investments
-      function renderInvestmentChart(invData) {
+      function renderInvestmentChart(invData, instant) {
         if (!invData) return;
+        if (typeof Chart === 'undefined') return; // CDN blocked/offline — skip, don't break the page
 
         const runningInvestments = invData.filter(i => i["Description"] && i["Status"] === "Running" && i["Amount"] > 0);
         const labels = runningInvestments.map(i => i["Description"]);
@@ -5653,7 +5824,7 @@ function toggleProfile(button) {
             animation: {
               animateRotate: true,
               animateScale: true,
-              duration: 1600,
+              duration: instant ? 0 : 1600,
               easing: 'easeOutQuart'
             },
             plugins: {
@@ -5716,9 +5887,10 @@ function toggleProfile(button) {
       }
 
       // Profit Graph — live Net Profit from the "Netprofit" sheet tab (Date | Net Profit)
-      function renderProfitChart(profitData) {
+      function renderProfitChart(profitData, instant) {
         const canvasEl = document.getElementById('profitChart');
         if (!profitData || !canvasEl) return;
+        if (typeof Chart === 'undefined') return; // CDN blocked/offline — skip, don't break the page
 
         // Keep only rows carrying a Date, parse them, drop unparseable junk
         const entries = profitData
@@ -5771,7 +5943,7 @@ function toggleProfile(button) {
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: { duration: 1200, easing: 'easeOutQuart' },
+            animation: { duration: instant ? 0 : 1200, easing: 'easeOutQuart' },
             plugins: {
               legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } },
               tooltip: {
@@ -5812,7 +5984,7 @@ function toggleProfile(button) {
       }
 
       // Member Status List — staggered rows, animated progress bars, pulsing badges
-      function populateMemberStatusTable(statusData) {
+      function populateMemberStatusTable(statusData, instant) {
         const tbody = document.getElementById("memberStatusTable");
         tbody.innerHTML = "";
 
@@ -5821,7 +5993,7 @@ function toggleProfile(button) {
         statusData.forEach((row, i) => {
           const tr = document.createElement("tr");
           tr.className = "ms-row";
-          tr.style.animationDelay = (i * 70) + "ms";
+          tr.style.animationDelay = (instant ? 0 : i * 70) + "ms";
 
           const unpaid = Number(row["Total Unpaid"] || 0);
           const expected = Number(row["Expected payments"] || 0);
@@ -5841,13 +6013,20 @@ function toggleProfile(button) {
 
           // Count the Expected number up
           const numEl = tr.querySelector('.ms-num');
-          if (numEl) animateTableCount(numEl, expected, 600);
-
-          // Fill the progress bar after the row slides in
-          setTimeout(() => {
+          if (instant) {
+            // Snapshot mode: show the number + bar immediately (no per-row anims)
+            if (numEl) numEl.textContent = expected;
             const fill = tr.querySelector('.ms-bar-fill');
             if (fill) fill.style.width = pct + '%';
-          }, 300 + i * 70);
+          } else {
+            if (numEl) animateTableCount(numEl, expected, 600);
+
+            // Fill the progress bar after the row slides in
+            setTimeout(() => {
+              const fill = tr.querySelector('.ms-bar-fill');
+              if (fill) fill.style.width = pct + '%';
+            }, 300 + i * 70);
+          }
         });
       }
 
@@ -5865,7 +6044,8 @@ function toggleProfile(button) {
       window.refreshAccountsCharts = function () {
         const page = document.getElementById('page-accounts');
         if (page && page.classList.contains('active') && cachedData) {
-          renderDashboard(cachedData);
+          // Instant re-render (no replay of 5s counts / chart animations on re-entry)
+          renderDashboard(cachedData, true);
           setTimeout(alignInvCenter, 120);
         }
       };
@@ -5873,11 +6053,38 @@ function toggleProfile(button) {
       // Keep the investment center text aligned with the doughnut on window resize
       window.addEventListener('resize', () => setTimeout(alignInvCenter, 60));
 
-      // Initial Load
-      fetchDashboardData();
+      // ===== Initial load: paint cached data instantly, then refresh in the background =====
+      // Google Apps Script is slow, so a full reload used to sit on a blank dashboard
+      // for seconds. Now the last-known data shows immediately (from localStorage)
+      // and the live fetch updates it silently.
+      (function initialLoad() {
+        const saved = readCache();
+        if (saved && saved.data) {
+          cachedData = saved.data;
+          lastRenderedFingerprint = dataFingerprint(saved.data);
+          hasInitialData = true;
+          renderDashboard(saved.data, true); // instant — the page is usually hidden at boot
+        }
+        fetchDashboardData(); // background refresh brings any new sheet edits in
+      })();
 
-      // Auto Refresh every 30 seconds
-      setInterval(fetchDashboardData, 30000);
+      // Auto-refresh ONLY while the Accounts page is on screen AND the tab is visible —
+      // the old global 30s timer hammered Google Apps Script even in background tabs.
+      setInterval(() => {
+        const page = document.getElementById('page-accounts');
+        if (page && page.classList.contains('active') && document.visibilityState === 'visible') {
+          fetchDashboardData();
+        }
+      }, 30000);
+
+      // Returning to the tab: refresh the dashboard if the last live load is stale.
+      // The fetchInFlight guard in fetchDashboardData() prevents duplicate requests.
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState !== 'visible') return;
+        const page = document.getElementById('page-accounts');
+        if (!page || !page.classList.contains('active')) return;
+        if (Date.now() - lastSuccessAt > 15000) fetchDashboardData();
+      });
     })();
 
     // ============================================================
@@ -5901,9 +6108,9 @@ function toggleProfile(button) {
         target.classList.add('active');
 
         // Update the dock / nav highlight
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-link'));
+        document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('active-link'); b.removeAttribute('aria-current'); });
         const navBtn = document.getElementById('nav-' + stored);
-        if (navBtn) navBtn.classList.add('active-link');
+        if (navBtn) { navBtn.classList.add('active-link'); navBtn.setAttribute('aria-current', 'page'); }
         if (typeof window.moveDockIndicator === 'function') window.moveDockIndicator();
 
         // If the Accounts page was restored, re-render its charts at the right size

@@ -1,0 +1,19 @@
+{
+  "name": "19's Union — Savings & Investment Cooperative",
+  "short_name": "19's Union",
+  "description": "Savings & investment records, member directory, payment methods and a live financial dashboard for 19's Union, Badarkhali, Cox's Bazar.",
+  "start_url": "./Index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#38bdf8",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "https://lh3.googleusercontent.com/d/11ThNflUwUugkq_slzoC__gaoZ-uct354",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
