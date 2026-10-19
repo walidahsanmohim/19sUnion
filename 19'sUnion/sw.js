@@ -1,7 +1,7 @@
 /* 19's Union — minimal offline service worker (PWA-lite) */
-const CACHE_NAME = 'union-site-v1';
+const CACHE_NAME = 'union-site-v2';
 
-const PRECACHE_URLS = ['./', './Index.html', './tailwind.css', './manifest.webmanifest'];
+const PRECACHE_URLS = ['./', './Index.html', './css/tailwind.css', './css/styles.css', './js/sw-register.js', './js/chart-theme.js', './js/clipboard.js', './js/main.js', './manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

@@ -20,6 +20,12 @@
  *   GET  /exec?tab=NetProfit     (tab name or JSON key, case-insensitive)
  *   -> [ {...}, {...} ]
  *
+ * MEMBER UNLOCK (POST, JSON body, NO write token required — own rate limit):
+ *   { "action":"unlockMember", "member_id":"M003", "pass":"19sunion@Walid" }
+ *   -> { ok:true, member:{ Member Id, Member Name, Phone, Email, ... } }
+ *   Wrong pass / unknown member / too many attempts -> { ok:false, ... }
+ *   (The 'Members' tab is NEVER included in doGet output.)
+ *
  * WRITE (POST, JSON body; send header Content-Type: text/plain;charset=utf-8
  *        to avoid the CORS preflight — Apps Script accepts it anyway):
  *
@@ -55,6 +61,8 @@ var SPREADSHEET_ID = '14sStv62NQfcCTBySZDD9Wx5g1LQLXZJhC4VGF8uRVcU';
 // Every write request must send it as "token".
 
 // tab name (as in the spreadsheet) -> JSON key returned to clients
+// NOTE: 'Members' (photo/name/id/pass/PII) is NEVER returned by doGet —
+// unlocks happen only through the POST unlockMember action below.
 var TAB_MAP = [
   ['Summary',       'Summary'],
   ['CurrentStatus', 'CurrentStatus'],
@@ -64,6 +72,11 @@ var TAB_MAP = [
   ['MemberStatus',  'MemberStatus'],
   ['Payments',      'Payments']
 ];
+
+// Rate limiting for the unlockMember action (per IP + member) so a leaked
+// endpoint URL cannot be brute-forced for passes or member PII.
+var UNLOCK_MAX_ATTEMPTS = 8;
+var UNLOCK_WINDOW_MS = 10 * 60 * 1000;
 
 // Descriptions matching this are expenses -> returned as negative amounts
 var EXPENSE_PATTERN = /charge|expense|cost|fee|loss|withdraw/i;
@@ -126,6 +139,13 @@ function doPost(e) {
     }
 
     var action = String(body.action || '').toLowerCase();
+    // unlockMember has its own rate limit, NOT the write token — members
+    // must unlock with only their member pass, never the admin secret.
+    if (action === 'unlockmember') return json_(unlockMember_(body, e));
+    if (!tokenMatches_(body.token)) {
+      return json_({ ok: false, error: 'Invalid or missing token' });
+    }
+
     if (action === 'insert') return json_(writeInsert_(body));
     if (action === 'update') return json_(writeUpdate_(body));
     if (action === 'delete') return json_(writeDelete_(body));
@@ -221,6 +241,104 @@ function writeDelete_(body) {
     SpreadsheetApp.flush();
   }
   return { ok: true, removed: removed };
+}
+
+/* ========================= MEMBER UNLOCK ========================= */
+/* Verifies ONE member's pass against the private 'Members' tab and, on
+ * success only, returns that member's row (PII). The tab is deliberately
+ * NOT in TAB_MAP, so doGet can never leak it — not in the bulk payload,
+ * not via ?tab=Members. Rate limit: UNLOCK_MAX_ATTEMPTS wrong tries per
+ * (IP + member) inside UNLOCK_WINDOW_MS. Responses are identical-speed
+ * and identical-shape for wrong pass vs unknown member, so neither leaks.
+ *
+ * Sheet setup (create a 'Members' tab, copy from the current membersData):
+ *   Member Id | Member Name | Photo | Pass | Phone | Email | Mother |
+ *   Father | NidBirth_No | Nominee | Address
+ */
+function unlockMember_(body, e) {
+  var memberId = String((body && body.member_id) || '').trim().toUpperCase();
+  var given = String((body && body.pass) || '');
+  if (!memberId || !given) {
+    return { ok: false, error: 'member_id and pass required' };
+  }
+
+  // Identify the caller loosely (no login system): IP if Apps Script
+  // exposes it, else a caller-supplied client id, else a shared bucket.
+  var ip = '';
+  try { ip = String((e && e.parameters && e.parameters.ip) || ''); } catch (err) { ip = ''; }
+  var cid = String((body && body.client) || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 32);
+  var who = (ip || 'anon') + '|' + (cid || 'noclient');
+  checkUnlockRateLimit_(who, memberId);
+
+  var sheet = findSheet_('Members');
+  if (!sheet) throw new Error('Members tab not configured');
+  var grid = sheet.getDataRange().getValues();
+  if (grid.length < 2) { recordUnlockAttempt_(who, memberId, false); return { ok: false, error: 'Incorrect pass.' }; }
+  var headers = grid[0].map(function (h) { return String(h).trim(); });
+  var idIdx = headerIndex_(headers, 'Member Id');
+  var passIdx = headerIndex_(headers, 'Pass');
+  if (idIdx < 0 || passIdx < 0) throw new Error('Members tab needs "Member Id" and "Pass" columns');
+
+  var row = null;
+  for (var r = 1; r < grid.length; r++) {
+    if (String(grid[r][idIdx]).trim().toUpperCase() === memberId) { row = grid[r]; break; }
+  }
+  // Constant-time compare so pass-prefix probing via timing fails.
+  var expected = row ? String(row[passIdx] === null || row[passIdx] === undefined ? '' : row[passIdx]) : '';
+  var a = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, given, Utilities.Charset.UTF_8);
+  var b = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, expected, Utilities.Charset.UTF_8);
+  var diff = 0;
+  for (var i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
+  var ok = !!row && diff === 0 && expected.length > 0;
+  if (!recordUnlockAttempt_(who, memberId, ok)) {
+    return { ok: false, error: 'Too many attempts. Try again later.' };
+  }
+  if (!ok) return { ok: false, error: 'Incorrect pass.' };
+
+  // Success: return exactly this member's row (PII), keyed by header.
+  var member = {};
+  for (var c = 0; c < headers.length; c++) {
+    var key = headers[c] || ('Column ' + (c + 1));
+    if (key === 'Pass') continue; // never echo the pass back
+    var v = row[c];
+    if (v === '' || v === null || v === undefined) continue;
+    member[key] = serialize_(v);
+  }
+  recordUnlockAttempt_(who, memberId, true);
+  return { ok: true, member: member };
+}
+
+/** Sliding-window (IP + member) attempt counter in CacheService.
+ *  Returns true if the just-recorded outcome keeps the caller allowed. */
+function recordUnlockAttempt_(who, memberId, success) {
+  var key = 'unlock_' + Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,
+    who + '|' + memberId, Utilities.Charset.UTF_8).map(function (x) {
+      return ('0' + ((x + 256) % 256).toString(16)).slice(-2);
+    }).join('');
+  var cache = CacheService.getScriptCache();
+  var raw = cache.get(key);
+  var entry = { n: 0, t0: Date.now() };
+  if (raw) { try { entry = JSON.parse(raw); } catch (err) { entry = { n: 0, t0: Date.now() }; } }
+  if (Date.now() - entry.t0 > UNLOCK_WINDOW_MS) entry = { n: 0, t0: Date.now() };
+  if (success) { cache.remove(key); return true; }
+  entry.n += 1;
+  cache.put(key, JSON.stringify(entry), Math.ceil(UNLOCK_WINDOW_MS / 1000));
+  return entry.n <= UNLOCK_MAX_ATTEMPTS;
+}
+
+function checkUnlockRateLimit_(who, memberId) {
+  var cache = CacheService.getScriptCache();
+  var probe = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,
+    who + '|' + memberId, Utilities.Charset.UTF_8).map(function (x) {
+      return ('0' + ((x + 256) % 256).toString(16)).slice(-2);
+    }).join('');
+  var raw = cache.get('unlock_' + probe);
+  if (!raw) return;
+  var entry = null;
+  try { entry = JSON.parse(raw); } catch (err) { return; }
+  if (Date.now() - entry.t0 <= UNLOCK_WINDOW_MS && entry.n >= UNLOCK_MAX_ATTEMPTS) {
+    throw new Error('Too many attempts. Try again later.');
+  }
 }
 /* ========================= READ HELPERS ========================= */
 
