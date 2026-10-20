@@ -21,18 +21,20 @@
  *   -> [ {...}, {...} ]
  *
  * MEMBER UNLOCK (POST, JSON body, NO write token required — own rate limit):
- *   { "action":"unlockMember", "member_id":"M003", "pass":"19sunion@Walid" }
- *   -> { ok:true, member:{ Member Id, Member Name, Phone, Email, ... } }
+ *   { "action":"unlockMember", "member_id":"M003", "pass":"<MEMBER_PASS>" }
+ *   -> { ok:true, member:{ member_id, name, phone, email, ... } }
  *   Wrong pass / unknown member / too many attempts -> { ok:false, ... }
  *   (The 'Members' tab is NEVER included in doGet output.)
+ *   NOTE: never paste a real member pass into this file or any other file
+ *   committed to the repo — real passes live only in the private sheet.
  *
  * WRITE (POST, JSON body; send header Content-Type: text/plain;charset=utf-8
  *        to avoid the CORS preflight — Apps Script accepts it anyway):
  *
  *   INSERT — append rows (keys = real column headers):
  *     { "action":"insert", "token":"<WRITE_TOKEN>", "tab":"Payments",
- *       "rows":[{ "Month":"Oct", "Member Name":"Walid Ehasan",
- *                 "Status":"Paid", "Ammount":1500,
+ *       "rows":[{ "Month":"Oct", "Member Name":"<Member Name>",
+ *                 "Status":"Paid", "Amount":1500,
  *                 "Payment Date":"2026-10-05", "Year":2026,
  *                 "Member Id":"M003", "Helper":10 }] }
  *
@@ -133,15 +135,17 @@ function tokenMatches_(given) {
 function doPost(e) {
   try {
     var body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
-
-    if (!tokenMatches_(body.token)) {
-      return json_({ ok: false, error: 'Invalid or missing token' });
-    }
-
     var action = String(body.action || '').toLowerCase();
+
     // unlockMember has its own rate limit, NOT the write token — members
     // must unlock with only their member pass, never the admin secret.
+    // This branch MUST come before the write-token gate below, otherwise
+    // every unlock request is rejected as "Invalid or missing token".
     if (action === 'unlockmember') return json_(unlockMember_(body, e));
+
+    // Public directory: photo + name + member id only. No pass, no PII.
+    if (action === 'memberdirectory') return json_(memberDirectory_());
+
     if (!tokenMatches_(body.token)) {
       return json_({ ok: false, error: 'Invalid or missing token' });
     }
@@ -243,6 +247,32 @@ function writeDelete_(body) {
   return { ok: true, removed: removed };
 }
 
+/** Public, non-sensitive member directory: photo + name + member id only.
+ *  No pass, no phone/email/NID/address — those are released one member at a
+ *  time by unlockMember_ after the correct pass is supplied. */
+function memberDirectory_() {
+  var sheet = findSheet_('Members');
+  if (!sheet) throw new Error('Members tab not configured');
+  var grid = sheet.getDataRange().getValues();
+  if (grid.length < 2) return { ok: true, members: [] };
+  var headers = grid[0].map(function (h) { return String(h).trim(); });
+  var idIdx = findColumnLoose_(headers, ['Member Id', 'Member ID', 'ID', 'Member Code']);
+  var nameIdx = findColumnLoose_(headers, ['Full Name', 'Member Name', 'Name']);
+  var photoIdx = findColumnLoose_(headers, ['Photos', 'Photo', 'Photo URL']);
+  if (idIdx < 0 || nameIdx < 0) throw new Error('Members tab needs "Member Id" and "Full Name" columns');
+
+  var members = [];
+  for (var r = 1; r < grid.length; r++) {
+    var id = String(grid[r][idIdx] === null || grid[r][idIdx] === undefined ? '' : grid[r][idIdx]).trim();
+    if (!id) continue;
+    var entry = { member_id: id, name: String(grid[r][nameIdx] || '').trim() };
+    if (photoIdx >= 0) entry.photo = serialize_(grid[r][photoIdx]);
+    members.push(entry);
+  }
+  return { ok: true, members: members };
+}
+
+
 /* ========================= MEMBER UNLOCK ========================= */
 /* Verifies ONE member's pass against the private 'Members' tab and, on
  * success only, returns that member's row (PII). The tab is deliberately
@@ -275,8 +305,10 @@ function unlockMember_(body, e) {
   var grid = sheet.getDataRange().getValues();
   if (grid.length < 2) { recordUnlockAttempt_(who, memberId, false); return { ok: false, error: 'Incorrect pass.' }; }
   var headers = grid[0].map(function (h) { return String(h).trim(); });
-  var idIdx = headerIndex_(headers, 'Member Id');
-  var passIdx = headerIndex_(headers, 'Pass');
+  // The Members tab uses slightly different header spellings than the rest
+  // of the workbook, so accept aliases for every column we need.
+  var idIdx = findColumnLoose_(headers, ['Member Id', 'Member ID', 'ID', 'Member Code']);
+  var passIdx = findColumnLoose_(headers, ['Pass', 'Password', 'Member Pass']);
   if (idIdx < 0 || passIdx < 0) throw new Error('Members tab needs "Member Id" and "Pass" columns');
 
   var row = null;
@@ -295,11 +327,13 @@ function unlockMember_(body, e) {
   }
   if (!ok) return { ok: false, error: 'Incorrect pass.' };
 
-  // Success: return exactly this member's row (PII), keyed by header.
+  // Success: return exactly this member's row (PII), keyed by the
+  // canonical field names the frontend renders.
   var member = {};
   for (var c = 0; c < headers.length; c++) {
-    var key = headers[c] || ('Column ' + (c + 1));
-    if (key === 'Pass') continue; // never echo the pass back
+    var key = memberFieldKey_(headers[c]);
+    if (!key) continue;          // unknown column -> not part of the profile
+    if (key === 'pass') continue; // never echo the pass back
     var v = row[c];
     if (v === '' || v === null || v === undefined) continue;
     member[key] = serialize_(v);
@@ -307,6 +341,44 @@ function unlockMember_(body, e) {
   recordUnlockAttempt_(who, memberId, true);
   return { ok: true, member: member };
 }
+
+/** Resolves a Members-tab header to its canonical profile field name.
+ *  Exact alias match first; then a SAFE suffix match so a column titled
+ *  "19's Union - Complete Members Directory Member ID" still resolves to
+ *  'member_id'. Bare 'id' is NOT accepted as a suffix because 'Nid' would
+ *  match it and be mislabelled as the member id. */
+function memberFieldKey_(header) {
+  var n = norm_(header);
+  if (!n) return null;
+  var exact = MEMBER_FIELD_ALIASES[n];
+  if (exact) return exact;
+  var safe = ['memberid', 'membercode', 'fullname', 'membername'];
+  for (var i = 0; i < safe.length; i++) {
+    var s = safe[i];
+    if (n.length > s.length && n.slice(-s.length) === s) {
+      return MEMBER_FIELD_ALIASES[s];
+    }
+  }
+  return null;
+}
+
+/* Maps the Members tab's header spellings to the canonical field names the
+ * dashboard renders. Anything not listed here is dropped from the response.
+ * 'pass' is listed only so it can be explicitly skipped before echoing. */
+var MEMBER_FIELD_ALIASES = {
+  memberid: 'member_id', membercode: 'member_id', id: 'member_id',
+  fullname: 'name', membername: 'name', name: 'name',
+  photos: 'photo', photo: 'photo', photourl: 'photo',
+  phone: 'phone', phonenumber: 'phone', mobile: 'phone',
+  email: 'email', emailaddress: 'email',
+  fathersname: 'Father', father: 'Father',
+  mothersname: 'Mother', mother: 'Mother',
+  nidbirthno: 'NidBirth_No', nidbirthcertificateno: 'NidBirth_No',
+  nidbirthcertificatenumber: 'NidBirth_No', nid: 'NidBirth_No',
+  nominee: 'nominee',
+  address: 'address',
+  pass: 'pass', password: 'pass', memberpass: 'pass'
+};
 
 /** Sliding-window (IP + member) attempt counter in CacheService.
  *  Returns true if the just-recorded outcome keeps the caller allowed. */
@@ -451,6 +523,33 @@ function headerIndex_(headers, name) {
   var n = norm_(name);
   for (var i = 0; i < headers.length; i++) {
     if (norm_(headers[i]) === n) return i;
+  }
+  return -1;
+}
+
+/** First header matching ANY alias (case/space-insensitive). Returns -1 if none. */
+function findColumn_(headers, aliases) {
+  for (var a = 0; a < aliases.length; a++) {
+    var idx = headerIndex_(headers, aliases[a]);
+    if (idx >= 0) return idx;
+  }
+  return -1;
+}
+
+/** Like findColumn_ but also accepts a header that merely ENDS WITH the alias.
+ *  The 'Members' tab titles its first column
+ *  "19's Union - Complete Members Directory Member ID", so a strict
+ *  equality check would never find the member id column. */
+function findColumnLoose_(headers, aliases) {
+  var exact = findColumn_(headers, aliases);
+  if (exact >= 0) return exact;
+  for (var a = 0; a < aliases.length; a++) {
+    var n = norm_(aliases[a]);
+    if (!n) continue;
+    for (var i = 0; i < headers.length; i++) {
+      var h = norm_(headers[i]);
+      if (h && h !== n && h.length > n.length && h.slice(-n.length) === n) return i;
+    }
   }
   return -1;
 }

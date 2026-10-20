@@ -1,5 +1,8 @@
 /* 19's Union — minimal offline service worker (PWA-lite) */
-const CACHE_NAME = 'union-site-v2';
+/* Bump the version whenever a cached asset changes, otherwise returning
+ * visitors keep serving the STALE copy from the old cache.
+ * v3 removed the client-side member passwords from js/main.js. */
+const CACHE_NAME = 'union-site-v3';
 
 const PRECACHE_URLS = ['./', './Index.html', './css/tailwind.css', './css/styles.css', './js/sw-register.js', './js/chart-theme.js', './js/clipboard.js', './js/main.js', './manifest.webmanifest'];
 

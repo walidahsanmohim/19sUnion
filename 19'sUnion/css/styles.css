@@ -6,7 +6,7 @@
       --card-border: rgba(255, 255, 255, 0.08);
       --text-main: #f1f5f9;
       --text-muted: #94a3b8;
-      --primary-accent: #38bdf8;
+      --primary-accent: #B7FF72;
       --arabic-accent: #2dd4bf;
       --bangla-accent: #fbbf24;
       --bg-page: linear-gradient(160deg, #003f2e 0%, #087457 35%, #2C7B66 60%, #065c45 85%, #034232 100%);
@@ -23,8 +23,8 @@
       --tick-c: #cbd5e1;
       --shadow-c: rgba(0, 0, 0, 0.4);
       --input-bg: rgba(2, 6, 23, 0.4);
-      --accent-soft: rgba(56, 189, 248, 0.15);
-      --accent-glow: rgba(56, 189, 248, 0.4);
+      --accent-soft: rgba(183, 255, 114, 0.15);
+      --accent-glow: rgba(183, 255, 114, 0.4);
       --hero-bg: radial-gradient(1100px 520px at 12% 18%, rgba(56,189,248,.18), transparent 60%), radial-gradient(900px 480px at 88% 85%, rgba(45,212,191,.15), transparent 55%), linear-gradient(135deg, #031227 0%, #062448 45%, #083063 72%, #031227 100%);
     }
 
@@ -1073,7 +1073,7 @@
 .Account .div1 .acc-trend {
   font-size: 12px;
   font-weight: 600;
-  color: #38bdf8;
+  color: #B7FF72;
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
@@ -2297,7 +2297,7 @@
   right: 0;
   bottom: 0;
   height: 3px;
-  background: linear-gradient(90deg, #38bdf8, #22d3ee, #2dd4bf);
+  background: linear-gradient(90deg, #18B78D, #B7FF72);
   border-radius: 0 0 20px 20px;
   opacity: 0.7;
 }
@@ -2814,8 +2814,8 @@
 .inv-center-value {
   font-size: 1em;
   font-weight: 800;
-  color: #05cd99;
-  text-shadow: 0 0 18px rgba(5, 205, 153, 0.55);
+  color: #B7FF72;
+  text-shadow: 0 0 18px rgba(183,255,114,0.55);
 }
 
 /* Member Status table — staggered rows, progress bars, badges */
@@ -2828,7 +2828,7 @@
 @media (max-width: 640px) {
   .ms-name { max-width: 34vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; }
 }
-.ms-num { color: #38bdf8; font-weight: 700; font-variant-numeric: tabular-nums; }
+.ms-num { color: #B7FF72; font-weight: 700; font-variant-numeric: tabular-nums; }
 .ms-prog { min-width: 148px; }
 @media (max-width: 640px) { .ms-prog { min-width: 0; } }
 .ms-bar {
@@ -2845,13 +2845,13 @@
   height: 100%;
   width: 0%;
   border-radius: 6px;
-  background: linear-gradient(90deg, #05cd99, #34d399);
-  box-shadow: 0 0 10px rgba(5, 205, 153, 0.6);
+  background: linear-gradient(90deg, #18B78D, #B7FF72);
+  box-shadow: 0 0 10px rgba(183, 255, 114, 0.6);
   transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .ms-bar-fill.ms-bar-full {
-  background: linear-gradient(90deg, #10b981, #34d399);
-  box-shadow: 0 0 12px rgba(5, 205, 153, 0.8);
+  background: linear-gradient(90deg, #18B78D, #B7FF72);
+  box-shadow: 0 0 12px rgba(183, 255, 114, 0.8);
 }
 .ms-pct { font-size: 11px; color: var(--text-3); margin-left: 8px; font-weight: 700; }
 .ms-badge {
@@ -2948,9 +2948,9 @@
   font-weight: 700;
   display: inline-block;
 }
-.ac-paid { background: rgba(5, 205, 153, 0.15); color: #34d399; }
+.ac-paid { background: rgba(183, 255, 114, 0.15); color: #B7FF72; }
 .ac-due { background: rgba(238, 93, 80, 0.15); color: #f87171; }
-.ac-running { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+.ac-running { background: rgba(183, 255, 114, 0.15); color: #B7FF72; }
 .ac-closed { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
 
 .progress-acc {
@@ -2962,7 +2962,7 @@
 .progress-acc-fill {
   height: 100%;
   border-radius: 9999px;
-  background: linear-gradient(90deg, #38bdf8, #22d3ee, #2dd4bf);
+  background: linear-gradient(90deg, #18B78D, #B7FF72);
   transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
   animation: accProgress 1.2s ease-out both;
 }
@@ -3096,7 +3096,7 @@
   padding: 10px 14px;
   border-radius: 14px;
   background: var(--neu-bg-2);
-  color: #34d399;
+  color: #B7FF72;
   font-size: 13px;
   font-weight: 600;
   box-shadow:
@@ -3130,13 +3130,13 @@
   height: 100%;
   width: 0%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #05cd99, #34d399);
+  background: linear-gradient(90deg, #18B78D, #B7FF72);
   box-shadow:
     0 1px 4px var(--neu-hi),
     0 -1px 4px var(--neu-lo);
   transition: width .9s cubic-bezier(.22,1,.36,1);
 }
-.ms-bar-fill.ms-bar-full { background: linear-gradient(90deg, #10b981, #34d399); }
+.ms-bar-fill.ms-bar-full { background: linear-gradient(90deg, #18B78D, #B7FF72); }
 .ms-badge {
   display: inline-flex;
   align-items: center;
@@ -3149,7 +3149,7 @@
     -1px -1px 6px var(--neu-hi),
     2px 2px 8px var(--neu-lo);
 }
-.ms-badge-paid   { background: var(--neu-bg-2); color: #34d399; }
+.ms-badge-paid   { background: var(--neu-bg-2); color: #B7FF72; }
 .ms-badge-unpaid { background: var(--neu-bg-2); color: #f87171; }
 
 /* --- Tables: content sits in a pressed groove --- */
@@ -3199,7 +3199,7 @@
 .progress-acc-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #38bdf8, #22d3ee, #2dd4bf);
+  background: linear-gradient(90deg, #18B78D, #B7FF72);
   box-shadow: 0 1px 4px var(--neu-hi), 0 -1px 4px var(--neu-lo);
   transition: width 1s cubic-bezier(.22,1,.36,1);
 }
@@ -3472,7 +3472,7 @@
       border-radius: 16px;
     }
     .btn-primary .btn-ic {
-      background: linear-gradient(135deg, #38bdf8, #0284c7);
+      background: linear-gradient(135deg, #B7FF72, #18B78D);
       color: #051220;
       box-shadow: 0 6px 16px -6px var(--accent-glow);
     }
@@ -3608,7 +3608,7 @@
     .sec-head { display: inline-flex; align-items: center; gap: .55rem; font-weight: 700; letter-spacing: -.01em; }
     .sec-head::after {
       content: ""; width: 34px; height: 3px; border-radius: 9999px;
-      background: linear-gradient(90deg, var(--primary-accent), #22d3ee);
+      background: linear-gradient(90deg, var(--primary-accent), #18B78D);
       margin-left: .4rem;
     }
 
@@ -4174,7 +4174,7 @@ html, body { overflow-x: hidden; }
 }
   /* Accessible focus ring for keyboard navigation */
     a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
-      outline: 2px solid #38bdf8;
+      outline: 2px solid #B7FF72;
       outline-offset: 2px;
       border-radius: 6px;
     }

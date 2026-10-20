@@ -290,152 +290,46 @@ const typeSpeed = 75;      // ms per character while typing
       const u = String(url || '').trim();
       return /^https:\/\//i.test(u) ? escapeHtml(u) : '';
     }
-
-    const membersData = [
-      {
-        photo: "https://drive.google.com/file/d/1AzzoTf-mtGGbcdM5fx8-UVGhkKOpi9wf/view?usp=drive_link", 
-        name: "Mohammed Shaker Hossen",
-        member_id: "M001",
-        pass: "19sunion@Shaker",
-        phone: "+880 1872-952812",
-        email: "shakerhosen176@gmail.com",
-        Mother: "Mina Begum",
-        Father: "Mustafa Ahmed",
-        NidBirth_No : "3769354584",
-        nominee: "Burhan Uddin [Brother]",
-        address: "Purba-Veruakhali para, 7no Ward Badarkhali,Matamuhuri,Cox's Bazar"
-      },
-      {
-        photo: "https://drive.google.com/file/d/1ChX2ZMHGL_Op0jLxofSljKf5hP260Vg-/view?usp=drive_link", 
-        name: "Abu Naim Bin Habib",
-        member_id: "M002",
-        pass: "19sunion@Naim",
-        phone: "+880 1832-200627",
-        email: "abunaimbinhabib2164@gmail.com",
-        Mother: "Estafa khanam",
-        Father: "Habibur Rahman",
-        NidBirth_No : "20032211610036387 ",
-        nominee: "Estafa khanam [Mother]",
-        address: "Shariya para, 3no Ward Badarkhali, Matamuhuri,Cox's Bazar"
-      },
-      {
-        photo: "https://drive.google.com/file/d/1B-Zrh3YdNBmXFDfvz-dcAfBTTwCskI-g/view?usp=drive_link", 
-        name: "Mohammed Walid Ehasan",
-        member_id: "M003",
-        pass: "19sunion@Walid",
-        phone: "+880 1611-835976",
-        email: "walidahsanmohim@gmail.com",
-        Mother: "Nasima Begum",
-        Father: "Muslim Uddin",
-        NidBirth_No : "1974157156",
-        nominee: "Nasima Begum [Mother]",
-        address: "Shariya para, 3no Ward, Badarkhali, Matamuhuri,Cox's Bazar"
-      },
-      {
-        photo: "https://drive.google.com/file/d/14vyxQM6CQlr6yQaEucIkI2C-pKRfEamW/view?usp=drive_link", 
-        name: "Sajjatul Islam",
-        member_id: "M004",
-        pass: "19sunion@Sajjad",
-        phone: "+880 1891-695765",
-        email: "sajjatul71@gmail.com",
-        Mother: "Rabea Begum",
-        Father: "Safikul Islam",
-        NidBirth_No : "3310957495",
-        nominee: "Rabea Begum [Mother]",
-        address: "Ishak karbari Para,7no ward Alikodm.Bandarban"
-      },
-      {
-        photo: "https://drive.google.com/file/d/1kJvOW6Lg2E4zxczpbjI0L_ECmj1PVplr/view?usp=drive_link", 
-        name: "Atiqul Islam Noman",
-        member_id: "M005",
-        pass: "19sunion@Atiqul",
-        phone: "+966 50 672 3783",
-        email: "atikulislamnoman@gmail.com",
-        Mother: "Saheda Begum",
-        Father: "Nazir Ahmed",
-        NidBirth_No : "2412391530",
-        nominee: "Sarmin Akter [Sister]",
-        address: "Tessi Para, 2no Ward Badarkali, Matamuhuri,Cox's Bazar"
-      },
-      {
-        photo: "https://drive.google.com/file/d/1vSs4VvG6R8IjcmxkcUaJrrq2skNto5ap/view?usp=drive_link", 
-        name: "Salah Uddin ",
-        member_id: "M006",
-        pass: "19sunion@Salah",
-        phone: "+880 1880-959149",
-        email: "mdsalah3062000@gmail.com",
-        Mother: "Monuara Begum",
-        Father: "Babu Miya",
-        NidBirth_No : "8724604452",
-        nominee: "Monuara Begum [Mother]",
-        address: "Kuch Para,8no Ward Chiringa, Chakaria, Cox's Bazar"
-      },
-      {
-        photo: "https://drive.google.com/file/d/1A9VRS5GRTCun4oACg_Pepx5SwYORBVJy/view?usp=drive_link", 
-        name: "Mohammed Humayon Karim",
-        member_id: "M007",
-        pass: "19sunion@Humayun",
-        phone: "+880 1837-577621",
-        email: "mdhumayunkarim555666@gmail.com",
-        Mother: "Shabekunnahar",
-        Father: "Mohammed Iliyas",
-        NidBirth_No : "1525881031",
-        nominee: "Riduanul Hakim Rimon [Brother]",
-        address: "Sanua Para, 9no Ward Badarkhali, Matamuhuri, Cox's Bazar"
-      },
-      {
-        photo: "https://drive.google.com/file/d/1hXXvEbrRIuuJO0YXW8VdrNvZseostB7l/view?usp=drive_link", 
-        name: "Shahed Mohammed Jala Uddin",
-        member_id: "M008",
-        pass: "19sunion@Shahed",
-        phone: "+880 1921-407345",
-        email: "walkershahed@gmail.com",
-        Mother: "Nesera Begum",
-        Father: "Fayez Ahmed",
-        NidBirth_No : "4672432624",
-        nominee: "Nesera Begum [Mother]",
-        address: "Veruakhali Para, 7no Ward Badarkhali, Matamuhuri, Cox's Bazar"
-      },
-      {
-        photo: "https://drive.google.com/file/d/1q-94yWQ0scc0d6MbTZD8eeqE_-muWZmO/view?usp=drive_link", 
-        name: "Abdul Mannan",
-        member_id: "M009",
-        pass: "19sunion@Mannan",
-        phone: "+971 54 795 2750",
-        email: "mannanctg0214@gmail.com",
-        Mother: "Joynab Ara",
-        Father: "Golam Quader",
-        NidBirth_No : "6923299603",
-        nominee: "Joynab Ara [Mother]",
-        address: "Sanua Para, 9no Ward Badarkhali, Matamuhuri,Cox's Bazar"
-      },
-      {
-        photo: "https://drive.google.com/file/d/1QsZ6w51xXAr9jSuShYA2_csbykTNSbhz/view?usp=drive_link", 
-        name: "Abdu Shukkur",
-        member_id: "M010",
-        pass: "19sunion@Sukkur",
-        phone: "+966 50 386 2897",
-        email: "abdushukkur903@gmail.com",
-        Mother: "Lotfunnesa",
-        Father: "Abul Bashar",
-        NidBirth_No : "5574174768",
-        nominee: "Mohammed Labib [Son]",
-        address: " Sanua Para, 9no Ward Badarkhali, Matamuhuri, Cox's Bazar"
-      },
-      {
-        photo: "https://drive.google.com/file/d/1SXCiYQ61yrB8jRsiwJAovId5bUUVDVDG/view?usp=drive_link", 
-        name: "Muhammed Khukan",
-        member_id: "M011",
-        pass: "19sunion@Khukan",
-        phone: "+966 55 317 3290",
-        email: "mommadhossin785@gmail.com",
-        Mother: "Rokeya Begum",
-        Father: "Joynal Abedin",
-        NidBirth_No : "2572076343",
-        nominee: "Rokeya Begum [Mother]",
-        address: "Kutob-Nogor Para, 3no Ward Badarkhali, Matamuhuri, Cox's Bazar"
-      }
+    // PUBLIC member directory — photo + name + member id ONLY.
+    // ⚠️ SECURITY: no pass, phone, email, NID or address lives in this file
+    // any more. Those are released one member at a time by the backend
+    // `unlockMember` action after that member's own pass is verified.
+    // This array is only a FALLBACK for when the API is unreachable; the
+    // live directory is fetched from the Apps Script endpoint on load.
+    const membersDirectory = [
+      { member_id: "M001", name: "Mohammed Shaker Hossen", photo: "https://drive.google.com/file/d/1AzzoTf-mtGGbcdM5fx8-UVGhkKOpi9wf/view?usp=drive_link" },
+      { member_id: "M002", name: "Abu Naim Bin Habib",     photo: "https://drive.google.com/file/d/1ChX2ZMHGL_Op0jLxofSljKf5hP260Vg-/view?usp=drive_link" },
+      { member_id: "M003", name: "Mohammed Walid Ehasan",   photo: "https://drive.google.com/file/d/1B-Zrh3YdNBmXFDfvz-dcAfBTTwCskI-g/view?usp=drive_link" },
+      { member_id: "M004", name: "Sajjatul Islam",          photo: "https://drive.google.com/file/d/14vyxQM6CQlr6yQaEucIkI2C-pKRfEamW/view?usp=drive_link" },
+      { member_id: "M005", name: "Atiqul Islam Noman",      photo: "https://drive.google.com/file/d/1kJvOW6Lg2E4zxczpbjI0L_ECmj1PVplr/view?usp=drive_link" },
+      { member_id: "M006", name: "Salah Uddin",             photo: "https://drive.google.com/file/d/1vSs4VvG6R8IjcmxkcUaJrrq2skNto5ap/view?usp=drive_link" },
+      { member_id: "M007", name: "Mohammed Humayon Karim",  photo: "https://drive.google.com/file/d/1A9VRS5GRTCun4oACg_Pepx5SwYORBVJy/view?usp=drive_link" },
+      { member_id: "M008", name: "Shahed Mohammed Jala Uddin", photo: "https://drive.google.com/file/d/1hXXvEbrRIuuJO0YXW8VdrNvZseostB7l/view?usp=drive_link" },
+      { member_id: "M009", name: "Abdul Mannan",            photo: "https://drive.google.com/file/d/1q-94yWQ0scc0d6MbTZD8eeqE_-muWZmO/view?usp=drive_link" },
+      { member_id: "M010", name: "Abdu Shukkur",            photo: "https://drive.google.com/file/d/1QsZ6w51xXAr9jSuShYA2_csbykTNSbhz/view?usp=drive_link" },
+      { member_id: "M011", name: "Muhammed Khukan",         photo: "https://drive.google.com/file/d/1SXCiYQ61yrB8jRsiwJAovId5bUUVDVDG/view?usp=drive_link" }
     ];
+
+    // Live directory (from the sheet) — replaces the fallback above.
+    let membersData = membersDirectory.slice();
+    // Unlocked member details, keyed by member_id (fetched on unlock only).
+    const unlockedMemberData = {};
+
+    const MEMBER_API_URL = "https://script.google.com/macros/s/AKfycby0Lg7YD5o-_bpxzZeF-YuSVXYvcDqiB3zc7AVulx_XTWFD0jndXgsAmW_rcJijUu-LCQ/exec";
+    // Stable per-browser client id so the backend rate-limiter buckets by
+    // (client + member) rather than lumping every visitor together.
+    const CLIENT_ID = (function () {
+      const KEY = 'sunion_client_id';
+      try {
+        let id = localStorage.getItem(KEY);
+        if (!id) {
+          id = 'c' + Math.random().toString(36).slice(2, 12) + Date.now().toString(36);
+          localStorage.setItem(KEY, id);
+        }
+        return id;
+      } catch (err) { return 'anon'; }
+    })();
+
 
     // 🛠️ Member card generator + 🔐 PER-CARD PASS LOCK
     // ============================================================
@@ -445,10 +339,9 @@ const typeSpeed = 75;      // ms per character while typing
     // card behind that member's own pass entry field.
     // A pass typed into a card unlocks exactly that card.
     //
-    // ⚠️ SECURITY NOTE: this is client-side gating. The passes and
-    // member data still travel inside the HTML source and can be
-    // read from "View Source". For TRUE privacy this check belongs
-    // on a server (e.g. the Google Apps Script endpoint).
+    // ⚠️ SECURITY: the pass check is SERVER-SIDE (the Apps Script
+    // `unlockMember` action). The browser never holds a pass and never
+    // holds any member PII, so "View Source" reveals nothing private.
     // ============================================================
 
     const memberGrid = document.getElementById('member-grid');
@@ -471,17 +364,17 @@ card.innerHTML = `
         <span class="lock-tag"><i class="fa-solid fa-lock"></i> Pass Protected</span>
 
         <div class="primary-info">
-          <div class="info-item"><i class="fa-solid fa-phone"></i> ${escapeHtml(member.phone)}</div>
-          <div class="info-item"><i class="fa-solid fa-envelope"></i> ${escapeHtml(member.email)}</div>
+          <div class="info-item"><i class="fa-solid fa-phone"></i> <span data-field="phone">••••••••••</span></div>
+          <div class="info-item"><i class="fa-solid fa-envelope"></i> <span data-field="email">••••••••••</span></div>
         </div>
 
         <div class="full-details">
           <div class="fd-inner">
-            <div class="detail-row"><span class="detail-label">Mother:</span><span class="detail-value">${escapeHtml(member.Mother)}</span></div>
-            <div class="detail-row"><span class="detail-label">Father:</span><span class="detail-value">${escapeHtml(member.Father)}</span></div>
-            <div class="detail-row"><span class="detail-label">NID/Birth Certificate No:</span><span class="detail-value">${escapeHtml(member.NidBirth_No)}</span></div>
-            <div class="detail-row"><span class="detail-label">Nominee:</span><span class="detail-value">${escapeHtml(member.nominee)}</span></div>
-            <div class="detail-row"><span class="detail-label">Address:</span><span class="detail-value">${escapeHtml(member.address)}</span></div>
+            <div class="detail-row"><span class="detail-label">Mother:</span><span class="detail-value" data-field="Mother">••••••••</span></div>
+            <div class="detail-row"><span class="detail-label">Father:</span><span class="detail-value" data-field="Father">••••••••</span></div>
+            <div class="detail-row"><span class="detail-label">NID/Birth Certificate No:</span><span class="detail-value" data-field="NidBirth_No">••••••••</span></div>
+            <div class="detail-row"><span class="detail-label">Nominee:</span><span class="detail-value" data-field="nominee">••••••••</span></div>
+            <div class="detail-row"><span class="detail-label">Address:</span><span class="detail-value" data-field="address">••••••••</span></div>
           </div>
         </div>
 
@@ -515,13 +408,11 @@ card.innerHTML = `
     function renderMembers(list) {
       memberGrid.innerHTML = "";
       list.forEach((member, index) => renderMemberCard(member, index));
-    }
-
-    // Finds a member record by member_id (case-insensitive)
-    function findMemberById(idValue) {
-      const key = String(idValue || "").trim().toUpperCase();
-      if (!key) return null;
-      return membersData.find(m => String(m.member_id).trim().toUpperCase() === key) || null;
+      // Re-apply any details already unlocked this session, so a directory
+      // refresh never re-locks a card the member already opened.
+      Object.keys(unlockedMemberData).forEach(function (id) {
+        if (unlockedMemberData[id]) unlockMemberCard(id, unlockedMemberData[id]);
+      });
     }
 
     // Per-card feedback line (empty / wrong / correct pass)
@@ -532,10 +423,24 @@ card.innerHTML = `
       msg.dataset.type = type || "info";
     }
 
-    // Unlock ONE member card by its member_id
-    function unlockMemberCard(memberId) {
+    // Fills a card's profile fields from an unlocked member record.
+    function applyMemberDetails(card, member) {
+      if (!card || !member) return;
+      const fields = ['phone', 'email', 'Mother', 'Father', 'NidBirth_No', 'nominee', 'address'];
+      fields.forEach(function (key) {
+        const el = card.querySelector(`[data-field="${key}"]`);
+        if (!el) return;
+        const val = member[key];
+        el.textContent = (val === null || val === undefined || val === '') ? '—' : String(val);
+      });
+    }
+
+    // Unlock ONE member card by its member_id, using the details the
+    // backend returned for that member.
+    function unlockMemberCard(memberId, details) {
       const card = memberGrid.querySelector(`.member-card[data-member-id="${memberId}"]`);
       if (!card) return;
+      applyMemberDetails(card, details);
       card.classList.remove('locked');
       card.classList.add('member-unlocked', 'active');
       const tag = card.querySelector('.lock-tag');
@@ -545,38 +450,77 @@ card.innerHTML = `
       setCardMsg(card, "");
       const toggleBtn = card.querySelector('.details-toggle');
       if (toggleBtn) toggleBtn.style.display = 'flex';
-      const details = card.querySelector('.full-details');
-      if (details) details.classList.add('open');
+      const detailsEl = card.querySelector('.full-details');
+      if (detailsEl) detailsEl.classList.add('open');
+    }
+
+    // POSTs to the Apps Script endpoint. Uses text/plain so the request
+    // stays a "simple" CORS request (no preflight).
+    async function postAction(payload) {
+      const res = await fetch(MEMBER_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('Server error (' + res.status + ')');
+      return await res.json();
     }
 
     // Called from each card's unlock button or Enter key.
-    // The pass typed into a card can only open that member's card.
-    function unlockCardPass(buttonOrInput) {
+    // The pass is verified SERVER-SIDE; the browser never holds a pass
+    // and can never decide on its own that a pass is valid.
+    async function unlockCardPass(buttonOrInput) {
       const card = buttonOrInput.closest('.member-card');
       const input = card.querySelector('.member-pass-input');
-      const member = findMemberById(card.dataset.memberId);
-      const pass = String(input.value || "").trim().toLowerCase();
+      const btn = card.querySelector('.member-unlock-btn');
+      const memberId = card.dataset.memberId;
+      const pass = String(input.value || "").trim();
+
       if (!pass) {
         setCardMsg(card, "Enter the pass.", "error");
         input.focus();
         return;
       }
-      if (member && String(member.pass || "").trim().toLowerCase() === pass) {
-        unlockMemberCard(member.member_id);
-      } else {
+
+      // Already unlocked in this session? Re-render from cache, no request.
+      if (unlockedMemberData[memberId]) {
         input.value = "";
-        setCardMsg(card, "Incorrect pass.", "error");
-        input.focus();
+        unlockMemberCard(memberId, unlockedMemberData[memberId]);
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
+      setCardMsg(card, "Checking…", "info");
+
+      try {
+        const data = await postAction({
+          action: 'unlockMember',
+          member_id: memberId,
+          pass: pass,
+          client: CLIENT_ID
+        });
+        if (data && data.ok && data.member) {
+          unlockedMemberData[memberId] = data.member;
+          input.value = "";
+          setCardMsg(card, "Unlocked", "success");
+          unlockMemberCard(memberId, data.member);
+        } else {
+          input.value = "";
+          setCardMsg(card, (data && data.error) || "Incorrect pass.", "error");
+          input.focus();
+        }
+      } catch (err) {
+        input.value = "";
+        setCardMsg(card, "Could not reach the server. Try again.", "error");
+      } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Unlock'; }
       }
     }
-
-    // Kick off: everyone sees the public directory (photos + names) immediately
-    renderMembers(membersData);
 
     // Manual-constant sync: member DIRECTORY count comes from membersData (live);
     // monthly ৳1,500 target + 2026–2030 duration are POLICY constants (not in the
     // sheet) — marked as MANUAL POLICY CONSTANT in Index.html; update by hand.
-    (function syncMemberCounts() {
+    function syncMemberCounts() {
       const n = membersData.length;
       const stat = document.getElementById('memberCountStat');
       if (stat) stat.textContent = String(n);
@@ -584,7 +528,41 @@ card.innerHTML = `
       const bn = String(n).replace(/\d/g, d => bnDigits[Number(d)]);
       const badge = document.getElementById('memberCountBadge');
       if (badge) badge.textContent = 'সদস্য সংখ্যা - ' + bn + ' জন';
-    })();
+    }
+
+    // Kick off: everyone sees the public directory (photos + names) immediately
+    // from the local fallback, then the live directory replaces it as soon as
+    // the API answers. The fallback carries NO pass and NO PII.
+    renderMembers(membersData);
+    syncMemberCounts();
+
+    // Fetches the live public directory (member id + name + photo only).
+    async function loadLiveDirectory() {
+      try {
+        const res = await fetch(MEMBER_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'memberDirectory' })
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data || !data.ok || !Array.isArray(data.members) || !data.members.length) return;
+
+        // Normalise: keep ONLY the three public fields.
+        const list = data.members
+          .filter(m => m && m.member_id && m.name)
+          .map(m => ({ member_id: String(m.member_id), name: String(m.name), photo: m.photo || '' }));
+        if (!list.length) return;
+
+        membersData = list;
+        renderMembers(membersData);
+        syncMemberCounts();
+      } catch (err) {
+        // Offline / blocked — the sanitized fallback stays on screen.
+      }
+    }
+
+    loadLiveDirectory();
 
 function toggleProfile(button) {
       const card = button.closest('.member-card');
@@ -762,7 +740,6 @@ function toggleProfile(button) {
         renderProfitChart(cachedData.NetProfit || cachedData.Investment, instant);
         renderDepositChart(cachedData, instant);
         populateMemberStatusTable((cachedData.MemberStatus || []).filter(r => memberMatches(r["Member Name"])), instant);
-        renderRecentPayments(cachedData.Payments || []);
         if (typeof requestAnimationFrame === 'function') requestAnimationFrame(markAllChartsLoaded);
         else markAllChartsLoaded();
       }
@@ -927,12 +904,12 @@ function toggleProfile(button) {
         const box = document.getElementById('currentStatusChart').closest('.chart-box');
         if (box) {
           const vw = window.innerWidth || document.documentElement.clientWidth;
-          let rowH = 44;                 // px per member row (desktop / tablet)
+          let rowH = 40;                 // px per member row (desktop / tablet)
           if (vw <= 380) rowH = 30;      // Galaxy Fold / tiny phones
           else if (vw <= 480) rowH = 32; // iPhone SE / small Androids
           else if (vw <= 640) rowH = 36; // regular phones
-          else if (vw <= 768) rowH = 40; // phablets / small tablets
-          box.style.height = Math.min(2400, Math.max(220, labels.length * rowH + 95)) + 'px';
+          else if (vw <= 768) rowH = 38; // phablets / small tablets
+          box.style.height = Math.min(560, Math.max(220, labels.length * rowH + 95)) + 'px';
           box.style.maxHeight = 'none';    // override stylesheet caps (340px / 300px / 260px)
           box.style.aspectRatio = 'auto';  // fixed height wins over aspect-ratio
         }
@@ -1089,14 +1066,14 @@ function toggleProfile(button) {
                 data: firstAdv,
                 backgroundColor: (c) => {
                   const area = c.chart.chartArea;
-                  if (!area) return '#3b82f6';
+                  if (!area) return '#18B78D';
                   const g = c.chart.ctx.createLinearGradient(0, area.bottom, 0, area.top);
-                  g.addColorStop(0, 'rgba(59,130,246,0.35)');
-                  g.addColorStop(1, '#3b82f6');
+                  g.addColorStop(0, 'rgba(24,183,141,0.35)');
+                  g.addColorStop(1, '#18B78D');
                   return g;
                 },
-                hoverBackgroundColor: '#60a5fa',
-                borderColor: '#bfdbfe',
+                hoverBackgroundColor: '#B7FF72',
+                borderColor: 'rgba(183,255,114,0.6)',
                 borderWidth: 2,
                 borderRadius: 10,
                 barPercentage: 0.65,
@@ -1108,14 +1085,14 @@ function toggleProfile(button) {
                 data: secondAdv,
                 backgroundColor: (c) => {
                   const area = c.chart.chartArea;
-                  if (!area) return '#f59e0b';
+                  if (!area) return '#FFC107';
                   const g = c.chart.ctx.createLinearGradient(0, area.bottom, 0, area.top);
-                  g.addColorStop(0, 'rgba(245,158,11,0.35)');
-                  g.addColorStop(1, '#f59e0b');
+                  g.addColorStop(0, 'rgba(255,193,7,0.35)');
+                  g.addColorStop(1, '#FFC107');
                   return g;
                 },
-                hoverBackgroundColor: '#fbbf24',
-                borderColor: '#fde68a',
+                hoverBackgroundColor: '#FFD54F',
+                borderColor: 'rgba(255,243,194,0.7)',
                 borderWidth: 2,
                 borderRadius: 10,
                 barPercentage: 0.65,
@@ -1172,8 +1149,8 @@ function toggleProfile(button) {
           ctx.font = '700 ' + labelSize + 'px Inter, system-ui, sans-serif';
           ctx.fillText('TOTAL RUNNING', arc.x, arc.y - hole * 0.12);
           const valSize = Math.max(11, Math.min(22, hole * 0.17));
-          ctx.fillStyle = '#05cd99';
-          ctx.shadowColor = 'rgba(5,205,153,0.55)';
+          ctx.fillStyle = '#B7FF72';
+          ctx.shadowColor = 'rgba(183,255,114,0.55)';
           ctx.shadowBlur = 14;
           ctx.font = '800 ' + valSize + 'px Inter, system-ui, sans-serif';
           ctx.fillText(formatCurrency(invCenterTotal), arc.x, arc.y + hole * 0.13);
@@ -1209,7 +1186,7 @@ function toggleProfile(button) {
         const amounts = runningInvestments.map(i => i["Amount"]);
         const total = amounts.reduce((sum, v) => sum + Number(v || 0), 0);
 
-        const PALETTE = ['#4318ff', '#05cd99', '#ffb547', '#2b3674', '#ee5d50'];
+        const PALETTE = ['#18B78D', '#B7FF72', '#FFC107', '#FF6115', '#FFFCF4'];
 
         const ctx = document.getElementById('investmentPieChart').getContext('2d');
 
@@ -1335,19 +1312,19 @@ function toggleProfile(button) {
             datasets: [{
               label: 'Net Profit',
               data: profits,
-              borderColor: '#a78bfa',
+              borderColor: '#B7FF72',
               backgroundColor: (c) => {
                 const area = c.chart.chartArea;
-                if (!area) return 'rgba(167,139,250,0.25)';
+                if (!area) return 'rgba(183,255,114,0.25)';
                 const g = c.chart.ctx.createLinearGradient(0, area.top, 0, area.bottom);
-                g.addColorStop(0, 'rgba(167,139,250,0.55)');
-                g.addColorStop(1, 'rgba(167,139,250,0.03)');
+                g.addColorStop(0, 'rgba(183,255,114,0.55)');
+                g.addColorStop(1, 'rgba(183,255,114,0.03)');
                 return g;
               },
               fill: 'start',
               tension: 0.4,
               borderWidth: 3,
-              pointBackgroundColor: '#a78bfa',
+              pointBackgroundColor: '#B7FF72',
               pointBorderColor: themeInk(),
               pointBorderWidth: 2,
               pointRadius: 5,
@@ -1395,14 +1372,14 @@ function toggleProfile(button) {
       }
 
       // Deposits Chart — per-member total deposit (ranked bar chart)
-      // Each member's lifetime total = sum of their "Ammount" payment rows
+      // Each member's lifetime total = sum of their "Amount" payment rows
       // (falls back to MemberStatus "Total Paid" when Payments is empty).
       function renderDepositChart(dashboardData, instant) {
         if (!dashboardData) return;
         if (typeof Chart === 'undefined') return; // CDN blocked/offline — skip, don't break the page
 
         // Sum each member's payment rows: the Payments tab holds one row per payment
-        // (Member Name + "Ammount"), so adding them equals that member's exact total
+        // (Member Name + "Amount"), so adding them equals that member's exact total
         // in the sheet. Falls back to the MemberStatus "Total Paid" cell when Payments
         // is empty.
         const paymentRows = dashboardData.Payments || [];
@@ -1416,7 +1393,7 @@ function toggleProfile(button) {
           const name = String(m["Member Name"] || m["Name"] || m["Member"] || "").trim();
           if (!name) return;
           const raw = usePayments
-            ? (m["Ammount"] !== undefined ? m["Ammount"] :
+            ? (m["Amount"] !== undefined ? m["Amount"] :
                m["Amount"] !== undefined ? m["Amount"] :
                m["Total Paid"] !== undefined ? m["Total Paid"] :
                m["TotalPaid"] !== undefined ? m["TotalPaid"] : 0)
