@@ -38,7 +38,7 @@
 
   <!-- Service worker registration (offline PWA-lite support) -->
   <script src="js/sw-register.js"></script>
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'unsafe-inline' 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src https: data:; connect-src https://script.google.com https://script.googleusercontent.com; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline' 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src https: data:; connect-src https://script.google.com https://script.googleusercontent.com; base-uri 'none'; form-action 'none'">
   <title>19's Union</title>
   <!-- Address-bar favicon (logo from Google Drive, direct-served via lh3) -->
   <link rel="icon" href="https://lh3.googleusercontent.com/d/1OqVeAKGM3nJfTYy0S7go8QE0QoDaXH44" sizes="any">
@@ -410,8 +410,67 @@
           </div>
         </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7" id="member-grid">
+<!-- Authorized Viewer access button (only 11 designated members can log in) -->
+        <div class="flex justify-end mb-6">
+          <button id="viewer-access-btn" class="viewer-access-btn" onclick="toggleViewerLogin(true)">
+            <i class="fa-solid fa-user-shield"></i> Authorized Access
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7" id="member-grid">
           <!-- Member cards are always shown (photo + name); each card carries its own pass lock -->
+        </div>
+
+        <!-- ===== AUTHORIZED VIEWER LOGIN MODAL ===== -->
+        <div id="viewer-login-modal" class="viewer-login-modal" style="display:none;">
+          <div class="viewer-login-card">
+            <button class="viewer-modal-close" onclick="toggleViewerLogin(false)" aria-label="Close"><i class="fa-solid fa-times"></i></button>
+            <h3 class="viewer-modal-title">🔐 Authorized Viewer Login</h3>
+            <p class="viewer-modal-sub">Only 11 designated members can view full member details. <strong>Read-only — no edits permitted.</strong></p>
+            <div class="viewer-form-group mb-3">
+              <label class="viewer-field-label">Member ID</label>
+              <input type="text" id="viewer-member-id" class="viewer-input" placeholder="e.g. M001" autocomplete="off" value="">
+            </div>
+            <div class="viewer-form-group mb-4">
+              <label class="viewer-field-label">Personal Pass</label>
+              <input type="password" id="viewer-pass" class="viewer-input" placeholder="Enter your pass" autocomplete="off">
+            </div>
+            <div class="viewer-form-actions flex gap-2">
+              <button class="viewer-login-btn" onclick="handleViewerLogin()"><i class="fa-solid fa-sign-in"></i> Authorize</button>
+              <button class="viewer-cancel-btn" onclick="toggleViewerLogin(false)"><i class="fa-solid fa-times"></i> Cancel</button>
+            </div>
+            <div id="viewer-login-msg" class="viewer-msg mt-3 text-sm"></div>
+          </div>
+        </div>
+
+        <!-- ===== ALL MEMBER DETAILS (authorized viewers only, read-only) ===== -->
+        <div id="all-members-details" class="all-members-details" style="display:none; margin-top:2rem;">
+          <div class="all-members-header flex flex-col md:flex-row justify-between items-end gap-3 mb-4">
+            <div>
+              <h3 class="all-members-title">📋 All Member Details — Read-Only</h3>
+              <p class="all-members-sub">Authorized viewers can read all profiles. No edit or delete access.</p>
+            </div>
+            <button class="viewer-logout-btn" onclick="viewerLogout()"><i class="fa-solid fa-sign-out-alt"></i> Logout</button>
+          </div>
+          <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950/60 shadow-[0_10px_40px_rgba(0,0,0,0.35)]">
+            <table class="all-members-table w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800">
+                  <th class="all-members-th px-4 py-3 text-xs font-bold text-slate-400 uppercase">Member ID</th>
+                  <th class="all-members-th px-4 py-3 text-xs font-bold text-slate-400 uppercase">Name</th>
+                  <th class="all-members-th px-4 py-3 text-xs font-bold text-slate-400 uppercase">Phone</th>
+                  <th class="all-members-th px-4 py-3 text-xs font-bold text-slate-400 uppercase">Email</th>
+                  <th class="all-members-th px-4 py-3 text-xs font-bold text-slate-400 uppercase">Father's Name</th>
+                  <th class="all-members-th px-4 py-3 text-xs font-bold text-slate-400 uppercase">Mother's Name</th>
+                  <th class="all-members-th px-4 py-3 text-xs font-bold text-slate-400 uppercase">NID / Birth No</th>
+                  <th class="all-members-th px-4 py-3 text-xs font-bold text-slate-400 uppercase">Nominee</th>
+                  <th class="all-members-th px-4 py-3 text-xs font-bold text-slate-400 uppercase">Address</th>
+                  <th class="all-members-th px-4 py-3 text-xs font-bold text-slate-400 uppercase">You</th>
+                </tr>
+              </thead>
+              <tbody id="all-members-table-body"></tbody>
+            </table>
+          </div>
         </div>
       </section>
     </div>

@@ -8,10 +8,17 @@ const PRECACHE_URLS = ['./', './Index.html', './css/tailwind.css', './css/styles
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE_URLS))
-      .catch(() => {})
+    caches.open(CACHE_NAME).then((cache) => {
+      // Cache each asset independently so one failing URL (e.g. a CDN font
+      // or image) does not break the whole service-worker install.
+      return Promise.all(
+        PRECACHE_URLS.map((url) =>
+          cache.add(url).catch((err) => {
+            console.warn('Precache skipped (non-fatal): ' + url, err);
+          })
+        )
+      );
+    })
       .then(() => self.skipWaiting())
   );
 });

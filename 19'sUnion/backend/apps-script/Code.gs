@@ -64,7 +64,7 @@ var SPREADSHEET_ID = '14sStv62NQfcCTBySZDD9Wx5g1LQLXZJhC4VGF8uRVcU';
 
 // tab name (as in the spreadsheet) -> JSON key returned to clients
 // NOTE: 'Members' (photo/name/id/pass/PII) is NEVER returned by doGet —
-// unlocks happen only through the POST unlockMember action below.
+// unlocks happen only through the POST unlockMember / viewAllMembers actions below.
 var TAB_MAP = [
   ['Summary',       'Summary'],
   ['CurrentStatus', 'CurrentStatus'],
@@ -74,6 +74,35 @@ var TAB_MAP = [
   ['MemberStatus',  'MemberStatus'],
   ['Payments',      'Payments']
 ];
+
+// ===== AUTHORIZED VIEWERS & OWNER CONFIGURATION =====
+// Configure these ONCE in Apps Script editor > Project Settings > Script Properties:
+//   AUTHORIZED_VIEWERS : comma-separated Member IDs allowed to view ALL member PII
+//                        (example: M001,M002,M003,M004,M005,M006,M007,M008,M009,M010,M011)
+//   OWNER_MEMBER_ID    : the single Member ID who can edit data (INSERT/UPDATE/DELETE)
+//   WRITE_TOKEN        : secret required for all write operations (owner only)
+//   MEMBER_UNLOCK_PASS_HASH: legacy global fallback hash (optional, used if a member
+//                            has no PassHash cell in the sheet)
+function getAuthorizedViewers_() {
+  var prop = PropertiesService.getScriptProperties().getProperty('AUTHORIZED_VIEWERS');
+  if (!prop) return [];
+  return prop.split(',').map(function (id) { return String(id).trim().toUpperCase(); }).filter(Boolean);
+}
+
+function getOwnerMemberId_() {
+  return PropertiesService.getScriptProperties().getProperty('OWNER_MEMBER_ID') || '';
+}
+
+function isAuthorizedViewer_(memberId) {
+  var viewers = getAuthorizedViewers_();
+  var upper = String(memberId || '').trim().toUpperCase();
+  return viewers.indexOf(upper) >= 0;
+}
+
+function isOwner_(memberId) {
+  var upper = String(memberId || '').trim().toUpperCase();
+  return upper === getOwnerMemberId_();
+}
 
 // Rate limiting for the unlockMember action (per IP + member) so a leaked
 // endpoint URL cannot be brute-forced for passes or member PII.
@@ -104,7 +133,8 @@ function doGet(e) {
     });
     return json_(out);
   } catch (err) {
-    return json_({ ok: false, error: String(err && err.message || err) });
+    console.error('doGet error: ' + String(err));
+    return json_({ ok: false, error: 'Server error' });
   }
 }
 
@@ -134,8 +164,23 @@ function tokenMatches_(given) {
 
 function doPost(e) {
   try {
-    var body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    // Reject oversized bodies before parsing (DoS protection)
+    var raw = (e && e.postData && e.postData.contents) || '';
+    if (raw.length > 65536) {
+      return json_({ ok: false, error: 'Request too large' });
+    }
+
+    var body = JSON.parse(raw || '{}');
     var action = String(body.action || '').toLowerCase();
+
+    // Explicit action whitelist — anything not listed is rejected
+    var ALLOWED_ACTIONS = [
+      'unlockmember', 'memberdirectory', 'viewallmembers',
+      'insert', 'update', 'delete'
+    ];
+    if (ALLOWED_ACTIONS.indexOf(action) < 0) {
+      return json_({ ok: false, error: 'Unknown action' });
+    }
 
     // unlockMember has its own rate limit, NOT the write token — members
     // must unlock with only their member pass, never the admin secret.
@@ -143,8 +188,12 @@ function doPost(e) {
     // every unlock request is rejected as "Invalid or missing token".
     if (action === 'unlockmember') return json_(unlockMember_(body, e));
 
-    // Public directory: photo + name + member id only. No pass, no PII.
+    // Public directory: photo + name + member id only. No PII.
     if (action === 'memberdirectory') return json_(memberDirectory_());
+
+    // Authorized viewer: view ALL member details (PII) — read only.
+    // Requires valid personal pass + membership in AUTHORIZED_VIEWERS list.
+    if (action === 'viewallmembers') return json_(viewAllMembers_(body, e));
 
     if (!tokenMatches_(body.token)) {
       return json_({ ok: false, error: 'Invalid or missing token' });
@@ -155,7 +204,8 @@ function doPost(e) {
     if (action === 'delete') return json_(writeDelete_(body));
     return json_({ ok: false, error: 'Unknown action: ' + body.action });
   } catch (err) {
-    return json_({ ok: false, error: String(err && err.message || err) });
+    console.error('doPost error: ' + String(err));
+    return json_({ ok: false, error: 'Server error' });
   }
 }
 
@@ -273,18 +323,38 @@ function memberDirectory_() {
 }
 
 
-/* ========================= MEMBER UNLOCK ========================= */
-/* Verifies ONE member's pass against the private 'Members' tab and, on
- * success only, returns that member's row (PII). The tab is deliberately
- * NOT in TAB_MAP, so doGet can never leak it — not in the bulk payload,
- * not via ?tab=Members. Rate limit: UNLOCK_MAX_ATTEMPTS wrong tries per
- * (IP + member) inside UNLOCK_WINDOW_MS. Responses are identical-speed
- * and identical-shape for wrong pass vs unknown member, so neither leaks.
+/* ========================= MEMBER UNLOCK & AUTHORIZED VIEWERS =========================
+ * SECURITY MODEL (3 tiers):
+ * 1. PUBLIC (no pass): memberDirectory_ -> photo + name + member_id ONLY (no PII)
+ * 2. MEMBER SELF-UNLOCK: unlockMember_ -> verify personal pass -> returns own profile only
+ * 3. AUTHORIZED VIEWER (11 members): viewAllMembers_ -> verify personal pass +
+ *    membership in AUTHORIZED_VIEWERS list -> returns ALL member PII (READ-ONLY)
+ * 4. OWNER (1 person): WRITE_TOKEN + OWNER_MEMBER_ID -> can INSERT/UPDATE/DELETE
  *
- * Sheet setup (create a 'Members' tab, copy from the current membersData):
- *   Member Id | Member Name | Photo | Pass | Phone | Email | Mother |
- *   Father | NidBirth_No | Nominee | Address
+ * All passes stored as SHA-256 hashes. Never plain text. Never in frontend code.
+ * Rate limited: 8 attempts per (IP + member) per 10 minutes.
  */
+
+/** Returns the expected SHA-256 hex hash of the legacy global unlock pass.
+ *  Configured via Script Properties key: MEMBER_UNLOCK_PASS_HASH.
+ *  Used only as a fallback when a member row has no PassHash cell.
+ */
+function getUnlockPassHash_() {
+  var hash = PropertiesService.getScriptProperties().getProperty('MEMBER_UNLOCK_PASS_HASH');
+  if (!hash || hash.length < 8) {
+    throw new Error('MEMBER_UNLOCK_PASS_HASH is not configured in Script Properties — unlocks are disabled.');
+  }
+  return hash;
+}
+
+/** Hex-encodes a byte array (Utilities.computeDigest output). */
+function digestToHex_(bytes) {
+  return bytes.map(function (x) {
+    return ('0' + ((x + 256) % 256).toString(16)).slice(-2);
+  }).join('');
+}
+
+/** Returns this member's own profile row (PII) after verifying their personal pass. */
 function unlockMember_(body, e) {
   var memberId = String((body && body.member_id) || '').trim().toUpperCase();
   var given = String((body && body.pass) || '');
@@ -308,38 +378,140 @@ function unlockMember_(body, e) {
   // The Members tab uses slightly different header spellings than the rest
   // of the workbook, so accept aliases for every column we need.
   var idIdx = findColumnLoose_(headers, ['Member Id', 'Member ID', 'ID', 'Member Code']);
-  var passIdx = findColumnLoose_(headers, ['Pass', 'Password', 'Member Pass']);
-  if (idIdx < 0 || passIdx < 0) throw new Error('Members tab needs "Member Id" and "Pass" columns');
+  if (idIdx < 0) throw new Error('Members tab needs "Member Id" column');
+  var passHashIdx = findColumnLoose_(headers, ['PassHash', 'Pass Hash', 'PasswordHash']);
 
   var row = null;
   for (var r = 1; r < grid.length; r++) {
     if (String(grid[r][idIdx]).trim().toUpperCase() === memberId) { row = grid[r]; break; }
   }
-  // Constant-time compare so pass-prefix probing via timing fails.
-  var expected = row ? String(row[passIdx] === null || row[passIdx] === undefined ? '' : row[passIdx]) : '';
-  var a = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, given, Utilities.Charset.UTF_8);
-  var b = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, expected, Utilities.Charset.UTF_8);
+  if (!row) { recordUnlockAttempt_(who, memberId, false); return { ok: false, error: 'Incorrect pass.' }; }
+
+  // Verify this member's personal pass hash (from sheet PassHash column, fallback to global Script Properties hash)
+  var storedHash = passHashIdx >= 0 ? String(row[passHashIdx] || '').trim() : '';
+  var expectedHash = storedHash || getUnlockPassHash_();
+  var givenHashHex = digestToHex_(
+    Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, given, Utilities.Charset.UTF_8)
+  );
+
   var diff = 0;
-  for (var i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
-  var ok = !!row && diff === 0 && expected.length > 0;
+  if (expectedHash.length !== givenHashHex.length) diff = 1;
+  else for (var i = 0; i < expectedHash.length; i++) diff |= expectedHash.charCodeAt(i) ^ givenHashHex.charCodeAt(i);
+
+  var ok = diff === 0;
   if (!recordUnlockAttempt_(who, memberId, ok)) {
     return { ok: false, error: 'Too many attempts. Try again later.' };
   }
   if (!ok) return { ok: false, error: 'Incorrect pass.' };
 
-  // Success: return exactly this member's row (PII), keyed by the
-  // canonical field names the frontend renders.
+  recordUnlockAttempt_(who, memberId, true);
+
+  // Return this member's own profile only (never echo pass or passHash)
   var member = {};
   for (var c = 0; c < headers.length; c++) {
     var key = memberFieldKey_(headers[c]);
-    if (!key) continue;          // unknown column -> not part of the profile
-    if (key === 'pass') continue; // never echo the pass back
+    if (!key || key === 'pass' || key === 'passhash') continue;
     var v = row[c];
     if (v === '' || v === null || v === undefined) continue;
     member[key] = serialize_(v);
   }
-  recordUnlockAttempt_(who, memberId, true);
+  member.isAuthorizedViewer = isAuthorizedViewer_(memberId);
+  member.isOwner = isOwner_(memberId);
   return { ok: true, member: member };
+}
+
+/** Authorized viewer: returns ALL member PII (read-only) after verifying the
+ *  caller is in the AUTHORIZED_VIEWERS list AND knows their personal pass. */
+function viewAllMembers_(body, e) {
+  var memberId = String((body && body.member_id) || '').trim().toUpperCase();
+  var given = String((body && body.pass) || '');
+  if (!memberId || !given) {
+    return { ok: false, error: 'member_id and pass required' };
+  }
+
+  // Separate rate limit for authorized-viewer access
+  // (does not consume member self-unlock attempts)
+  var VIEW_MAX_ATTEMPTS = 5;
+  var VIEW_WINDOW_MS = 10 * 60 * 1000;
+  var ip = '';
+  try { ip = String((e && e.parameters && e.parameters.ip) || ''); } catch (err) { ip = ''; }
+  var cid = String((body && body.client) || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 32);
+  var who = (ip || 'anon') + '|' + (cid || 'noclient');
+  checkRateLimit_('viewall_' + memberId, who, VIEW_MAX_ATTEMPTS, VIEW_WINDOW_MS);
+
+  // Must be an authorized viewer
+  if (!isAuthorizedViewer_(memberId)) {
+    recordUnlockAttempt_(who, memberId, false);
+    return { ok: false, error: 'Access denied. You are not authorized to view all member details.' };
+  }
+
+  var sheet = findSheet_('Members');
+  if (!sheet) throw new Error('Members tab not configured');
+  var grid = sheet.getDataRange().getValues();
+  if (grid.length < 2) { recordUnlockAttempt_(who, memberId, false); return { ok: false, error: 'Incorrect pass.' }; }
+  var headers = grid[0].map(function (h) { return String(h).trim(); });
+  var idIdx = findColumnLoose_(headers, ['Member Id', 'Member ID', 'ID', 'Member Code']);
+  if (idIdx < 0) throw new Error('Members tab needs "Member Id" column');
+  var passHashIdx = findColumnLoose_(headers, ['PassHash', 'Pass Hash', 'PasswordHash']);
+
+  var row = null;
+  for (var r = 1; r < grid.length; r++) {
+    if (String(grid[r][idIdx]).trim().toUpperCase() === memberId) { row = grid[r]; break; }
+  }
+  if (!row) { recordUnlockAttempt_(who, memberId, false); return { ok: false, error: 'Incorrect pass.' }; }
+
+  // Verify viewer's personal pass
+  var storedHash = passHashIdx >= 0 ? String(row[passHashIdx] || '').trim() : '';
+  var expectedHash = storedHash || getUnlockPassHash_();
+  var givenHashHex = digestToHex_(
+    Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, given, Utilities.Charset.UTF_8)
+  );
+
+  var diff = 0;
+  if (expectedHash.length !== givenHashHex.length) diff = 1;
+  else for (var i = 0; i < expectedHash.length; i++) diff |= expectedHash.charCodeAt(i) ^ givenHashHex.charCodeAt(i);
+
+  var ok = diff === 0;
+  if (!recordUnlockAttempt_(who, memberId, ok)) {
+    return { ok: false, error: 'Too many attempts. Try again later.' };
+  }
+  if (!ok) return { ok: false, error: 'Incorrect pass.' };
+
+  recordUnlockAttempt_(who, memberId, true);
+
+  // Build full member list (PII included) — authorized viewers only
+  var allMembers = [];
+  for (var r = 1; r < grid.length; r++) {
+    var m = {};
+    for (var c = 0; c < headers.length; c++) {
+      var key = memberFieldKey_(headers[c]);
+      if (!key || key === 'pass' || key === 'passhash') continue;
+      var v = grid[r][c];
+      if (v === '' || v === null || v === undefined) continue;
+      m[key] = serialize_(v);
+    }
+    if (m.member_id) allMembers.push(m);
+  }
+
+  // Viewer's own profile
+  var viewer = {};
+  for (var c = 0; c < headers.length; c++) {
+    var key = memberFieldKey_(headers[c]);
+    if (!key || key === 'pass' || key === 'passhash') continue;
+    var v = row[c];
+    if (v === '' || v === null || v === undefined) continue;
+    viewer[key] = serialize_(v);
+  }
+  viewer.isAuthorizedViewer = true;
+  viewer.isOwner = isOwner_(memberId);
+
+  return {
+    ok: true,
+    isViewer: true,
+    isOwner: viewer.isOwner,
+    member: viewer,
+    allMembers: allMembers
+  };
 }
 
 /** Resolves a Members-tab header to its canonical profile field name.
@@ -409,6 +581,29 @@ function checkUnlockRateLimit_(who, memberId) {
   var entry = null;
   try { entry = JSON.parse(raw); } catch (err) { return; }
   if (Date.now() - entry.t0 <= UNLOCK_WINDOW_MS && entry.n >= UNLOCK_MAX_ATTEMPTS) {
+    throw new Error('Too many attempts. Try again later.');
+  }
+}
+
+/** Generic sliding-window rate limiter using CacheService.
+ *  prefix: namespace string so different actions don't collide
+ *  who:    caller identity string (IP + client id)
+ *  maxAttempts: max failures allowed in windowMs
+ *  windowMs:  time window in milliseconds
+ */
+function checkRateLimit_(prefix, who, maxAttempts, windowMs) {
+  var key = prefix + '_' + Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,
+    who, Utilities.Charset.UTF_8).map(function (x) {
+      return ('0' + ((x + 256) % 256).toString(16)).slice(-2);
+    }).join('');
+  var cache = CacheService.getScriptCache();
+  var raw = cache.get(key);
+  var entry = { n: 0, t0: Date.now() };
+  if (raw) { try { entry = JSON.parse(raw); } catch (err) { entry = { n: 0, t0: Date.now() }; } }
+  if (Date.now() - entry.t0 > windowMs) entry = { n: 0, t0: Date.now() };
+  entry.n += 1;
+  cache.put(key, JSON.stringify(entry), Math.ceil(windowMs / 1000));
+  if (entry.n > maxAttempts) {
     throw new Error('Too many attempts. Try again later.');
   }
 }
@@ -614,5 +809,179 @@ function toNumber_(v) {
 
 function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
+    .setMimeType(ContentService.MimeType.JSON)
+    // CORS restricted to your live GitHub Pages domain
+    .appendHeader('Access-Control-Allow-Origin', 'https://walidahsnmohim.github.io')
+    .appendHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    .appendHeader('Access-Control-Allow-Headers', 'Content-Type')
+    // Security headers
+    .appendHeader('X-Content-Type-Options', 'nosniff')
+    .appendHeader('X-Frame-Options', 'DENY')
+    .appendHeader('Referrer-Policy', 'no-referrer');
 }
+
+/* ========================= WEEKLY AUTO-BACKUP =========================
+ * Backs up the entire spreadsheet to a Google Drive folder every week.
+ * Folder ID: 1F0UAHd-mCJ6BNV4xZ3iunpEYwUwGL5lg
+ *
+ * SETUP (run once):
+ *   1. Open Apps Script editor > run setupWeeklyBackupTrigger() once
+ *   2. Or set trigger manually: Triggers (clock icon) > Add Trigger
+ *      - Choose function: runWeeklyBackup
+ *      - Select event source: Time-driven
+ *      - Type of time based trigger: Week timer
+ *      - Select day of week & time (e.g., Monday 02:00 AM)
+ *
+ * BACKUP RETENTION: keeps last 4 weekly backups (~1 month), deletes older.
+ */
+
+/** ID of the Google Drive folder where backups are stored. */
+var BACKUP_FOLDER_ID = '1F0UAHd-mCJ6BNV4xZ3iunpEYwUwGL5lg';
+
+/** Maximum number of weekly backups to keep (older ones are deleted). */
+var MAX_BACKUPS_TO_KEEP = 4;
+
+/** Public entry point for the weekly time-driven trigger. */
+function runWeeklyBackup() {
+  try {
+    var result = backupSpreadsheet_();
+    console.log('Weekly backup completed: ' + JSON.stringify(result));
+    return { ok: true, backup: result };
+  } catch (err) {
+    console.error('Weekly backup failed: ' + String(err));
+    return { ok: false, error: String(err) };
+  }
+}
+
+/** Creates a copy of the current spreadsheet in the backup folder. */
+function backupSpreadsheet_() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  if (!ss) throw new Error('Cannot open spreadsheet: ' + SPREADSHEET_ID);
+
+  var folder = DriveApp.getFolderById(BACKUP_FOLDER_ID);
+  if (!folder) throw new Error('Backup folder not found: ' + BACKUP_FOLDER_ID);
+
+  var dateStr = Utilities.formatDate(
+    new Date(),
+    Session.getScriptTimeZone() || 'GMT',
+    'yyyy-MM-dd_HH-mm-ss'
+  );
+  var backupName = ss.getName() + ' — Backup ' + dateStr;
+
+  // Make a copy of the entire spreadsheet (all tabs, formatting, data)
+  var backupFile = ss.copy(backupName);
+
+  // Move the copy into the backup folder (copy() creates it in root by default)
+  var file = DriveApp.getFileById(backupFile.getId());
+  var parents = file.getParents();
+  while (parents.hasNext()) {
+    var parent = parents.next();
+    if (parent.getId() !== folder.getId()) {
+      file.moveTo(folder);
+    }
+  }
+
+  // Clean up old backups, keeping only the most recent MAX_BACKUPS_TO_KEEP
+  deleteOldBackups_(folder);
+
+  return {
+    name: backupName,
+    id: backupFile.getId(),
+    url: backupFile.getUrl(),
+    folderId: folder.getId(),
+    savedAt: new Date().toISOString()
+  };
+}
+
+/** Deletes oldest backups beyond the retention limit. */
+function deleteOldBackups_(folder) {
+  var files = folder.getFilesByType(MimeType.GOOGLE_SHEETS);
+  var backups = [];
+
+  while (files.hasNext()) {
+    var f = files.next();
+    backups.push({
+      id: f.getId(),
+      name: f.getName(),
+      date: f.getDateCreated()
+    });
+  }
+
+  // Sort newest first
+  backups.sort(function (a, b) {
+    return b.date - a.date;
+  });
+
+  // Delete backups beyond the limit
+  for (var i = MAX_BACKUPS_TO_KEEP; i < backups.length; i++) {
+    try {
+      DriveApp.getFileById(backups[i].id).setTrashed(true);
+      console.log('Deleted old backup: ' + backups[i].name);
+    } catch (err) {
+      console.warn('Could not delete backup ' + backups[i].name + ': ' + String(err));
+    }
+  }
+}
+
+/** One-time setup: creates a weekly time-driven trigger for runWeeklyBackup.
+ *  Run this once from the Apps Script editor, then it runs automatically. */
+function setupWeeklyBackupTrigger() {
+  // Remove any existing triggers for this function to avoid duplicates
+  var existing = ScriptApp.getProjectTriggers().filter(function (t) {
+    return t.getHandlerFunction() === 'runWeeklyBackup';
+  });
+  existing.forEach(function (t) {
+    ScriptApp.deleteTrigger(t);
+  });
+
+  // Create new weekly trigger (every 7 days at 2:00 AM)
+// Uses everyDays instead of onWeekDay because standalone scripts
+// don't expose ScriptApp.DayOfWeek enum
+  ScriptApp.newTrigger('runWeeklyBackup')
+    .timeBased()
+    .everyDays(7)
+    .atHour(2)
+    .create();
+
+  console.log('Weekly backup trigger created: every Monday at 2:00 AM');
+}
+
+/** Lists existing backups in the backup folder (useful for verification). */
+function listBackups() {
+  var folder = DriveApp.getFolderById(BACKUP_FOLDER_ID);
+  var files = folder.getFilesByType(MimeType.GOOGLE_SHEETS);
+  var backups = [];
+
+  while (files.hasNext()) {
+    var f = files.next();
+    backups.push({
+      name: f.getName(),
+      id: f.getId(),
+      date: f.getDateCreated().toISOString(),
+      url: f.getUrl()
+    });
+  }
+
+  backups.sort(function (a, b) {
+    return new Date(b.date) - new Date(a.date);
+  });
+
+  console.log('Found ' + backups.length + ' backup(s):');
+  backups.forEach(function (b) {
+    console.log('- ' + b.name + ' | ' + b.date + ' | ' + b.url);
+  });
+
+  return backups;
+}
+
+function testDriveAccess() {
+  try {
+    var folder = DriveApp.getFolderById('1F0UAHd-mCJ6BNV4xZ3iunpEYwUwGL5lg');
+    console.log('Folder found: ' + folder.getName());
+    return 'SUCCESS: Drive access works';
+  } catch (e) {
+    return 'FAILED: ' + e.toString();
+  }
+}
+
+/* ========================= END WEEKLY AUTO-BACKUP ========================= */

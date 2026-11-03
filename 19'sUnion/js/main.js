@@ -315,7 +315,7 @@ const typeSpeed = 75;      // ms per character while typing
     // Unlocked member details, keyed by member_id (fetched on unlock only).
     const unlockedMemberData = {};
 
-    const MEMBER_API_URL = "https://script.google.com/macros/s/AKfycby0Lg7YD5o-_bpxzZeF-YuSVXYvcDqiB3zc7AVulx_XTWFD0jndXgsAmW_rcJijUu-LCQ/exec";
+    const MEMBER_API_URL = "https://script.google.com/macros/s/AKfycbzOd4-MlSLOXpZqf6pks3WX7spx4BR2VOntqPgMd80yB1ly-Eud9tdWrrqhk6F42WVU/exec";
     // Stable per-browser client id so the backend rate-limiter buckets by
     // (client + member) rather than lumping every visitor together.
     const CLIENT_ID = (function () {
@@ -563,6 +563,138 @@ card.innerHTML = `
     }
 
     loadLiveDirectory();
+
+// ============================================================
+// 🔐 AUTHORIZED VIEWER ACCESS — 11 designated members can view
+// ALL member details (read-only) after verifying their personal pass.
+// Device session is remembered for 24 hours via localStorage.
+// Pass is NEVER stored locally — only memberId + name + expiry.
+// ============================================================
+
+const VIEWER_SESSION_KEY = 'sunion_viewer_session';
+const VIEWER_SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+let authorizedViewer = null; // { memberId, name, expiresAt }
+
+function loadViewerSession() {
+  try {
+    const raw = localStorage.getItem(VIEWER_SESSION_KEY);
+    if (!raw) return null;
+    const sess = JSON.parse(raw);
+    if (sess && sess.expiresAt && Date.now() < sess.expiresAt) {
+      authorizedViewer = sess;
+      return sess;
+    }
+    localStorage.removeItem(VIEWER_SESSION_KEY);
+  } catch (err) { /* ignore */ }
+  return null;
+}
+
+function saveViewerSession(memberId, name) {
+  const sess = { memberId: String(memberId).toUpperCase(), name: String(name), expiresAt: Date.now() + VIEWER_SESSION_TTL_MS };
+  try { localStorage.setItem(VIEWER_SESSION_KEY, JSON.stringify(sess)); } catch (err) { /* ignore */ }
+  authorizedViewer = sess;
+  return sess;
+}
+
+function clearViewerSession() {
+  try { localStorage.removeItem(VIEWER_SESSION_KEY); } catch (err) { /* ignore */ }
+  authorizedViewer = null;
+}
+
+function toggleViewerLogin(show) {
+  const modal = document.getElementById('viewer-login-modal');
+  const details = document.getElementById('all-members-details');
+  const btn = document.getElementById('viewer-access-btn');
+  if (show) {
+    if (modal) modal.style.display = 'flex';
+    if (details) details.style.display = 'none';
+    if (btn) btn.textContent = '🔒 Authorized Access';
+  } else {
+    if (modal) modal.style.display = 'none';
+  }
+}
+
+async function handleViewerLogin() {
+  const mid = document.getElementById('viewer-member-id').value.trim();
+  const pass = document.getElementById('viewer-pass').value.trim();
+  const msg = document.getElementById('viewer-login-msg');
+  if (msg) { msg.textContent = ''; msg.className = 'viewer-msg mt-3 text-sm'; }
+  if (!mid || !pass) {
+    if (msg) { msg.textContent = 'Enter both Member ID and pass.'; msg.className = 'viewer-msg mt-3 text-sm text-red-400'; }
+    return;
+  }
+  const btn = document.querySelector('.viewer-login-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
+  try {
+    const data = await postAction({
+      action: 'viewallmembers',
+      member_id: mid,
+      pass: pass,
+      client: CLIENT_ID
+    });
+    if (data && data.ok && data.isViewer) {
+      saveViewerSession(mid, data.member && data.member.name ? data.member.name : mid);
+      renderAllMembersDetails(data.allMembers, data.member);
+      toggleViewerLogin(false);
+      const details = document.getElementById('all-members-details');
+      if (details) details.style.display = 'block';
+      const abtn = document.getElementById('viewer-access-btn');
+      if (abtn) abtn.textContent = '✅ Viewing All Members (read-only)';
+    } else {
+      if (msg) { msg.textContent = (data && data.error) || 'Access denied.'; msg.className = 'viewer-msg mt-3 text-sm text-red-400'; }
+    }
+  } catch (err) {
+    if (msg) { msg.textContent = 'Could not reach the server.'; msg.className = 'viewer-msg mt-3 text-sm text-red-400'; }
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-sign-in"></i> Authorize'; }
+  }
+}
+
+function renderAllMembersDetails(allMembers, viewer) {
+  const tbody = document.getElementById('all-members-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  const viewerId = String(viewer && viewer.member_id ? viewer.member_id : '').toUpperCase();
+  (allMembers || []).forEach(m => {
+    const isSelf = String(m.member_id || '').toUpperCase() === viewerId;
+    const row = document.createElement('tr');
+    row.className = 'all-members-row' + (isSelf ? ' all-members-self' : '');
+    row.innerHTML =
+      '<td>' + escapeHtml(String(m.member_id || '')) + '</td>' +
+      '<td>' + escapeHtml(String(m.name || '')) + '</td>' +
+      '<td>' + escapeHtml(String(m.phone || '')) + '</td>' +
+      '<td>' + escapeHtml(String(m.email || '')) + '</td>' +
+      '<td>' + escapeHtml(String(m["Father's Name"] || m.father || '')) + '</td>' +
+      '<td>' + escapeHtml(String(m["Mother's Name"] || m.mother || '')) + '</td>' +
+      '<td>' + escapeHtml(String(m["Nid/Birth No"] || m.nidbirth_no || m.nid || '')) + '</td>' +
+      '<td>' + escapeHtml(String(m.nominee || '')) + '</td>' +
+      '<td>' + escapeHtml(String(m.address || '')) + '</td>' +
+      '<td class="all-members-owner">' + (isSelf ? 'You' : '') + '</td>';
+    tbody.appendChild(row);
+  });
+}
+
+function viewerLogout() {
+  clearViewerSession();
+  const modal = document.getElementById('viewer-login-modal');
+  const details = document.getElementById('all-members-details');
+  const btn = document.getElementById('viewer-access-btn');
+  if (modal) modal.style.display = 'none';
+  if (details) details.style.display = 'none';
+  if (btn) btn.textContent = '🔒 Authorized Access';
+  const tbody = document.getElementById('all-members-table-body');
+  if (tbody) tbody.innerHTML = '';
+}
+
+(function initViewerAuth() {
+  loadViewerSession();
+  const btn = document.getElementById('viewer-access-btn');
+  if (authorizedViewer && btn) {
+    btn.textContent = '👤 ' + escapeHtml(authorizedViewer.name || '') + ' (authorized)';
+    btn.onclick = function () { toggleViewerLogin(true); };
+  }
+})();
 
 function toggleProfile(button) {
       const card = button.closest('.member-card');
@@ -856,7 +988,6 @@ function toggleProfile(button) {
           'Advances': 'advance',
           'Profits': 'profit',
           'Active Investment': 'activeInvestment',
-          'Remainning Cash': 'remainingCash',
           'Remaining Cash': 'remainingCash'
         };
 
@@ -894,7 +1025,7 @@ function toggleProfile(button) {
           if (String(m["Status"]).trim() !== "Partial") return 0;
           const t = memberTotals[String(m["Member Name"] || "").trim()];
           if (t && (t.expected > 0 || t.paid > 0)) return Math.max(t.expected - t.paid, 0);
-          return 1; // no MemberStatus row matched — keep a visible 1-unit marker
+          return 0; // no MemberStatus row matched — show nothing (no fake data)
         });
 
         // Fit ALL member names on the chart — size the box to the row count.

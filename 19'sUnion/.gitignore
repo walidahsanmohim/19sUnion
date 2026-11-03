@@ -1,0 +1,39 @@
+# 19's Union — Security: never commit secrets or local config
+# Google Apps Script Script Properties hold all secrets at runtime,
+# so nothing below should ever contain a real pass, token, or key.
+
+# Environment / secrets
+.env
+.env.local
+*.env
+*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build / dist
+dist/
+build/
+out/
+
+# Node
+node_modules/
+
+# Security: never commit test harnesses that contain pass hashes or
+# security-test patterns. Real passes live only in Script Properties
+# and the private Google Sheet.
+backend/apps-script/test-mapping.js
