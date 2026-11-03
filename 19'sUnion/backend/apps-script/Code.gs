@@ -811,7 +811,7 @@ function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON)
     // CORS restricted to your live GitHub Pages domain
-    .appendHeader('Access-Control-Allow-Origin', 'https://walidahsanmohim.github.io')
+    .appendHeader('Access-Control-Allow-Origin', '*')
     .appendHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
     .appendHeader('Access-Control-Allow-Headers', 'Content-Type')
     // Security headers
