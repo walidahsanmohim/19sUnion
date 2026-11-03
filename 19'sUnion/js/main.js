@@ -315,7 +315,7 @@ const typeSpeed = 75;      // ms per character while typing
     // Unlocked member details, keyed by member_id (fetched on unlock only).
     const unlockedMemberData = {};
 
-    const MEMBER_API_URL = "https://script.google.com/macros/s/AKfycbzOd4-MlSLOXpZqf6pks3WX7spx4BR2VOntqPgMd80yB1ly-Eud9tdWrrqhk6F42WVU/exec";
+    const MEMBER_API_URL = "https://script.google.com/macros/s/AKfycbzZokpchS4fgz0YgCIFuhunapSkB23mGeAYgjwJ1qrFzshMqI5V0uOIff6dopeCGvPN-g/exec";
     // Stable per-browser client id so the backend rate-limiter buckets by
     // (client + member) rather than lumping every visitor together.
     const CLIENT_ID = (function () {
